@@ -35,7 +35,8 @@ Begin with [BRAIN.md](BRAIN.md), then add only what you actually need:
 - Give an actual project a README and add it to your personal `projects/INDEX.md`, following [Projects](projects/README.md).
 - Retain useful knowledge and source relationships through [Knowledge](knowledge/README.md) and [Sources](sources/README.md).
 - Use [Work](work/README.md) for durable workstreams and an agent inbox. The guide includes copyable formats; create personal files on first use, not empty registries in advance.
-- Preserve reusable skills and scripts through [Capabilities](capabilities/README.md), with their supporting files and setup routes. Keep project-owned bundles with their projects.
+- Maintain your agent skills under [Skills](skills/README.md), including personal project workflows, and link participating agents' whole discovery roots there. Skills do not require stage bindings.
+- Preserve reusable bundles, scripts, and dependencies through [Capabilities](capabilities/README.md). Keep externally maintained project tools and team-owned skills with their projects.
 
 Configure each participating agent's native startup instructions to read the absolute path to your live `BRAIN.md` and follow its guidance-loading instructions. If the entry cannot be read, the agent must report that rather than assume its guidance. O2B does not install this pointer for you. Observe a fresh session before claiming the runtime loads it; record your configuration and evidence under [Operations](operations/README.md).
 

@@ -42,6 +42,7 @@ Instructions do not by themselves provide privacy, recovery, concurrency control
 - [Guidance](guidance/README.md) — principles, shared stage rules, and discovery of project-owned stage rules.
 - [Work](work/README.md) — workstreams, the agent inbox, and handoffs.
 - [Capabilities](capabilities/README.md) — reusable skills, scripts, supporting dependencies, and portable setup; load when needed.
+- [Skills](skills/README.md) — maintained agent skills, authoring, and shared discovery roots; load when creating, changing, or installing skills.
 - [Sources](sources/README.md) — external knowledge sources and migration boundaries.
 - [Operations](operations/README.md) — installation, updates, runtime delivery, privacy, recovery, and concurrent writing.
 

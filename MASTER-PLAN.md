@@ -36,6 +36,7 @@ Existing project trackers and external sources retain authority until their owne
 | [Guidance](guidance/README.md) | Principles, shared stage rules, and common discovery/authoring conventions for project stage rules |
 | [Work](work/README.md) | Workstream and agent-inbox conventions, work ownership, and handoffs; populated records stay personal |
 | [Capabilities](capabilities/README.md) | Reusable capability ownership, discovery, dependency layout, and portable setup; populated bundles stay personal or project-owned |
+| [Skills](skills/README.md) | Personal agent-skill storage, authoring, and whole-root discovery links; populated skills stay private |
 | [Sources](sources/README.md) | Relationships with external knowledge systems and source ownership changes |
 | [Operations](operations/README.md) | Installation, updates, runtime delivery, access, recovery, concurrency, and derived tools |
 

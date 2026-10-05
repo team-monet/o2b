@@ -8,6 +8,8 @@ Read this guide when a task or applicable guidance requires a reusable skill, sc
 
 A capability supplies a reusable procedure and the files needed to perform it. It does not grant permission or replace [Guidance](../guidance/README.md). Keep one maintained source:
 
+Native agent skills maintained as part of the personal workflow use `skills/<skill-name>/`, following the [skills guide](../skills/README.md). This includes personal project procedures whose owner selects that home. The table below governs other bundles and externally maintained project capabilities.
+
 | Owner | Canonical home | Discovery route |
 |---|---|---|
 | Personal, reusable across projects | `capabilities/<name>/` in the personal brain | Link its entry from the guidance or procedure that needs it. |
@@ -42,6 +44,8 @@ Keep credentials and private runtime configuration outside ordinary brain conten
 ## Setup and use
 
 Keep portable setup instructions with the bundle: how to obtain its dependencies, configure required access, and run a representative check. Put host-specific installation paths and observed results under [Operations](../operations/README.md). Native skill registrations, symlinks, or generated copies are replaceable adapters; they point to the maintained source and are recreated or refreshed when it changes.
+
+For native skills, read [skill discovery setup](../operations/skill-discovery.md) when configuring whole-root registration and shared aliases.
 
 Before use, read the entry and required support, check prerequisites on the actual host, and apply the task's authorization. If a runtime lacks a required tool, identify the missing prerequisite and leave the dependent action unperformed.
 
