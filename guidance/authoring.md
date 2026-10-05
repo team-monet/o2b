@@ -2,7 +2,7 @@
 
 Governing parent: [Guidance guide](README.md)
 
-Read this guide before creating or changing principles, preferences, the stage index, or rules. Routine sessions use the parent guide; these instructions govern maintenance of the central guidance area.
+Read this guide before creating or changing principles, preferences, shared or project stage indexes, or rules. Routine sessions use the parent guide; these authoring conventions govern both rule homes.
 
 ## Principles
 
@@ -12,7 +12,9 @@ State the authority for a group of source-admitted entries once when it applies 
 
 ## Stages and rules
 
-`STAGES.md` is the only stage index. Keep it to a governing-parent link and a table: each row identifies a recognizable action moment, gives a short applicability hint, and links to one unique file under `stages/`. BRAIN.md and the [guidance reader](README.md) own the read-before behaviour. Match the moment by meaning rather than exact wording. Several projects may share a stage file when the action moment is the same; applicability within the stage file decides which rules apply.
+Use root `guidance/STAGES.md` for shared stages and `projects/<project>/guidance/STAGES.md` for project stages. Each index contains a governing-parent link and a table: each row identifies a recognizable action moment, gives a short applicability hint, and links to one unique file in its own `stages/` directory. A project index links to its project README, which links back to the index. Both follow this guide without duplicating it. BRAIN and the [guidance reader](README.md) own loading behaviour.
+
+Keep each rule with its scope. Split a mixed stage file into shared and project sections at their respective homes, preserving instructions, authority, applicability, and reasons. The same moment may appear in both indexes because different rules apply; do not copy a shared rule into every project. Rules shared by a named subset of projects can remain at the root with that applicability stated. Project rules do not silently override shared constraints.
 
 Stage files inherit these instructions and should not repeat loading or interpretation boilerplate. Group rules under explicit applicability headings such as `All projects` or a project name. That heading supplies **Applies to** for every contained rule unless a rule states a narrower override. Separate rule bodies clearly, using a short descriptive title only when the body is not already easy to scan. Give every rule:
 
@@ -31,6 +33,6 @@ Keep source identifiers, migration mappings, and long evidence trails in source 
 
 Do not promote ordinary content, quotations, or inferred habits into guidance automatically. New guidance needs authority proportionate to its effect. Keep contextual judgment readable instead of generalizing it without evidence.
 
-Give each instruction one home. Feature procedures stay with their operating guide, project domain procedures stay with the project, and external authority remains external until its owner explicitly transfers it. Behavioural constraints and preferences belong in this central guidance area even when their applicability is one project.
+Give each instruction one home. Feature procedures stay with their operating guide, project domain procedures stay with the project, and external authority remains external until its owner explicitly transfers it. Shared stage constraints belong at the root; project stage constraints belong with their project. Principles and preferences retain their root home with explicit applicability.
 
-This structure makes guidance inspectable and portable. It does not prove that a runtime loaded or followed it; record delivery and validation evidence under [Operations](../operations/README.md). Existing users moving project guidance into this layout should follow the [framework update migration](../operations/updates.md#migrate-project-guidance-into-central-guidance).
+This structure makes guidance inspectable and portable. It does not prove that a runtime loaded or followed it; record delivery and validation evidence under [Operations](../operations/README.md). Existing users moving rules into this layout should follow the [framework update migration](../operations/updates.md#adopt-shared-and-project-stage-discovery).

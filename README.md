@@ -25,7 +25,7 @@ git -C "$live_path" remote add origin "$personal_remote"
 git -C "$live_path" push -u origin main
 ```
 
-The framework supplies `BRAIN.md`, `MASTER-PLAN.md`, and operating guides. The personal repository supplies populated `guidance/PRINCIPLES.md`, `guidance/STAGES.md`, central `guidance/stages/` rule files, `projects/INDEX.md`, project folders, knowledge notes, source records, workstreams, and inbox entries. Project folders contain no separate behavioural guidance trees. The framework must not publish populated personal files.
+The framework supplies `BRAIN.md`, `MASTER-PLAN.md`, and operating guides. The personal repository supplies populated principles, shared and project stage indexes and rules, project indexes and content, knowledge notes, source records, workstreams, inbox entries, and capability bundles. Shared rules live under root `guidance/`; project-specific rules live under `projects/<project>/guidance/`. The framework must not publish populated personal files.
 
 ## Build your brain
 
@@ -35,10 +35,11 @@ Begin with [BRAIN.md](BRAIN.md), then add only what you actually need:
 - Give an actual project a README and add it to your personal `projects/INDEX.md`, following [Projects](projects/README.md).
 - Retain useful knowledge and source relationships through [Knowledge](knowledge/README.md) and [Sources](sources/README.md).
 - Use [Work](work/README.md) for durable workstreams and an agent inbox. The guide includes copyable formats; create personal files on first use, not empty registries in advance.
+- Preserve reusable skills and scripts through [Capabilities](capabilities/README.md), with their supporting files and setup routes. Keep project-owned bundles with their projects.
 
 Configure each participating agent's native startup instructions to read the absolute path to your live `BRAIN.md` and follow its guidance-loading instructions. If the entry cannot be read, the agent must report that rather than assume its guidance. O2B does not install this pointer for you. Observe a fresh session before claiming the runtime loads it; record your configuration and evidence under [Operations](operations/README.md).
 
-A rule that names a skill or script also requires access to that capability and its dependencies. Cloning this framework does not install your personal skills, project scripts, credentials, or runtime dependencies. Locate and verify them before claiming the rule is usable on a new machine.
+A rule that names a skill or script also requires access to that capability and its dependencies. Cloning this framework does not install your personal skills, project scripts, credentials, or runtime dependencies. Follow the [capability guide](capabilities/README.md) to locate and verify them before claiming the rule is usable on a new machine.
 
 ## Review a shared update
 

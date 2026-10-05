@@ -5,9 +5,9 @@
 
 ## Ownership
 
-The framework repository owns `BRAIN.md`, `MASTER-PLAN.md`, the root `README.md`, feature guides, generic examples and validation scenarios, and this procedure. The personal repository owns populated principles, the central stage index and rules, project indexes and content, notes, workstreams, inboxes, source agreements, and runtime records. Framework contributions must not introduce files at personal-content paths. A structural change that moves personal content needs an explicit migration instruction; Git merges text, not meaning.
+The framework repository owns `BRAIN.md`, `MASTER-PLAN.md`, the root `README.md`, feature guides, generic examples and validation scenarios, and this procedure. The personal repository owns populated principles, shared and project stage indexes and rules, project indexes and content, notes, workstreams, inboxes, source agreements, and runtime records. Framework contributions must not introduce files at personal-content paths. A structural change that moves personal content needs an explicit migration instruction; Git merges text, not meaning.
 
-Behavioural guidance has one personal home under root `guidance/`. A project may own domain procedures and context, but not a separate principles file, stage index, rule set, or guidance tree.
+Principles remain under root `guidance/PRINCIPLES.md` with explicit applicability. Shared stage rules and their index live under root `guidance/`; project-specific rules and their index live under `projects/<project>/guidance/`. Project READMEs link to their indexes, and the common loading and authoring guides remain at the root. Populated capability bundles belong to the personal brain or their owning project repository; the framework owns only the capability guide.
 
 The development checkout's `origin` is the framework repository. The live checkout's `origin` is the independent private personal repository, and its `upstream` is the framework repository. Both repositories share their initial framework history. A GitHub fork relationship is unnecessary.
 
@@ -53,16 +53,28 @@ The guidance reader remains at `guidance/README.md`; its maintenance instruction
 
 In the review checkout, check any personal startup instructions or procedures that require such a scan for a conflict with the new route. Preserve personal authority and resolve conflicts explicitly. Verify links and exercise the clear-task, continuation, and guidance-maintenance cases in the [validation scenarios](../work/validation.md). Record runtime observations separately from static checks, then publish and install through the update sequence above.
 
-## Migrate project guidance into central guidance
+## Adopt portable capability conventions
 
-Perform this migration in the disposable personal review checkout before updating the live brain:
+This adds an on-demand [capability guide](../capabilities/README.md); existing personal files remain in place. Adopt the guide and its discovery links together in the personal review checkout. No capability, runtime adapter, or dependency is installed by this framework update.
 
-1. Inventory every project-local principles file, stage index, stage file, and README link. Record each item's current instruction, applicability, authority, known reason, and evidence or provenance needed for audit. Do not delete the originals yet.
-2. Move project principles into a clearly labelled project-scoped section of `guidance/PRINCIPLES.md`, grouped by Principles and Preferences. Retain scope, authority, and known reasons. State a shared source-admitted authority once when it applies to the whole group. Mark a missing reason as not yet recorded without changing an admitted principle's authority. Remove source IDs and storage labels from the active presentation while preserving needed provenance in a source or migration record.
-3. Merge every project action moment into the central `guidance/STAGES.md`. Keep that file to its governing-parent link and a table. Give each row a recognizable moment, an applicability hint, and one unique central stage-file link. When multiple projects share a moment, use one stage file.
-4. Move the rules into `guidance/stages/` and group them under explicit applicability headings. A scope heading applies to every contained rule unless a compact `Scope`, `Agent`, or `Domain` qualifier narrows it. Remove identifier and truncated-text headings; use descriptive rule titles only where they help scanning. For each rule, retain the instruction, compact **Authority** with a human-readable origin, and **Why**. Preserve admitted guidance with its existing authority when a reason is missing, mark that reason as not yet recorded, and recover it before claiming a rationale. Do not admit a new proposal without the owner's decision.
-5. Remove project README links to local guidance and remove the old project guidance trees only after every item has a verified central destination. Projects keep domain knowledge, procedures, context, and work state.
-6. Re-read the central index and principles as a fresh actor would. Check links, unique stage destinations, project applicability, authority, reasons, and absence of leftover active copies in project folders. Record any runtime-delivery test separately; file inspection does not establish startup compliance.
+For each selected personal transfer, establish the current owner and portable source, follow support and setup dependencies, and choose the home described in the guide. Preserve the original source until the selected bundle and incoming references are verified. Keep project repositories authoritative where they own the capability; do not make a second maintained copy in the brain. Update machine-specific references to a verified owning route and recreate host adapters from that source.
+
+Check links and source preservation, then exercise the guide's isolated transfer validation. Keep actual inventories, ownership decisions, and execution evidence personal. A static check does not establish runtime availability; publish and install only through the reviewed update sequence above.
+
+<a id="migrate-project-guidance-into-central-guidance"></a>
+
+## Adopt shared and project stage discovery
+
+This replaces the earlier all-central stage layout. The old migration anchor above remains for existing links; the procedure below governs the current layout. Principles and preferences keep their root home. Apply the change in an isolated personal review checkout:
+
+1. Inventory current rules and stage indexes before moving anything. Record each rule's moment, instruction, applicability, authority, origin, and reason. Keep the source available until preservation is verified.
+2. Retain shared rules under root `guidance/stages/`. Move each project-only rule to `projects/<project>/guidance/stages/`, splitting mixed stage files by applicability. A rule shared by a named subset of projects can remain at the root with that scope stated. Preserve rule meaning and support-link destinations; do not copy the shared rule into each project.
+3. Rebuild root `guidance/STAGES.md` from shared stages only. Create each affected project's `guidance/STAGES.md` from its local stages. Keep unique destinations within each index, and retain the recognizable moment and applicability. Link each project index from its README and repair active references to moved files.
+4. Adopt BRAIN, the common guidance reader/authoring guide, and Projects guide together. Shared stages load at startup; project stages load when that project is entered. Matching shared and local rules both apply; a local file is not permission to override a shared constraint. Resolve outdated personal instructions that still demand a single central index.
+5. Compare all rule tuples with the inventory, verify governing and support links, and check every rule file appears in its owning index. Remove the old active copies only after those checks pass. Preserve historical evidence as historical and identify the earlier layout as superseded in current operating records.
+6. Exercise discovery in an isolated setup: a shared-only action, a project-only action, an action matching both indexes, and a switch to another project. Observe which indexes and files a fresh actor reads before action. Link checks alone do not establish runtime delivery. Record observed results and limits personally.
+
+Publish and install through the reviewed update sequence above when authorized. A request to commit locally does not authorize publication. For a local-only adoption, commit existing authorized personal work first, merge the framework and migrate in a disposable local clone, then fast-forward the clean tracked live checkout to the validated local result. Preserve unrelated untracked files and do not discard pre-existing work.
 
 ## First installation
 

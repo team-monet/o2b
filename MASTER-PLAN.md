@@ -10,7 +10,7 @@ The shared repository owns structure and operating guides. A personal repository
 
 The framework must be usable by someone starting their own brain without the maintainer's private files, accounts, installed skills, or previous conversations. Feature guides supply enough instructions and generic examples to establish a personal instance. Actual workstreams, inbox entries, capability migration inventories, and runtime evidence belong to that instance.
 
-All behavioural guidance is centralized under root `guidance/`, including rules and principles that apply only to one project. Project folders own domain material and procedures without creating another guidance hierarchy.
+Principles remain under root `guidance/PRINCIPLES.md` with explicit applicability. Shared stage rules live under root `guidance/`; project-specific stage rules live under `projects/<project>/guidance/`. Each scope owns its stage index, and project READMEs provide the discovery links. Shared loading and authoring conventions live once in the root guidance guide.
 
 Existing project trackers and external sources retain authority until their owners explicitly transfer it. Links preserve that boundary; copying changing state does not.
 
@@ -19,7 +19,7 @@ Existing project trackers and external sources retain authority until their owne
 - Give each instruction, fact, and work item one authoritative home.
 - Keep the route from `BRAIN.md` to the applicable guide shallow and explicit.
 - Let user intent choose the starting context: a clear task uses relevant knowledge directly; continuation starts from open work and then seeks the needed knowledge. Keep maintenance instructions off the routine startup path.
-- Centralize principles and stage-triggered rules while preserving explicit applicability for project and actor scopes.
+- Keep principles and shared stage rules at the root, and project stage rules with their project; preserve applicability and read shared and local rules together when both match.
 - Use readable files and existing tools before adding schemas, indexes, adapters, or services.
 - Keep guidance, knowledge, and work state distinct. Content does not become an instruction merely because an agent retrieves it.
 - Make active guidance understandable: readable separation, explicit authority and applicability, and known reasons rather than source IDs or copied storage labels. Preserve admitted guidance whose reason is not yet recorded without inventing one.
@@ -33,8 +33,9 @@ Existing project trackers and external sources retain authority until their owne
 |---|---|
 | [Projects](projects/README.md) | Project-specific domain knowledge, procedures, decisions, evidence, and continuation context |
 | [Knowledge](knowledge/README.md) | Reusable knowledge beyond one project |
-| [Guidance](guidance/README.md) | Central principles and stage-triggered rules across shared and project scopes |
+| [Guidance](guidance/README.md) | Principles, shared stage rules, and common discovery/authoring conventions for project stage rules |
 | [Work](work/README.md) | Workstream and agent-inbox conventions, work ownership, and handoffs; populated records stay personal |
+| [Capabilities](capabilities/README.md) | Reusable capability ownership, discovery, dependency layout, and portable setup; populated bundles stay personal or project-owned |
 | [Sources](sources/README.md) | Relationships with external knowledge systems and source ownership changes |
 | [Operations](operations/README.md) | Installation, updates, runtime delivery, access, recovery, concurrency, and derived tools |
 
@@ -45,7 +46,7 @@ These areas are starting responsibilities, not a promise of a fixed taxonomy or 
 1. Identify the concrete task or observed failure and the owner of the affected material.
 2. Read the governing chain and current sources. Decide whether an existing area already owns the need.
 3. Make the smallest coherent change. Preserve personal content and compatibility, or state the required migration clearly.
-4. Update the owning guide and its discovery links together. When guidance scope changes, update the central principle or stage entry and each affected rule's direct or inherited applicability; do not add a project-local guidance branch.
+4. Update the owning guide and its discovery links together. When guidance scope changes, update its owning principle or stage entry and each affected rule's direct or inherited applicability. Link project stage indexes from their project README.
 5. Validate at the level of the claim: inspect links and ownership for documentation, exercise behaviour for guidance delivery, and test real mechanisms for operational protection.
 
 Keep untested claims visible as unvalidated. Record detailed execution work in its project or tracker rather than turning this plan into a work log.

@@ -10,7 +10,7 @@ If `INDEX.md` exists, use it to discover personal projects. The shared framework
 
 Read the applicable project's `README.md` before relying on or changing its content. A project guide should identify its purpose, authoritative documents, domain procedures, historical references, and any external system that owns execution state. Follow the [entry point's task route](../BRAIN.md#start-a-session) and task-relevant links instead of loading every project document.
 
-Behavioural guidance does not live inside project folders. Put project-scoped principles in `guidance/PRINCIPLES.md`, list project-relevant action moments in `guidance/STAGES.md`, and place their rules in central `guidance/stages/` files with explicit applicability. Do not create `projects/<project>/guidance/` trees or project-local rule indexes.
+Project-specific stage rules live in `projects/<project>/guidance/stages/`, indexed by that project's `guidance/STAGES.md`. Link the index from the project README and read it when entering the project, alongside the shared root index. Both use the common [guidance conventions](../guidance/README.md); no separate project guidance guide is needed. Create these files only for actual rules. Principles retain their existing root home with explicit applicability.
 
 Create a named folder only for an actual project. Keep unfinished project work with the project or its existing tracker; use the [work guide](../work/README.md) to make a concise handoff without moving ownership.
 

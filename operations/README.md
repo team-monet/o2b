@@ -4,6 +4,8 @@ Governing parent: [BRAIN.md](../BRAIN.md)
 
 Read this guide before configuring or relying on installation, updates, runtime delivery, privacy, recovery, concurrent writing, or derived tools.
 
+Reusable skills and scripts follow the [capability guide](../capabilities/README.md). Their canonical bundles own portable setup; Operations records host-specific adapters and observed execution.
+
 ## Records and evidence
 
 An operational record identifies the real mechanism, configuration scope, known limits, and a dated or version-bound validation result. A folder, instruction, or intended design is not evidence that a control exists.
