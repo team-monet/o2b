@@ -18,6 +18,8 @@ Existing project trackers and external sources retain authority until their owne
 
 - Give each instruction, fact, and work item one authoritative home.
 - Keep the route from `BRAIN.md` to the applicable guide shallow and explicit.
+- Minimize the total context needed to find the right information and act correctly. Unnecessary reading consumes limited context; a shorter entry is useful only if it preserves efficient discovery.
+- Author READMEs according to the [README principles](#readme-principles).
 - Let user intent choose the starting context: a clear task uses relevant knowledge directly; continuation starts from open work and then seeks the needed knowledge. Keep maintenance instructions off the routine startup path.
 - Keep principles and shared stage rules at the root, and project stage rules with their project; preserve applicability and read shared and local rules together when both match.
 - Use readable files and existing tools before adding schemas, indexes, adapters, or services.
@@ -26,6 +28,14 @@ Existing project trackers and external sources retain authority until their owne
 - Preserve current source instructions and version context so external sources can keep operating over time.
 - Treat privacy, recovery, concurrent editing, and runtime delivery as operational claims requiring tested mechanisms.
 - Prefer the smallest coherent change that improves the human or agent experience. A directory alone does not implement a capability.
+
+## README principles
+
+A README helps an agent choose its next source or action. Keep the scope, read trigger, governing parent where applicable, authoritative homes, and local constraints needed to navigate correctly. Give each supporting link a clear task or action cue.
+
+Include a paragraph only if omitting it would change a relevant local decision or make the needed source harder to find. Assume the agent knows general authoring and tool use. Link to an established standard instead of explaining it again; state only local requirements beyond that standard. Do not repeat guidance already supplied by BRAIN or the governing parent.
+
+Setup, installation, migration, and other detailed procedures belong in linked documents read when performing that action. Optional background and historical explanation stay off the entry path. A shorter README must still provide enough context to choose correctly.
 
 ## Current areas
 

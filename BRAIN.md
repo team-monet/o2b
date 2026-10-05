@@ -17,7 +17,13 @@ Before acting at a moment listed in a loaded stage index, read the matching rule
 
 If an optional personal file is absent, continue without it. Its absence does not authorize inventing its contents.
 
-When entering through a direct path or search result, follow labelled governing-parent links to recover missing guides. Refresh guidance that changed since it entered context. If no route matches, search sources authorized for the task; an incomplete search does not prove absence.
+## Find task context
+
+Follow the task's named source or relevant guide links first. Load only the guidance and current sources needed to answer the task or perform the next action; read optional background only when it helps that task.
+
+If no link routes to the needed information, search current records in the narrowest applicable scope: the project for project-specific questions, or Knowledge for reusable questions across projects. Exclude historical folders such as `history/` from current-content searches. Use filenames, headings, and search matches to select documents before reading their relevant content. Expand the search or follow external source records when that scope cannot answer the need, within the task's authorization. An incomplete search does not prove absence. Consult retained snapshots and Git history when the task needs historical evidence, provenance, or recovery.
+
+When entering through a direct path or search result, follow labelled governing-parent links to recover missing guides before relying on or changing the content. Refresh guidance that changed since it entered context.
 
 ## Use and contribute
 
@@ -46,4 +52,4 @@ Instructions do not by themselves provide privacy, recovery, concurrency control
 - [Sources](sources/README.md) — external knowledge sources and migration boundaries.
 - [Operations](operations/README.md) — installation, updates, runtime delivery, privacy, recovery, and concurrent writing.
 
-Before changing shared structure or adding a framework capability, read the [master plan](MASTER-PLAN.md).
+Before creating or changing a README, read the [README principles](MASTER-PLAN.md#readme-principles). Before changing shared structure or adding a framework capability, read the [master plan](MASTER-PLAN.md).
