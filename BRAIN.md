@@ -5,10 +5,13 @@ This file is the entry point for a human-owned brain stored in ordinary Markdown
 ## Start a session
 
 1. Read the central [guidance guide](guidance/README.md).
-2. If `guidance/PRINCIPLES.md` exists, read it for shared and explicitly scoped principles.
+2. If `guidance/PRINCIPLES.md` exists, read the shared principles and those applicable to the current project or scope.
 3. If `guidance/STAGES.md` exists, read it as the complete index of action moments that may require rules.
 4. If the task belongs to a project, read the [projects guide](projects/README.md), then the applicable project README. If `projects/INDEX.md` exists, use it for discovery. Project files supply domain context and procedures; behavioural guidance remains central.
-5. Read any other operating guide below whose scope the task enters. Load only material needed for the task and reuse unchanged guidance already in context.
+5. Choose the starting point from the user's intent:
+   - **Clear task:** Go directly to its relevant project context and knowledge. Reading or listing existing workstreams and inboxes is not a startup prerequisite.
+   - **Continue previous work:** Read the [Work guide](work/README.md), then the relevant workstream's open questions and steps. If another tracker owns that work, start there instead. Use the open work to identify and search for the knowledge needed to continue; verify current sources before acting.
+6. Read other operating guides only when the task enters their scope. Load the Work guide when recording or updating durable work, capturing a finding, or settling work. Read maintenance instructions only when maintaining the area they govern. Reuse unchanged guidance already in context.
 
 Before acting at a moment listed in `guidance/STAGES.md`, read its linked file under `guidance/stages/`. Apply only the rules whose stated applicability matches the task, project, actor, and action. When the relevant project or scope becomes clear later, reassess the central principles and stage index.
 
@@ -37,7 +40,7 @@ Instructions do not by themselves provide privacy, recovery, concurrency control
 - [Projects](projects/README.md) — project-specific domain knowledge, procedures, decisions, and continuation context.
 - [Knowledge](knowledge/README.md) — reusable knowledge beyond one project.
 - [Guidance](guidance/README.md) — the central home for principles and staged rules across every scope.
-- [Work](work/README.md) — incidental findings, brain-owned work, and handoffs.
+- [Work](work/README.md) — workstreams, the agent inbox, and handoffs.
 - [Sources](sources/README.md) — external knowledge sources and migration boundaries.
 - [Operations](operations/README.md) — installation, updates, runtime delivery, privacy, recovery, and concurrent writing.
 

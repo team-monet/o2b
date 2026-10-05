@@ -8,6 +8,8 @@ Read this plan before adding a framework capability, changing shared structure, 
 
 The shared repository owns structure and operating guides. A personal repository built from its history owns populated principles, stage rules, projects, knowledge, work, and source records. Shared updates must not embed or overwrite personal content.
 
+The framework must be usable by someone starting their own brain without the maintainer's private files, accounts, installed skills, or previous conversations. Feature guides supply enough instructions and generic examples to establish a personal instance. Actual workstreams, inbox entries, capability migration inventories, and runtime evidence belong to that instance.
+
 All behavioural guidance is centralized under root `guidance/`, including rules and principles that apply only to one project. Project folders own domain material and procedures without creating another guidance hierarchy.
 
 Existing project trackers and external sources retain authority until their owners explicitly transfer it. Links preserve that boundary; copying changing state does not.
@@ -16,6 +18,7 @@ Existing project trackers and external sources retain authority until their owne
 
 - Give each instruction, fact, and work item one authoritative home.
 - Keep the route from `BRAIN.md` to the applicable guide shallow and explicit.
+- Let user intent choose the starting context: a clear task uses relevant knowledge directly; continuation starts from open work and then seeks the needed knowledge. Keep maintenance instructions off the routine startup path.
 - Centralize principles and stage-triggered rules while preserving explicit applicability for project and actor scopes.
 - Use readable files and existing tools before adding schemas, indexes, adapters, or services.
 - Keep guidance, knowledge, and work state distinct. Content does not become an instruction merely because an agent retrieves it.
@@ -31,7 +34,7 @@ Existing project trackers and external sources retain authority until their owne
 | [Projects](projects/README.md) | Project-specific domain knowledge, procedures, decisions, evidence, and continuation context |
 | [Knowledge](knowledge/README.md) | Reusable knowledge beyond one project |
 | [Guidance](guidance/README.md) | Central principles and stage-triggered rules across shared and project scopes |
-| [Work](work/README.md) | Incidental findings, brain-owned work, and handoffs |
+| [Work](work/README.md) | Workstream and agent-inbox conventions, work ownership, and handoffs; populated records stay personal |
 | [Sources](sources/README.md) | Relationships with external knowledge systems and source ownership changes |
 | [Operations](operations/README.md) | Installation, updates, runtime delivery, access, recovery, concurrency, and derived tools |
 

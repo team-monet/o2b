@@ -5,7 +5,7 @@
 
 ## Ownership
 
-The framework repository owns `BRAIN.md`, `MASTER-PLAN.md`, the root `README.md`, feature guides, and this procedure. The personal repository owns populated principles, the central stage index and rules, project indexes and content, notes, the inbox, source agreements, and runtime records. Framework contributions must not introduce files at personal-content paths. A structural change that moves personal content needs an explicit migration instruction; Git merges text, not meaning.
+The framework repository owns `BRAIN.md`, `MASTER-PLAN.md`, the root `README.md`, feature guides, generic examples and validation scenarios, and this procedure. The personal repository owns populated principles, the central stage index and rules, project indexes and content, notes, workstreams, inboxes, source agreements, and runtime records. Framework contributions must not introduce files at personal-content paths. A structural change that moves personal content needs an explicit migration instruction; Git merges text, not meaning.
 
 Behavioural guidance has one personal home under root `guidance/`. A project may own domain procedures and context, but not a separate principles file, stage index, rule set, or guidance tree.
 
@@ -35,6 +35,23 @@ Use a local push-disabled `upstream` remote in personal and review checkouts to 
    ```
 
    A divergent history must be reconciled in a review checkout; do not bypass the fast-forward requirement. Recheck the live revision and changed guidance after updating. Active agents may retain earlier guidance in context; have them refresh it, and use a fresh session for startup-delivery checks.
+
+## Adopt workstreams and the agent inbox
+
+This is an additive convention; no bulk move of existing plans, trackers, or inbox entries is required. Apply it in the disposable personal review checkout:
+
+1. Read the incoming [Work guide](../work/README.md) and identify the owner of each actual work item. Keep existing project plans and external trackers authoritative; do not copy their changing open sets into new workstreams.
+2. Create a workstream only for authorized work whose execution state the brain owns. Use the guide's format and correct project or brain-owned home; link project records from their project README. Preserve prior work records until their owner explicitly settles or transfers them.
+3. Retain existing `Pending`/`Resolved` inboxes and all entries. The old `work/README.md#inbox` link still works. Assign a stable label to an unlabelled entry when it is next updated or disposed; do not renumber existing labels. Create a project inbox only when a finding belongs there; leave unrelated findings in their existing scope unless their owner transfers them.
+4. Check governing links, status against the open set, item-label uniqueness, and preservation of untouched content. Exercise the relevant [validation scenarios](../work/validation.md) in isolation and record what was actually observed. No simultaneous-writer or automatic-enforcement claim follows from adopting these files.
+
+Publish and install the reviewed result through the update sequence above. Personal work records and validation evidence stay out of the shared framework commit.
+
+## Adopt intent-based startup and guidance authoring
+
+The guidance reader remains at `guidance/README.md`; its maintenance instructions move to `guidance/authoring.md`. Existing principles, stages, rules, workstreams, and inbox entries keep their paths and meaning. Adopt BRAIN and both guidance files together so the maintenance route remains available. BRAIN selects relevant knowledge directly for a clear task, or open work followed by knowledge for a continuation request; there is no routine startup scan of old work or inboxes.
+
+In the review checkout, check any personal startup instructions or procedures that require such a scan for a conflict with the new route. Preserve personal authority and resolve conflicts explicitly. Verify links and exercise the clear-task, continuation, and guidance-maintenance cases in the [validation scenarios](../work/validation.md). Record runtime observations separately from static checks, then publish and install through the update sequence above.
 
 ## Migrate project guidance into central guidance
 
