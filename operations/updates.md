@@ -5,7 +5,7 @@
 
 ## Ownership
 
-The framework repository owns `BRAIN.md`, `MASTER-PLAN.md`, the root `README.md`, feature guides, generic examples and validation scenarios, and this procedure. The personal repository owns populated principles, shared and project stage indexes and rules, project indexes and content, notes, workstreams, inboxes, source agreements, and runtime records. Framework contributions must not introduce files at personal-content paths. A structural change that moves personal content needs an explicit migration instruction; Git merges text, not meaning.
+The framework repository owns `BRAIN.md`, `MASTER-PLAN.md`, the root `README.md`, feature guides, generic examples and validation scenarios, operational tools such as [auto-sync](sync.md), and this procedure. The personal repository owns populated principles, shared and project stage indexes and rules, project indexes and content, notes, workstreams, inboxes, source agreements, and runtime records. Framework contributions must not introduce files at personal-content paths. A structural change that moves personal content needs an explicit migration instruction; Git merges text, not meaning.
 
 Principles remain under root `guidance/PRINCIPLES.md` with explicit applicability. Shared stage rules and their index live under root `guidance/`; project-specific rules and their index live under `projects/<project>/guidance/`. Project READMEs link to their indexes, and the common loading and authoring guides remain at the root. Populated capability bundles belong to the personal brain or their owning project repository; the framework owns only the capability guide.
 
@@ -34,7 +34,7 @@ Use a local push-disabled `upstream` remote in personal and review checkouts to 
    git pull --ff-only origin main
    ```
 
-   A divergent history must be reconciled in a review checkout; do not bypass the fast-forward requirement. Recheck the live revision and changed guidance after updating. Active agents may retain earlier guidance in context; have them refresh it, and use a fresh session for startup-delivery checks.
+   A divergent history must be reconciled in a review checkout; do not bypass the fast-forward requirement. A live checkout running [auto-sync](sync.md) adopts the published result on its next run instead; it merges only when the merge is clean and leaves conflicts to a person. Recheck the live revision and changed guidance after updating. Active agents may retain earlier guidance in context; have them refresh it, and use a fresh session for startup-delivery checks.
 
 ## Adopt workstreams and the agent inbox
 
