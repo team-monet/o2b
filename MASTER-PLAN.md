@@ -16,6 +16,7 @@ Existing project trackers and external sources retain authority until their owne
 
 ## Design constraints
 
+- Hold only what someone will need to read. Git is the brain's history, so no structure may accumulate logs, archives, or replaced versions kept just for the record.
 - Give each instruction, fact, and work item one authoritative home.
 - Keep the route from `BRAIN.md` to the applicable guide shallow and explicit.
 - Minimize the total context needed to find the right information and act correctly. Unnecessary reading consumes limited context; a shorter entry is useful only if it preserves efficient discovery.

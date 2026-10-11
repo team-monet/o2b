@@ -28,7 +28,7 @@ When entering through a direct path or search result, follow labelled governing-
 ## Use and contribute
 
 - Read current sources before relying on search results, caches, or old notes. Check scope, evidence, and source or version context. Distinguish evidence from inference, current sources from historical snapshots, and uncertain, refuted, superseded, or unavailable information.
-- Save material that reduces uncertainty, repeated work, or handoff cost. Omit temporary reasoning, routine output, and content that can be regenerated easily.
+- Keep only what someone will need to read. Save material that reduces uncertainty, repeated work, or handoff cost; omit temporary reasoning, routine output, reports nobody needs, and content that can be regenerated. Git is the history: update progress in place rather than appending to it, and remove what is no longer needed instead of keeping it for the record.
 - Read before editing, preserve useful evidence, and inspect the result. Human corrections to canonical content override stale copies. If overlapping contributions cannot yet be integrated safely, keep them separately and surface the conflict.
 - Keep each fact, instruction, and work item with its owner. Link to existing project trackers and external systems instead of copying their changing state.
 - Honour removals in future retrieval and context. Do not restore removed material from history into ordinary use.
