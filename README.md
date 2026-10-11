@@ -25,17 +25,17 @@ git -C "$live_path" remote add origin "$personal_remote"
 git -C "$live_path" push -u origin main
 ```
 
-The framework supplies `BRAIN.md`, `MASTER-PLAN.md`, and operating guides. The personal repository supplies populated principles, shared and project stage indexes and rules, project indexes and content, knowledge notes, source records, workstreams, inbox entries, and capability bundles. Shared rules live under root `guidance/`; project-specific rules live under `projects/<project>/guidance/`. The framework must not publish populated personal files.
+The framework supplies `BRAIN.md`, `MASTER-PLAN.md`, and operating guides. The personal repository supplies populated principles, shared and project stage indexes and rules, agent definitions, project indexes and content, knowledge notes, source records, workstreams, inbox entries, and capability bundles. Shared rules live under root `guidance/`; project-specific rules live under `projects/<project>/guidance/`. The framework must not publish populated personal files.
 
 ## Build your brain
 
 Begin with [BRAIN.md](BRAIN.md), then add only what you actually need:
 
-- Put your admitted principles and stage rules under [Guidance](guidance/README.md).
+- Put your admitted principles and situation pages under [Guidance](guidance/README.md).
 - Give an actual project a README and add it to your personal `projects/INDEX.md`, following [Projects](projects/README.md).
 - Retain useful knowledge and source relationships through [Knowledge](knowledge/README.md) and [Sources](sources/README.md).
 - Use [Work](work/README.md) for durable workstreams and an agent inbox. The guide includes copyable formats; create personal files on first use, not empty registries in advance.
-- Maintain your agent skills under [Skills](skills/README.md), including personal project workflows, and link participating agents' whole discovery roots there. Skills do not require stage bindings.
+- Keep agent definitions under [Agents](agents/README.md), and maintain your agent skills under [Skills](skills/README.md), including workflows, and link participating agents' whole discovery roots there. Skills do not require stage bindings.
 - Preserve reusable bundles, scripts, and dependencies through [Capabilities](capabilities/README.md). Keep externally maintained project tools and team-owned skills with their projects.
 
 Configure each participating agent's native startup instructions to read the absolute path to your live `BRAIN.md` and follow its guidance-loading instructions. If the entry cannot be read, the agent must report that rather than assume its guidance. O2B does not install this pointer for you. Observe a fresh session before claiming the runtime loads it; record your configuration and evidence under [Operations](operations/README.md).

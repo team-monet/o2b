@@ -5,7 +5,7 @@
 
 ## Ownership
 
-The framework repository owns `BRAIN.md`, `MASTER-PLAN.md`, the root `README.md`, feature guides, generic examples and validation scenarios, operational tools such as [auto-sync](sync.md), and this procedure. The personal repository owns populated principles, shared and project stage indexes and rules, project indexes and content, notes, workstreams, inboxes, source agreements, and runtime records. Framework contributions must not introduce files at personal-content paths. A structural change that moves personal content needs an explicit migration instruction; Git merges text, not meaning.
+The framework repository owns `BRAIN.md`, `MASTER-PLAN.md`, the root `README.md`, feature guides, generic examples and validation scenarios, operational tools such as [auto-sync](sync.md), and this procedure. The personal repository owns populated principles, shared and project stage indexes and rules, project indexes and content, notes, workstreams, inboxes, agent definitions, source agreements, and runtime records. Framework contributions must not introduce files at personal-content paths. A structural change that moves personal content needs an explicit migration instruction; Git merges text, not meaning.
 
 Principles remain under root `guidance/PRINCIPLES.md` with explicit applicability. Shared stage rules and their index live under root `guidance/`; project-specific rules and their index live under `projects/<project>/guidance/`. Project READMEs link to their indexes, and the common loading and authoring guides remain at the root. Populated capability bundles belong to the personal brain or their owning project repository; the framework owns only the capability guide.
 
@@ -36,22 +36,45 @@ Use a local push-disabled `upstream` remote in personal and review checkouts to 
 
    A divergent history must be reconciled in a review checkout; do not bypass the fast-forward requirement. A live checkout running [auto-sync](sync.md) adopts the published result on its next run instead; it merges only when the merge is clean and leaves conflicts to a person. Recheck the live revision and changed guidance after updating. Active agents may retain earlier guidance in context; have them refresh it, and use a fresh session for startup-delivery checks.
 
-## Adopt workstreams and the agent inbox
+## Adopt open-work awareness and lean work records
 
-This is an additive convention; no bulk move of existing plans, trackers, or inbox entries is required. Apply it in the disposable personal review checkout:
+BRAIN now has every session note open work and knowledge at the start and carries the everyday work habits; the [Work guide](../work/README.md) keeps only what is open and adds briefs for handoffs. This supersedes the earlier workstream, inbox, and intent-based startup adoptions. Apply it in the disposable personal review checkout:
 
-1. Read the incoming [Work guide](../work/README.md) and identify the owner of each actual work item. Keep existing project plans and external trackers authoritative; do not copy their changing open sets into new workstreams.
-2. Create a workstream only for authorized work whose execution state the brain owns. Use the guide's format and correct project or brain-owned home; link project records from their project README. Preserve prior work records until their owner explicitly settles or transfers them.
-3. Retain existing `Pending`/`Resolved` inboxes and all entries. The old `work/README.md#inbox` link still works. Assign a stable label to an unlabelled entry when it is next updated or disposed; do not renumber existing labels. Create a project inbox only when a finding belongs there; leave unrelated findings in their existing scope unless their owner transfers them.
-4. Check governing links, status against the open set, item-label uniqueness, and preservation of untouched content. Exercise the relevant [validation scenarios](../work/validation.md) in isolation and record what was actually observed. No simultaneous-writer or automatic-enforcement claim follows from adopting these files.
+1. For each workstream, move its `**Status:**` line into frontmatter as `status: active` or `status: paused`. Check that each resolved item's result is where it is used, then remove the `Resolved` section; remove a workstream whose status was `done`. Keep a dropped item's reason only as a knowledge note when it would stop the item being proposed again.
+2. Move project work filed under `work/` into its project's `workstreams/`, creating the project home if needed.
+3. In each inbox, keep pending entries as dated lines and drop the `Pending` and `Resolved` headings and the labels. Remove resolved entries once their results are where they are used.
+4. Resolve with the owner any personal instruction that conflicts, such as one saying a clear task skips open work or that inboxes keep resolved entries.
+5. With a fresh session, exercise the awareness, capture, incremental checkpoint, and completion-and-handoff [validation scenarios](../work/validation.md), and record what was observed.
 
-Publish and install the reviewed result through the update sequence above. Personal work records and validation evidence stay out of the shared framework commit.
+Publish and install through the reviewed update sequence above.
 
-## Adopt intent-based startup and guidance authoring
+## Adopt the required project index
 
-The guidance reader remains at `guidance/README.md`; its maintenance instructions move to `guidance/authoring.md`. Existing principles, stages, rules, workstreams, and inbox entries keep their paths and meaning. Adopt BRAIN and both guidance files together so the maintenance route remains available. BRAIN selects relevant knowledge directly for a clear task, or open work followed by knowledge for a continuation request; there is no routine startup scan of old work or inboxes.
+Sessions now identify their project from `projects/INDEX.md`, so every project home needs a row an agent can match. In the personal review checkout:
 
-In the review checkout, check any personal startup instructions or procedures that require such a scan for a conflict with the new route. Preserve personal authority and resolve conflicts explicitly. Verify links and exercise the clear-task, continuation, and guidance-maintenance cases in the [validation scenarios](../work/validation.md). Record runtime observations separately from static checks, then publish and install through the update sequence above.
+1. Rewrite the index in the [projects guide](../projects/README.md#project-index)'s shape: Names, Remote, and Path columns. Take each remote from the repository's fetch URL and each path from where the project actually lives.
+2. Replace any identifier an agent cannot observe, such as a label from an earlier system, with the real remote or path.
+3. From each project's directory, check that its row matches by remote or path, and that a task naming the project matches by Names.
+
+Links from a project README to its workstreams and inbox are no longer required; keep or remove them. Publish and install through the reviewed update sequence above.
+
+## Adopt project knowledge folders
+
+Project knowledge now lives in `projects/<project>/knowledge/` in the [Knowledge guide](../knowledge/README.md)'s note shape. In the personal review checkout, move project-specific notes out of root `knowledge/` into their projects. Give an existing note its summary first line and source when it is next touched; no bulk rewrite is needed. Publish and install through the reviewed update sequence above.
+
+## Adopt situation pages and scoping rules
+
+Stage files become situation pages, and the [authoring guide](../guidance/authoring.md) adds scope-and-admission rules. Existing pages stay valid: their scoped rules are what must hold, and How, Who, and Known sections are added when there is something to link. In the personal review checkout, or as ordinary maintenance afterwards, one situation at a time with the owner:
+
+1. Re-scope guidance learned in one project but applying everywhere, and merge near-copies of the same rule across shared and project pages.
+2. Move steps, sequences, rosters, and tool versions out of rules into the skills that carry them, and move approval gates out of skills into rules.
+3. Rename project situations that duplicate a shared situation under another name.
+
+Publish and install through the reviewed update sequence above.
+
+## Adopt agent definitions
+
+Agent definitions now live in the brain under the [Agents guide](../agents/README.md). Move each personal definition from a runtime's agent folder into `agents/`, keeping a recoverable copy until the move is verified, and rewrite any reference to an earlier memory system or tool. State each definition's boundary. Then link the runtime folder as [skill discovery setup](skill-discovery.md#agent-definitions) describes and check in a fresh session that the runtime lists them. Publish and install through the reviewed update sequence above.
 
 ## Adopt portable capability conventions
 

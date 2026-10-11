@@ -26,4 +26,10 @@ Use the actual brain path and the discovery locations supported by the installed
 
 Verify that every configured root resolves to this directory, supporting files remain accessible, and each installed agent discovers the skills without duplicate legacy registrations. Verify creation and editing through the aliases as well. Agents may cache discovery; check a refreshed catalog or a fresh session before claiming a new skill is available.
 
+<a id="agent-definitions"></a>
+
+## Agent definitions
+
+Link a runtime's agent folder to the brain's [agents](../agents/README.md) folder in the same way, after inspecting and preserving any definitions already there. For a brain at `~/.o2b` and Claude Code: `ln -s "$HOME/.o2b/agents" "$HOME/.claude/agents"`. Verify in a fresh session that the runtime lists the definitions.
+
 On another machine, retrieve the personal brain, provision its declared dependencies, and recreate the root links. Record host paths, recovery instructions, and observed discovery in personal operation records. A filesystem link check establishes shared files; it does not establish agent selection or successful skill execution.

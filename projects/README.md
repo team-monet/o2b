@@ -2,18 +2,41 @@
 
 Governing parent: [BRAIN.md](../BRAIN.md)
 
-Read this guide when a task uses project-specific material or creates a project area. Projects hold domain knowledge, requirements, decisions, evidence, procedures, source relationships, work state, and continuation context.
+Read this guide when a task uses project-specific material or creates a project home. Projects hold domain knowledge, requirements, decisions, evidence, procedures, source relationships, work state, and continuation context.
 
-If `INDEX.md` exists, use it to discover personal projects. The shared framework does not populate that index or ship project content.
+## Project index
+
+`projects/INDEX.md` lists every project home and is how a session identifies its project. The shared framework defines its shape but does not populate it or ship project content. Each row gives:
+
+- **Names:** the words the owner uses for the project, so a task that names it matches from any directory.
+- **Remote:** each repository as `host/owner/repo`, the form shown by its fetch URL without protocol or `.git`.
+- **Path:** each absolute local path; subfolders and worktrees beneath it match.
+
+Use only identifiers an agent can observe from the task, the repository, or the working directory. A project without a repository leaves Remote empty.
+
+```markdown
+# Projects Index
+
+**Governing parent:** [Projects guide](README.md).
+
+| Project | Names | Remote | Path | Guide |
+|---|---|---|---|---|
+| <Name> | <words the owner uses> | <host/owner/repo> | <absolute path> | [Open](<folder>/README.md) |
+```
+
+## Create a project home
+
+When project work matches no row, create its home, add its row, and tell the user you did. Create a named folder only for an actual project. Its `README.md` states the project's purpose, its authoritative sources (the repository, trackers, and other systems that own its state), and links to its documents. Add other parts only when their first item arrives:
+
+| Part | Holds | Governed by |
+|---|---|---|
+| `guidance/STAGES.md`, `guidance/stages/` | Situations and rules that exist in this project alone | [Guidance](../guidance/README.md) |
+| `workstreams/`, `INBOX.md`, `briefs/` | Open work the brain owns, findings, and handoffs | [Work](../work/README.md) |
+| `knowledge/` | Notes a future session will need | [Knowledge](../knowledge/README.md) |
+| Project documents | Designs, research, and decisions with no repository home, linked from the README | This guide |
 
 ## Use and contribute
 
-Read the applicable project's `README.md` before relying on or changing its content. A project guide should identify its purpose, authoritative documents, domain procedures, historical references, and any external system that owns execution state. Follow the [entry point's task route](../BRAIN.md#start-a-session) and task-relevant links instead of loading every project document.
+Read the applicable project's `README.md` before relying on or changing its content, then follow the [entry point's task route](../BRAIN.md#start-a-session) and task-relevant links instead of loading every project document. BRAIN reads the project's `guidance/STAGES.md` directly on entering the project; principles keep their root home with explicit applicability.
 
-Project-specific stage rules live in `projects/<project>/guidance/stages/`, indexed by that project's `guidance/STAGES.md`. Link the index from the project README and read it when entering the project, alongside the shared root index. Both use the common [guidance conventions](../guidance/README.md); no separate project guidance guide is needed. Create these files only for actual rules. Principles retain their existing root home with explicit applicability.
-
-Create a named folder only for an actual project. Keep unfinished project work with the project or its existing tracker; use the [work guide](../work/README.md) to make a concise handoff without moving ownership.
-
-When the brain owns a project's execution state, its workstreams live under `projects/<project>/workstreams/`. Its agent inbox, if needed, is `projects/<project>/INBOX.md`. Link these from the project README when created; do not create an empty work directory or inbox for every project. The Work guide owns their format and use. An existing external tracker remains authoritative unless its owner explicitly transfers that responsibility.
-
-Use [Knowledge](../knowledge/README.md) only for a synthesis whose useful scope crosses projects. Link project evidence rather than copying changing project state. Changes to the shared project structure follow the [master plan](../MASTER-PLAN.md).
+Facts about code stay in its repository. An existing external tracker remains authoritative for the work it owns unless its owner explicitly transfers that responsibility; link to it rather than copying its changing state. Changes to the shared project structure follow the [master plan](../MASTER-PLAN.md).

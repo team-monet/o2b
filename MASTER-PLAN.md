@@ -6,11 +6,11 @@ Read this plan before adding a framework capability, changing shared structure, 
 
 ## Boundaries
 
-The shared repository owns structure and operating guides. A personal repository built from its history owns populated principles, stage rules, projects, knowledge, work, and source records. Shared updates must not embed or overwrite personal content.
+The shared repository owns structure and operating guides. A personal repository built from its history owns populated principles, situation pages and their rules, agent definitions, projects, knowledge, work, and source records. Shared updates must not embed or overwrite personal content.
 
 The framework must be usable by someone starting their own brain without the maintainer's private files, accounts, installed skills, or previous conversations. Feature guides supply enough instructions and generic examples to establish a personal instance. Actual workstreams, inbox entries, capability migration inventories, and runtime evidence belong to that instance.
 
-Principles remain under root `guidance/PRINCIPLES.md` with explicit applicability. Shared stage rules live under root `guidance/`; project-specific stage rules live under `projects/<project>/guidance/`. Each scope owns its stage index, and project READMEs provide the discovery links. Shared loading and authoring conventions live once in the root guidance guide.
+Guidance is anchored to situations. Principles remain under root `guidance/PRINCIPLES.md` with explicit applicability. Shared situation pages live under root `guidance/`; project-only ones live under `projects/<project>/guidance/`. Each scope owns its index, and BRAIN reads a project's index on entering it. Shared loading and authoring conventions live once in the root guidance guides.
 
 Existing project trackers and external sources retain authority until their owners explicitly transfer it. Links preserve that boundary; copying changing state does not.
 
@@ -21,9 +21,10 @@ Existing project trackers and external sources retain authority until their owne
 - Keep the route from `BRAIN.md` to the applicable guide shallow and explicit.
 - Minimize the total context needed to find the right information and act correctly. Unnecessary reading consumes limited context; a shorter entry is useful only if it preserves efficient discovery.
 - Author READMEs according to the [README principles](#readme-principles).
-- Let user intent choose the starting context: a clear task uses relevant knowledge directly; continuation starts from open work and then seeks the needed knowledge. Keep maintenance instructions off the routine startup path.
-- Keep principles and shared stage rules at the root, and project stage rules with their project; preserve applicability and read shared and local rules together when both match.
+- Anchor the agent to its situation: principles and BRAIN's work habits are always on, the situation index is read at startup, and a situation's page is read before acting, linking how, who, and what is known. Every session notes its project's open work and knowledge listings without resuming anything unasked. Keep maintenance instructions off the routine startup path.
+- Scope guidance by where it applies, not where it was learned: shared by default, and project-scoped only when it names something that exists in that project alone. Read shared and project pages together when both match.
 - Use readable files and existing tools before adding schemas, indexes, adapters, or services.
+- Make the habits that keep the brain useful, such as capturing findings, settling work, and writing knowledge, one-step actions tied to a named moment. Add machinery only when such a habit is observed not to happen in real use.
 - Keep guidance, knowledge, and work state distinct. Content does not become an instruction merely because an agent retrieves it.
 - Make active guidance understandable: readable separation, explicit authority and applicability, and known reasons rather than source IDs or copied storage labels. Preserve admitted guidance whose reason is not yet recorded without inventing one.
 - Preserve current source instructions and version context so external sources can keep operating over time.
@@ -43,10 +44,11 @@ Setup, installation, migration, and other detailed procedures belong in linked d
 | Area | Owns |
 |---|---|
 | [Projects](projects/README.md) | Project-specific domain knowledge, procedures, decisions, evidence, and continuation context |
-| [Knowledge](knowledge/README.md) | Reusable knowledge beyond one project |
-| [Guidance](guidance/README.md) | Principles, shared stage rules, and common discovery/authoring conventions for project stage rules |
+| [Knowledge](knowledge/README.md) | Knowledge note conventions for project and cross-project knowledge |
+| [Guidance](guidance/README.md) | Principles, situation pages, and the conventions for scoping and admitting them |
 | [Work](work/README.md) | Workstream and agent-inbox conventions, work ownership, and handoffs; populated records stay personal |
 | [Capabilities](capabilities/README.md) | Reusable capability ownership, discovery, dependency layout, and portable setup; populated bundles stay personal or project-owned |
+| [Agents](agents/README.md) | Agent definition conventions and discovery; populated definitions stay personal |
 | [Skills](skills/README.md) | Personal agent-skill storage, authoring, and whole-root discovery links; populated skills stay private |
 | [Sources](sources/README.md) | Relationships with external knowledge systems and source ownership changes |
 | [Operations](operations/README.md) | Installation, updates, runtime delivery, access, recovery, concurrency, and derived tools |
