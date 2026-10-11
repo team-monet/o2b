@@ -6,7 +6,7 @@ Read this plan before adding a framework capability, changing shared structure, 
 
 ## Boundaries
 
-The shared repository owns structure and operating guides. A personal repository built from its history owns populated principles, situation pages and their rules, agent definitions, projects, knowledge, work, and source records. Shared updates must not embed or overwrite personal content.
+The shared repository owns structure and operating guides. A personal repository built from its history owns populated principles, situation pages and their rules, agent definitions, personal-life content, projects, knowledge, work, and source records. Shared updates must not embed or overwrite personal content.
 
 The framework must be usable by someone starting their own brain without the maintainer's private files, accounts, installed skills, or previous conversations. Feature guides supply enough instructions and generic examples to establish a personal instance. Actual workstreams, inbox entries, capability migration inventories, and runtime evidence belong to that instance.
 
@@ -44,6 +44,7 @@ Setup, installation, migration, and other detailed procedures belong in linked d
 | Area | Owns |
 |---|---|
 | [Projects](projects/README.md) | Project-specific domain knowledge, procedures, decisions, evidence, and continuation context |
+| [Personal](personal/README.md) | The owner's own life outside projects: the same parts as a project home plus a snapshot page; populated content stays personal |
 | [Knowledge](knowledge/README.md) | Knowledge note conventions for project and cross-project knowledge |
 | [Guidance](guidance/README.md) | Principles, situation pages, and the conventions for scoping and admitting them |
 | [Work](work/README.md) | Workstream and agent-inbox conventions, work ownership, and handoffs; populated records stay personal |

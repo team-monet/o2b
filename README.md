@@ -32,6 +32,7 @@ The framework supplies `BRAIN.md`, `MASTER-PLAN.md`, and operating guides. The p
 Begin with [BRAIN.md](BRAIN.md), then add only what you actually need:
 
 - Put your admitted principles and situation pages under [Guidance](guidance/README.md).
+- Keep material about your own life outside projects under [Personal](personal/README.md), including a snapshot page any agent can update.
 - Give an actual project a README and add it to your personal `projects/INDEX.md`, following [Projects](projects/README.md).
 - Retain useful knowledge and source relationships through [Knowledge](knowledge/README.md) and [Sources](sources/README.md).
 - Use [Work](work/README.md) for durable workstreams and an agent inbox. The guide includes copyable formats; create personal files on first use, not empty registries in advance.

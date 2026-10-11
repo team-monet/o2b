@@ -5,7 +5,7 @@
 
 ## Ownership
 
-The framework repository owns `BRAIN.md`, `MASTER-PLAN.md`, the root `README.md`, feature guides, generic examples and validation scenarios, operational tools such as [auto-sync](sync.md), and this procedure. The personal repository owns populated principles, shared and project stage indexes and rules, project indexes and content, notes, workstreams, inboxes, agent definitions, source agreements, and runtime records. Framework contributions must not introduce files at personal-content paths. A structural change that moves personal content needs an explicit migration instruction; Git merges text, not meaning.
+The framework repository owns `BRAIN.md`, `MASTER-PLAN.md`, the root `README.md`, feature guides, generic examples and validation scenarios, operational tools such as [auto-sync](sync.md), and this procedure. The personal repository owns populated principles, shared and project stage indexes and rules, project indexes and content, notes, workstreams, inboxes, agent definitions, personal-life content under `personal/` apart from its guide, source agreements, and runtime records. Framework contributions must not introduce files at personal-content paths. A structural change that moves personal content needs an explicit migration instruction; Git merges text, not meaning.
 
 Principles remain under root `guidance/PRINCIPLES.md` with explicit applicability. Shared stage rules and their index live under root `guidance/`; project-specific rules and their index live under `projects/<project>/guidance/`. Project READMEs link to their indexes, and the common loading and authoring guides remain at the root. Populated capability bundles belong to the personal brain or their owning project repository; the framework owns only the capability guide.
 
@@ -71,6 +71,10 @@ Stage files become situation pages, and the [authoring guide](../guidance/author
 3. Rename project situations that duplicate a shared situation under another name.
 
 Publish and install through the reviewed update sequence above.
+
+## Adopt the personal area
+
+Personal-life material now has its own home under the [Personal guide](../personal/README.md). In the personal review checkout, move material about the owner's own life out of project and knowledge homes into `personal/`, one item at a time with the owner; career, investing, and other bodies of work stay or become projects. Create `personal/snapshot.md` when the owner wants it. Publish and install through the reviewed update sequence above.
 
 ## Adopt agent definitions
 
