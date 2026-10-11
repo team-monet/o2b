@@ -22,15 +22,15 @@ alerts() { cat "$tmp/alerts" 2>/dev/null | wc -l | tr -d ' '; }
 git init -q --bare -b main "$tmp/remote.git"
 git init -q --bare -b main "$tmp/framework.git"
 git clone -q "$tmp/remote.git" "$tmp/a" 2>/dev/null
-mkdir -p "$tmp/a/operations/sync"
-cp "$sync_src" "$tmp/a/operations/sync/sync.sh"
+mkdir -p "$tmp/a/agent/operations/sync"
+cp "$sync_src" "$tmp/a/agent/operations/sync/sync.sh"
 printf 'line\n' >"$tmp/a/note.md"
 git -C "$tmp/a" add -A && git -C "$tmp/a" commit -q -m init && git -C "$tmp/a" push -q origin main
 git clone -q "$tmp/remote.git" "$tmp/b"
 git clone -q "$tmp/remote.git" "$tmp/dev"
 git -C "$tmp/a" remote add upstream "$tmp/framework.git"
 git -C "$tmp/b" remote add upstream "$tmp/framework.git"
-run() { sh "$tmp/$1/operations/sync/sync.sh" >>"$tmp/log" 2>&1; }
+run() { sh "$tmp/$1/agent/operations/sync/sync.sh" >>"$tmp/log" 2>&1; }
 head_of() { git -C "$tmp/$1" rev-parse "${2:-HEAD}"; }
 remote_head() { git -C "$tmp/remote.git" rev-parse main; }
 

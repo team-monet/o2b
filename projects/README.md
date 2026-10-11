@@ -31,12 +31,12 @@ When project work matches no row, create its home, add its row, and tell the use
 | Part | Holds | Governed by |
 |---|---|---|
 | `guidance/STAGES.md`, `guidance/stages/` | Situations and rules that exist in this project alone | [Guidance](../guidance/README.md) |
-| `workstreams/`, `INBOX.md`, `briefs/` | Open work the brain owns, findings, and handoffs | [Work](../work/README.md) |
-| `knowledge/` | Notes a future session will need | [Knowledge](../knowledge/README.md) |
+| `workstreams/`, `INBOX.md`, `briefs/` | Open work the brain owns, findings, and handoffs | [Work](../agent/work/README.md) |
+| `knowledge/` | Notes a future session will need | [Knowledge](../agent/knowledge/README.md) |
 | Project documents | Designs, research, and decisions with no repository home, linked from the README | This guide |
 
 ## Use and contribute
 
 Read the applicable project's `README.md` before relying on or changing its content, then follow the [entry point's task route](../BRAIN.md#start-a-session) and task-relevant links instead of loading every project document. BRAIN reads the project's `guidance/STAGES.md` directly on entering the project; principles keep their root home with explicit applicability.
 
-Facts about code stay in its repository. An existing external tracker remains authoritative for the work it owns unless its owner explicitly transfers that responsibility; link to it rather than copying its changing state. Changes to the shared project structure follow the [master plan](../MASTER-PLAN.md).
+Facts about code stay in its repository. An existing external tracker remains authoritative for the work it owns unless its owner explicitly transfers that responsibility; link to it rather than copying its changing state. Changes to the shared project structure follow the [master plan](../agent/MASTER-PLAN.md).

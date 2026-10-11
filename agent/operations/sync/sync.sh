@@ -2,7 +2,7 @@
 # Commit, merge, and push a live brain checkout. See ../sync.md.
 set -u
 
-root=$(cd "$(dirname "$0")/../.." && pwd -P) || exit 1
+root=$(git -C "$(dirname "$0")" rev-parse --show-toplevel) || exit 1
 cd "$root" || exit 1
 
 log() { printf '%s %s\n' "$(date '+%Y-%m-%dT%H:%M:%S%z')" "$*"; }

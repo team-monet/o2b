@@ -5,9 +5,9 @@
 
 ## Ownership
 
-The framework repository owns `BRAIN.md`, `MASTER-PLAN.md`, the root `README.md`, feature guides, generic examples and validation scenarios, operational tools such as [auto-sync](sync.md), and this procedure. The personal repository owns populated principles, shared and project stage indexes and rules, project indexes and content, notes, workstreams, inboxes, agent definitions, personal-life content under `personal/` apart from its guide, source agreements, and runtime records. Framework contributions must not introduce files at personal-content paths. A structural change that moves personal content needs an explicit migration instruction; Git merges text, not meaning.
+The framework repository owns `BRAIN.md`, the [master plan](../MASTER-PLAN.md), `.github/README.md`, feature guides, generic examples and validation scenarios, operational tools such as [auto-sync](sync.md), and this procedure. The personal repository owns populated principles, shared and project stage indexes and rules, project indexes and content, autopilot operations, the snapshot, notes, workstreams, inboxes, agent definitions, skills, personal-life content under `personal/` apart from its guide, source agreements, and runtime records. Framework contributions must not introduce files at personal-content paths. A structural change that moves personal content needs an explicit migration instruction; Git merges text, not meaning.
 
-Principles remain under root `guidance/PRINCIPLES.md` with explicit applicability. Shared stage rules and their index live under root `guidance/`; project-specific rules and their index live under `projects/<project>/guidance/`. Project READMEs link to their indexes, and the common loading and authoring guides remain at the root. Populated capability bundles belong to the personal brain or their owning project repository; the framework owns only the capability guide.
+Principles remain under root `guidance/PRINCIPLES.md` with explicit applicability. Shared stage rules and their index live under root `guidance/`; project-specific rules and their index live under `projects/<project>/guidance/`. Project READMEs link to their indexes, and the common loading and authoring guides remain at the root. Populated skills belong to the personal brain or their owning project repository; the framework owns only the skills guide.
 
 The development checkout's `origin` is the framework repository. The live checkout's `origin` is the independent private personal repository, and its `upstream` is the framework repository. Both repositories share their initial framework history. A GitHub fork relationship is unnecessary.
 
@@ -52,7 +52,7 @@ Publish and install through the reviewed update sequence above.
 
 Sessions now identify their project from `projects/INDEX.md`, so every project home needs a row an agent can match. In the personal review checkout:
 
-1. Rewrite the index in the [projects guide](../projects/README.md#project-index)'s shape: Names, Remote, and Path columns. Take each remote from the repository's fetch URL and each path from where the project actually lives.
+1. Rewrite the index in the [projects guide](../../projects/README.md#project-index)'s shape: Names, Remote, and Path columns. Take each remote from the repository's fetch URL and each path from where the project actually lives.
 2. Replace any identifier an agent cannot observe, such as a label from an earlier system, with the real remote or path.
 3. From each project's directory, check that its row matches by remote or path, and that a task naming the project matches by Names.
 
@@ -64,7 +64,7 @@ Project knowledge now lives in `projects/<project>/knowledge/` in the [Knowledge
 
 ## Adopt situation pages and scoping rules
 
-Stage files become situation pages, and the [authoring guide](../guidance/authoring.md) adds scope-and-admission rules. Existing pages stay valid: their scoped rules are what must hold, and How, Who, and Known sections are added when there is something to link. In the personal review checkout, or as ordinary maintenance afterwards, one situation at a time with the owner:
+Stage files become situation pages, and the [authoring guide](../../guidance/authoring.md) adds scope-and-admission rules. Existing pages stay valid: their scoped rules are what must hold, and How, Who, and Known sections are added when there is something to link. In the personal review checkout, or as ordinary maintenance afterwards, one situation at a time with the owner:
 
 1. Re-scope guidance learned in one project but applying everywhere, and merge near-copies of the same rule across shared and project pages.
 2. Move steps, sequences, rosters, and tool versions out of rules into the skills that carry them, and move approval gates out of skills into rules.
@@ -74,19 +74,24 @@ Publish and install through the reviewed update sequence above.
 
 ## Adopt the personal area
 
-Personal-life material now has its own home under the [Personal guide](../personal/README.md). In the personal review checkout, move material about the owner's own life out of project and knowledge homes into `personal/`, one item at a time with the owner; career, investing, and other bodies of work stay or become projects. Create `personal/snapshot.md` when the owner wants it. Publish and install through the reviewed update sequence above.
+Personal-life material now has its own home under the [Personal guide](../../personal/README.md). In the personal review checkout, move material about the owner's own life out of project and knowledge homes into `personal/`, one item at a time with the owner; career, investing, and other bodies of work stay or become projects. Publish and install through the reviewed update sequence above.
 
 ## Adopt agent definitions
 
 Agent definitions now live in the brain under the [Agents guide](../agents/README.md). Move each personal definition from a runtime's agent folder into `agents/`, keeping a recoverable copy until the move is verified, and rewrite any reference to an earlier memory system or tool. State each definition's boundary. Then link the runtime folder as [skill discovery setup](skill-discovery.md#agent-definitions) describes and check in a fresh session that the runtime lists them. Publish and install through the reviewed update sequence above.
 
-## Adopt portable capability conventions
+## Adopt the owner's root and the agent folder
 
-This adds an on-demand [capability guide](../capabilities/README.md); existing personal files remain in place. Adopt the guide and its discovery links together in the personal review checkout. No capability, runtime adapter, or dependency is installed by this framework update.
+The root now holds only what the owner reads or rules on: `SNAPSHOT.md`, `personal/`, `projects/`, `autopilot/`, `guidance/`, and `BRAIN.md`. Agents' working material lives under `agent/`, the capability guide is folded into the [Skills guide](../skills/README.md), the snapshot moves to the root and covers everything that needs the owner, and the framework README moves to `.github/README.md`. Apply it in the personal review checkout:
 
-For each selected personal transfer, establish the current owner and portable source, follow support and setup dependencies, and choose the home described in the guide. Preserve the original source until the selected bundle and incoming references are verified. Keep project repositories authoritative where they own the capability; do not make a second maintained copy in the brain. Update machine-specific references to a verified owning route and recreate host adapters from that source.
+1. Move `agents/`, `skills/`, `knowledge/`, `operations/`, `sources/`, and `work/`, with their personal content, under `agent/`. Move personal workstreams and inbox entries from there into `personal/workstreams/` and `personal/INBOX.md`; `agent/work/` keeps only cross-project work. Move anything under `capabilities/` into the skill that uses it, or to the project or operation that owns it, and remove the folder.
+2. Move autonomous operations kept elsewhere, such as a `missions/` folder, to `autopilot/<name>/`, as the [Autopilot guide](../../autopilot/README.md) describes, and put each operation's path in its project's row in `projects/INDEX.md`.
+3. Move `personal/snapshot.md` to `SNAPSHOT.md` and add the views from the [snapshot skeleton](../work/README.md#snapshot), keeping the owner's written sections. Point any briefing at the new page, and set `for_you` on the files that currently need the owner.
+4. Remove `history/` folders and other copies kept for the record; Git keeps them. Make records that cite them cite the commit instead.
+5. Rewrite links, `projects/INDEX.md` paths, and Obsidian Bases folder filters into the moved folders, and any outside reference to an old path, such as scheduled jobs, launchers, and runtime instructions.
+6. Auto-sync adopts a published result on its next run, and its installed job names the old script path, so it fails silently once `operations/` moves. Before publishing to personal main, on every machine that runs auto-sync, pause the other writers to the live brain, such as scheduled jobs and agent sessions, let auto-sync commit and push their pending work, then stop it and remove its job (the commands in [sync.md](sync.md#install), or disable the cron or systemd entry) so a login cannot reload it. After publishing, on each machine: confirm the live checkout is clean, run `git pull --ff-only origin main`, re-point the discovery links as [skill discovery setup](skill-discovery.md) describes and the paused writers to the new paths, rerun `agent/operations/sync/install-macos.sh` (or reschedule `agent/operations/sync/sync.sh`), confirm its first run in the log, and resume the writers.
 
-Check links and source preservation, then exercise the guide's isolated transfer validation. Keep actual inventories, ownership decisions, and execution evidence personal. A static check does not establish runtime availability; publish and install only through the reviewed update sequence above.
+Publish and install through the reviewed update sequence above.
 
 <a id="migrate-project-guidance-into-central-guidance"></a>
 

@@ -20,7 +20,7 @@ On a merge conflict it aborts the merge, pushes nothing, and alerts once per rem
 On macOS, run the installer from the live checkout. The optional argument is the interval in seconds (default 300):
 
 ```sh
-operations/sync/install-macos.sh
+agent/operations/sync/install-macos.sh
 ```
 
 It writes the per-user launchd job `local.o2b.sync`, runs it once immediately, uses the installer's `PATH`, and logs to `~/Library/Logs/o2b-sync.log`. Rerun it to change the interval. To remove it:
@@ -30,7 +30,7 @@ launchctl bootout "gui/$(id -u)/local.o2b.sync"
 rm ~/Library/LaunchAgents/local.o2b.sync.plist
 ```
 
-Elsewhere, schedule `sh <live-checkout>/operations/sync/sync.sh` with cron or a systemd timer. Install it on every machine that writes to the brain.
+Elsewhere, schedule `sh <live-checkout>/agent/operations/sync/sync.sh` with cron or a systemd timer. Install it on every machine that writes to the brain.
 
 Before relying on it, run [test.sh](sync/test.sh) on the host; it exercises sync against throwaway repositories. Then confirm the first scheduled run in the log, since the scheduler's credentials and `PATH` can differ from an interactive shell.
 

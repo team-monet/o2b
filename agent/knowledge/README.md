@@ -1,12 +1,12 @@
 # Knowledge
 
-Governing parent: [BRAIN.md](../BRAIN.md)
+Governing parent: [BRAIN.md](../../BRAIN.md)
 
 Read this guide when writing, reorganising, or migrating knowledge notes. BRAIN carries the everyday habits: when a note is worth writing, how to make it findable, and listing notes when entering a project.
 
 ## Where notes live
 
-Project knowledge lives in `projects/<project>/knowledge/`; knowledge that clearly applies beyond one project lives in root `knowledge/`. Facts about code stay in its repository. Each folder is created with its first note, and its listing is the index: there is no separate index file.
+Project knowledge lives in `projects/<project>/knowledge/`; knowledge that clearly applies beyond one project lives in `agent/knowledge/`. Facts about code stay in its repository. Each folder is created with its first note, and its listing is the index: there is no separate index file.
 
 ## Note shape
 

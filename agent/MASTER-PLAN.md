@@ -1,14 +1,14 @@
 # O2B Framework — Master Plan
 
-Governing parent: [BRAIN.md](BRAIN.md)
+Governing parent: [BRAIN.md](../BRAIN.md)
 
 Read this plan before adding a framework capability, changing shared structure, or planning maintenance and validation. The framework is deliberately small: readable Markdown and explicit ownership come first; machinery enters only when observed use justifies it.
 
 ## Boundaries
 
-The shared repository owns structure and operating guides. A personal repository built from its history owns populated principles, situation pages and their rules, agent definitions, personal-life content, projects, knowledge, work, and source records. Shared updates must not embed or overwrite personal content.
+The shared repository owns structure and operating guides. A personal repository built from its history owns the snapshot, populated principles, situation pages and their rules, agent definitions, skills, personal-life content, projects, autopilot operations, knowledge, work, and source records. Shared updates must not embed or overwrite personal content.
 
-The framework must be usable by someone starting their own brain without the maintainer's private files, accounts, installed skills, or previous conversations. Feature guides supply enough instructions and generic examples to establish a personal instance. Actual workstreams, inbox entries, capability migration inventories, and runtime evidence belong to that instance.
+The framework must be usable by someone starting their own brain without the maintainer's private files, accounts, installed skills, or previous conversations. Feature guides supply enough instructions and generic examples to establish a personal instance. Actual workstreams, inbox entries, migration inventories, and runtime evidence belong to that instance.
 
 Guidance is anchored to situations. Principles remain under root `guidance/PRINCIPLES.md` with explicit applicability. Shared situation pages live under root `guidance/`; project-only ones live under `projects/<project>/guidance/`. Each scope owns its index, and BRAIN reads a project's index on entering it. Shared loading and authoring conventions live once in the root guidance guides.
 
@@ -18,6 +18,7 @@ Existing project trackers and external sources retain authority until their owne
 
 - Hold only what someone will need to read. Git is the brain's history, so no structure may accumulate logs, archives, or replaced versions kept just for the record.
 - Give each instruction, fact, and work item one authoritative home.
+- Keep the root for what the owner reads or rules on, and put agents' working material under `agent/`. What an agent prepares for the owner stays with its owner and reaches the owner through the snapshot, not through a separate folder.
 - Keep the route from `BRAIN.md` to the applicable guide shallow and explicit.
 - Minimize the total context needed to find the right information and act correctly. Unnecessary reading consumes limited context; a shorter entry is useful only if it preserves efficient discovery.
 - Author READMEs according to the [README principles](#readme-principles).
@@ -43,14 +44,16 @@ Setup, installation, migration, and other detailed procedures belong in linked d
 
 | Area | Owns |
 |---|---|
-| [Projects](projects/README.md) | Project-specific domain knowledge, procedures, decisions, evidence, and continuation context |
-| [Personal](personal/README.md) | The owner's own life outside projects: the same parts as a project home plus household notes, inner-circle people pages, and a snapshot page; populated content stays personal |
-| [Knowledge](knowledge/README.md) | Knowledge note conventions for project and cross-project knowledge |
-| [Guidance](guidance/README.md) | Principles, situation pages, and the conventions for scoping and admitting them |
-| [Work](work/README.md) | Workstream and agent-inbox conventions, work ownership, and handoffs; populated records stay personal |
-| [Capabilities](capabilities/README.md) | Reusable capability ownership, discovery, dependency layout, and portable setup; populated bundles stay personal or project-owned |
+| `SNAPSHOT.md` | The owner's page: what needs them now, from any area, built from the skeleton in the [Work guide](work/README.md#snapshot); populated content stays personal |
+| [Personal](../personal/README.md) | The owner's own life outside projects: the same parts as a project home plus household notes and inner-circle people pages; populated content stays personal |
+| [Projects](../projects/README.md) | Project-specific domain knowledge, procedures, decisions, evidence, and continuation context |
+| [Autopilot](../autopilot/README.md) | Operations that run on their own toward a Mission the owner gave, and their progress; populated operations stay personal |
+| [Guidance](../guidance/README.md) | Principles, situation pages, and the conventions for scoping and admitting them |
+| `agent/` | Agents' working material, below |
 | [Agents](agents/README.md) | Agent definition conventions and discovery; populated definitions stay personal |
-| [Skills](skills/README.md) | Personal agent-skill storage, authoring, and whole-root discovery links; populated skills stay private |
+| [Skills](skills/README.md) | Agent skills with their scripts and dependencies, authoring, and whole-root discovery links; populated skills stay private |
+| [Knowledge](knowledge/README.md) | Knowledge note conventions for project and cross-project knowledge |
+| [Work](work/README.md) | Workstream, agent-inbox, and handoff conventions, work ownership, and the snapshot skeleton; populated records stay personal |
 | [Sources](sources/README.md) | Relationships with external knowledge systems and source ownership changes |
 | [Operations](operations/README.md) | Installation, updates, runtime delivery, access, recovery, concurrency, and derived tools |
 

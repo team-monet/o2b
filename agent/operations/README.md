@@ -1,10 +1,10 @@
 # Operations
 
-Governing parent: [BRAIN.md](../BRAIN.md)
+Governing parent: [BRAIN.md](../../BRAIN.md)
 
 Read this guide before configuring or relying on installation, updates, runtime delivery, privacy, recovery, concurrent writing, or derived tools.
 
-Reusable skills and scripts follow the [capability guide](../capabilities/README.md); native skill storage follows the [skills guide](../skills/README.md). For agent discovery setup of skills and agent definitions, read [skill-discovery.md](skill-discovery.md). Canonical bundles own portable setup; Operations records host-specific adapters and observed execution.
+Skills, their scripts, and their dependencies follow the [skills guide](../skills/README.md). For agent discovery setup of skills and agent definitions, read [skill-discovery.md](skill-discovery.md). Each skill's entry owns its portable setup; Operations records host-specific adapters and observed execution.
 
 ## Records and evidence
 

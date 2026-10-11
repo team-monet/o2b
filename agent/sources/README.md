@@ -1,6 +1,6 @@
 # Sources
 
-Governing parent: [BRAIN.md](../BRAIN.md)
+Governing parent: [BRAIN.md](../../BRAIN.md)
 
 Read this guide when work relies on knowledge outside the brain, retained material may be historical, or cooperation or migration is planned.
 

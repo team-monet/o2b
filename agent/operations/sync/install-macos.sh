@@ -4,7 +4,7 @@
 set -eu
 
 here=$(cd "$(dirname "$0")" && pwd -P)
-root=$(cd "$here/../.." && pwd -P)
+root=$(git -C "$here" rev-parse --show-toplevel)
 interval=${1:-300}
 label=local.o2b.sync
 plist="$HOME/Library/LaunchAgents/$label.plist"

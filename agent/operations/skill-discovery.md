@@ -7,9 +7,9 @@ Read before configuring or migrating an agent's personal skill discovery root. T
 Point each participating agent's personal discovery folder to the brain's maintained skills folder. For a brain installed at `~/.o2b`, the arrangement is:
 
 ```text
-~/.o2b/skills/                 maintained skills and the entry guide
-~/.agents/skills -> ~/.o2b/skills
-~/.claude/skills -> ~/.o2b/skills
+~/.o2b/agent/skills/           maintained skills and the entry guide
+~/.agents/skills -> ~/.o2b/agent/skills
+~/.claude/skills -> ~/.o2b/agent/skills
 ```
 
 These are aliases of one directory. Creating, editing, renaming, or deleting a skill through any alias changes the same files. A new skill requires no individual link or synchronization job. Git saving and publication remain separate actions.
@@ -18,9 +18,11 @@ Inspect existing discovery folders before setup. Consolidate user-maintained ski
 
 ```sh
 mkdir -p "$HOME/.agents" "$HOME/.claude"
-ln -s "$HOME/.o2b/skills" "$HOME/.agents/skills"
-ln -s "$HOME/.o2b/skills" "$HOME/.claude/skills"
+ln -s "$HOME/.o2b/agent/skills" "$HOME/.agents/skills"
+ln -s "$HOME/.o2b/agent/skills" "$HOME/.claude/skills"
 ```
+
+To re-point an existing link after the brain's layout changes, replace it in place, for example `ln -sfn "$HOME/.o2b/agent/skills" "$HOME/.claude/skills"`; plain `ln -s` fails when the link already exists.
 
 Use the actual brain path and the discovery locations supported by the installed agents. An existing project discovery folder may also point to this root when the owner wants skills authored there to enter the same personal collection. Its contents then have the same visibility as the personal collection; project descriptions and guidance establish applicability.
 
@@ -30,6 +32,6 @@ Verify that every configured root resolves to this directory, supporting files r
 
 ## Agent definitions
 
-Link a runtime's agent folder to the brain's [agents](../agents/README.md) folder in the same way, after inspecting and preserving any definitions already there. For a brain at `~/.o2b` and Claude Code: `ln -s "$HOME/.o2b/agents" "$HOME/.claude/agents"`. Verify in a fresh session that the runtime lists the definitions.
+Link a runtime's agent folder to the brain's [agents](../agents/README.md) folder in the same way, after inspecting and preserving any definitions already there. For a brain at `~/.o2b` and Claude Code: `ln -s "$HOME/.o2b/agent/agents" "$HOME/.claude/agents"`. Verify in a fresh session that the runtime lists the definitions.
 
 On another machine, retrieve the personal brain, provision its declared dependencies, and recreate the root links. Record host paths, recovery instructions, and observed discovery in personal operation records. A filesystem link check establishes shared files; it does not establish agent selection or successful skill execution.
