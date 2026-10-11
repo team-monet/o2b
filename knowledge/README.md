@@ -32,6 +32,6 @@ List the note filenames, or search and read the matching notes' first lines, bef
 
 ## Migrate from another system
 
-Bring knowledge across one project at a time, never in bulk. For each record, check it against current sources where that is cheap, keep it only if a future session would otherwise rediscover it or ask the owner again, and merge small records into topic notes in the shape above. Records left behind stay in the source system as its history.
+Bring knowledge across one project at a time, never in bulk. For each record, check it against current sources where that is cheap, keep it only if a future session would otherwise rediscover it or ask the owner again, and merge small records into topic notes in the shape above. When a record holds a secret or a government or financial identifier, migrate the rest without the value and tell the owner where it is, so they can move it to where they keep such values. Records left behind stay in the source system as its history.
 
 Follow the [master plan](../MASTER-PLAN.md) before adding indexes, retrieval tools, or other framework machinery.

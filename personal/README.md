@@ -32,4 +32,4 @@ An assistant may also send the owner a short briefing built from the snapshot an
 
 ## Boundaries
 
-Personal content is kept out of other tasks' context because only a personal task enters this area, but any actor with file access can read it. Keep secrets, credentials, and government or financial identifiers out of it; record where they are kept instead. Do not store other people's personal data beyond what the owner's own life requires.
+Personal content is kept out of other tasks' context because only a personal task enters this area, but any actor with file access can read it. Keep secrets, credentials, and government or financial identifiers out of it; record where they are kept instead, in a household note that names the stores, and refer to one as `Kept in: <store>, "<entry>"`. Do not store other people's personal data beyond what the owner's own life requires.
