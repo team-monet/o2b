@@ -10,7 +10,7 @@ Read this guide when a task uses project-specific material or creates a project 
 
 - **Names:** the words the owner uses for the project, so a task that names it matches from any directory.
 - **Remote:** each repository as `host/owner/repo`, the form shown by its fetch URL without protocol or `.git`.
-- **Path:** each absolute local path; subfolders and worktrees beneath it match.
+- **Path:** each absolute local path; subfolders and worktrees beneath it match. When several rows match, the one closest to the working directory wins, so a project kept inside another project's repository lists its own folder here.
 
 Use only identifiers an agent can observe from the task, the repository, or the working directory. A project without a repository leaves Remote empty.
 
