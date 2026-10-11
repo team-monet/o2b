@@ -44,7 +44,7 @@ Setup, installation, migration, and other detailed procedures belong in linked d
 | Area | Owns |
 |---|---|
 | [Projects](projects/README.md) | Project-specific domain knowledge, procedures, decisions, evidence, and continuation context |
-| [Personal](personal/README.md) | The owner's own life outside projects: the same parts as a project home plus a snapshot page; populated content stays personal |
+| [Personal](personal/README.md) | The owner's own life outside projects: the same parts as a project home plus household notes, inner-circle people pages, and a snapshot page; populated content stays personal |
 | [Knowledge](knowledge/README.md) | Knowledge note conventions for project and cross-project knowledge |
 | [Guidance](guidance/README.md) | Principles, situation pages, and the conventions for scoping and admitting them |
 | [Work](work/README.md) | Workstream and agent-inbox conventions, work ownership, and handoffs; populated records stay personal |
