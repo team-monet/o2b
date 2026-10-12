@@ -16,4 +16,4 @@ Indexes, caches, embeddings, graphs, and context preparation remain replaceable.
 
 Test destructive recovery, corruption handling, privacy boundaries, and secret handling only with isolated fixtures.
 
-The shared-to-personal repository arrangement and its update procedure are documented in [updates.md](updates.md). Read [sync.md](sync.md) before installing or relying on automatic commit, pull, and push for a live brain written from several machines or actors. Follow the [master plan](../MASTER-PLAN.md) before introducing automation or new runtime infrastructure.
+The shared-to-personal repository arrangement and its update procedure are documented in [updates.md](updates.md). Read [sync.md](sync.md) before installing or relying on automatic commit, pull, and push for a live brain written from several machines or actors. Read [chat-assistants.md](chat-assistants.md) before connecting a chat assistant, such as ChatGPT or Claude, to the brain through GitHub. Follow the [master plan](../MASTER-PLAN.md) before introducing automation or new runtime infrastructure.
