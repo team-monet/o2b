@@ -21,7 +21,7 @@ python3 ~/.o2b/agent/operations/runtime-sync/runtime_sync.py --dry-run
 | opencode, `~/.config/opencode` | reads the two folders above, including subfolders | generated as `~/.config/opencode/agents/<name>.md` | `~/.config/opencode/AGENTS.md` |
 | Hermes, `~/.hermes` | its own configuration | none | `~/.hermes/SOUL.md` |
 
-A generated definition carries the description and prompt but no model, so each runtime uses its own default, and its first lines name the source to edit. The tool rewrites and removes only files it generated from this brain and links that point into the brain, and leaves a runtime folder that resolves inside the brain alone; a same-named file it did not generate is first renamed `<name>.<suffix>.bak-o2b-<date>`. It links only skills kept directly under `agent/skills/`. It reports, and leaves alone, a real folder where a whole-folder link belongs, and a runtime whose global instructions do not name this brain's `BRAIN.md`: O2B does not write those instructions for you.
+A generated definition carries the description and prompt but no model, so each runtime uses its own default, and its first lines name the source to edit. The tool rewrites only files it generated from this brain and links that point into the brain, removes a generated file only once its source file is gone, and leaves alone any runtime folder that resolves inside the brain; a same-named file it did not generate is first renamed `<name>.<suffix>.bak-o2b-<date>`. It links only skills kept directly under `agent/skills/`. It reports, and leaves alone, a real folder where a whole-folder link belongs, and a runtime whose global instructions do not name this brain's `BRAIN.md`: O2B does not write those instructions for you.
 
 ## A new machine
 

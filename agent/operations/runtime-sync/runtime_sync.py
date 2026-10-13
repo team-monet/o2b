@@ -165,6 +165,7 @@ class Sync:
         self.agents = brain / "agent" / "agents"
         self.changes = []
         self.problems = []
+        self.unusable = set()
         self.today = datetime.date.today().isoformat()
 
     def change(self, message):
@@ -188,6 +189,9 @@ class Sync:
         """Make `link` a link to the whole brain folder `target`."""
         if not target.is_dir():
             return
+        if inside(link.parent, self.brain):
+            self.problem(f"{link.parent} is inside the brain; {link} was not linked")
+            return
         if link.is_symlink():
             if same_path(link, target):
                 return
@@ -204,6 +208,9 @@ class Sync:
 
     def skill_links(self, folder):
         """Keep one link per brain skill in a runtime's skills folder, leaving everything else alone."""
+        if inside(folder.parent, self.brain):
+            self.problem(f"{folder.parent} is inside the brain; skills were not linked there")
+            return
         wanted = {}
         if self.skills.is_dir():
             wanted = {d.name: d for d in sorted(self.skills.iterdir()) if d.is_dir() and (d / "SKILL.md").is_file()}
@@ -260,6 +267,7 @@ class Sync:
                 if not parsed:
                     continue
                 if not parsed[1].strip():
+                    self.unusable.add(str(path))
                     self.problem(f"{path} has no prompt after its frontmatter; it was not generated for other runtimes")
                     continue
                 found[path.stem] = (path, parsed[0], parsed[1])
@@ -302,10 +310,16 @@ class Sync:
                 if path.stem in definitions or path.is_symlink():
                     continue
                 source = generated_source(path)
-                if source and inside(source, self.agents):
-                    if not self.dry:
-                        path.unlink()
-                    self.change(f"removed {path}: this brain no longer defines {path.stem}")
+                if not source or not inside(source, self.agents):
+                    continue
+                if os.path.exists(source):
+                    if source not in self.unusable:
+                        self.unusable.add(source)
+                        self.problem(f"{source} cannot be read as an agent definition; its generated copies were kept")
+                    continue
+                if not self.dry:
+                    path.unlink()
+                self.change(f"removed {path}: this brain no longer defines {path.stem}")
 
     def pointer(self, runtime, files):
         """Report a runtime whose global instructions do not send sessions to this brain's BRAIN.md."""

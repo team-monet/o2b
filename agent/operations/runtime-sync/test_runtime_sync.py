@@ -277,6 +277,23 @@ class RuntimeSyncTest(unittest.TestCase):
         self.assertIn("generated failed", out)
         self.assertEqual(self.sync("--state", str(state)), (0, ""))
 
+    def test_unreadable_source_keeps_its_generated_copies(self):
+        self.sync()
+        (self.brain / "agent" / "agents" / "scout.md").write_text("---\nname: scout\nbroken frontmatter\n")
+        code, out = self.sync()
+        self.assertEqual(code, 1)
+        self.assertIn("scout.md cannot be read as an agent definition", out)
+        self.assertTrue((self.home / ".codex" / "agents" / "scout.toml").exists())
+        self.assertTrue((self.home / ".config" / "opencode" / "agents" / "scout.md").exists())
+
+    def test_no_link_is_created_through_a_parent_inside_the_brain(self):
+        (self.home / ".agents").symlink_to(self.brain / "agent")
+        code, out = self.sync()
+        self.assertEqual(code, 1)
+        self.assertIn(".agents is inside the brain", out)
+        self.assertFalse((self.brain / "agent" / "skills" / "skills").exists())
+        self.assertEqual(sorted(p.name for p in (self.brain / "agent").iterdir()), ["agents", "skills"])
+
     def test_not_a_brain(self):
         (self.brain / "BRAIN.md").unlink()
         code, out = self.sync()
