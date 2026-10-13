@@ -12,6 +12,7 @@
 3. Commits every change as `sync: <host>`. If an added line matches a common credential format, it unstages, commits nothing, and alerts.
 4. Fetches the current branch from `origin` and merges it. It merges rather than rebases so commit IDs recorded in notes stay valid.
 5. Pushes when the checkout is ahead.
+6. At the end of a run that completes, runs [runtime sync](skill-discovery.md#runtime-sync), which keeps this machine's agent runtimes in step with the brain's skills and agent definitions, and alerts once when the problems it reports change.
 
 On a merge conflict it aborts the merge, pushes nothing, and alerts once per remote revision. Local commits wait until a person merges by hand; the next run then pushes the result.
 
@@ -23,7 +24,7 @@ On macOS, run the installer from the live checkout. The optional argument is the
 agent/operations/sync/install-macos.sh
 ```
 
-It writes the per-user launchd job `local.o2b.sync`, runs it once immediately, uses the installer's `PATH`, and logs to `~/Library/Logs/o2b-sync.log`. Rerun it to change the interval. To remove it:
+It writes the per-user launchd job `local.o2b.sync`, runs it once immediately, uses the installer's `PATH`, which must reach `git` and, for runtime sync, `python3` (3.9 or later), and logs to `~/Library/Logs/o2b-sync.log`. Rerun it to change the interval. To remove it:
 
 ```sh
 launchctl bootout "gui/$(id -u)/local.o2b.sync"
