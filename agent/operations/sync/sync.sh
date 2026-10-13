@@ -74,7 +74,13 @@ fi
 
 # Keep this machine's agent runtimes in step with the brain's skills and agent definitions. See ../skill-discovery.md.
 runtime_sync="$root/agent/operations/runtime-sync/runtime_sync.py"
-if [ -f "$runtime_sync" ] && command -v python3 >/dev/null 2>&1; then
-	python3 "$runtime_sync" --brain "$root" --state "$git_dir/o2b-runtime-sync" ||
-		alert "Agent runtimes on $(hostname -s) need attention - see the sync log"
+if [ -f "$runtime_sync" ]; then
+	if command -v python3 >/dev/null 2>&1; then
+		rm -f "$git_dir/o2b-runtime-sync-no-python"
+		python3 "$runtime_sync" --brain "$root" --state "$git_dir/o2b-runtime-sync" ||
+			alert "Agent runtimes on $(hostname -s) need attention - see the sync log"
+	elif [ ! -e "$git_dir/o2b-runtime-sync-no-python" ]; then
+		touch "$git_dir/o2b-runtime-sync-no-python"
+		alert "Runtime sync needs python3, which this sync cannot find; agent runtimes are not being updated"
+	fi
 fi

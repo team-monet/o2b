@@ -56,9 +56,9 @@ def parse_definition(path):
         lines = path.read_text(encoding="utf-8-sig").split("\n")
     except (OSError, UnicodeDecodeError):
         return None
-    if lines[0].strip() != "---":
+    if lines[0].rstrip() != "---":
         return None
-    end = next((i for i in range(1, len(lines)) if lines[i].strip() == "---"), None)
+    end = next((i for i in range(1, len(lines)) if lines[i].rstrip() == "---"), None)
     if end is None:
         return None
     meta = {}
@@ -265,6 +265,9 @@ class Sync:
             for path in sorted(self.agents.glob("*.md")):
                 parsed = parse_definition(path)
                 if not parsed:
+                    if path.name != "README.md":
+                        self.unusable.add(str(path))
+                        self.problem(f"{path} cannot be read as an agent definition (frontmatter with a description); it was not generated for other runtimes")
                     continue
                 if not parsed[1].strip():
                     self.unusable.add(str(path))

@@ -101,6 +101,18 @@ check "runtime problem alerts" '[ "$(alerts)" = $((alerts_before + 1)) ]'
 (HOME="$tmp/home"; export HOME; run r)
 check "same runtime problem does not alert again" '[ "$(alerts)" = $((alerts_before + 1)) ]'
 
+# Without python3 on the PATH, runtime sync is skipped with one alert.
+mkdir "$tmp/nopy"
+ln -s "$tmp/bin/osascript" "$tmp/nopy/osascript"
+for f in /usr/bin/* /bin/* "$(dirname "$(command -v git)")"/*; do
+	name=${f##*/}
+	case $name in python3*) continue ;; esac
+	[ -e "$tmp/nopy/$name" ] || ln -s "$f" "$tmp/nopy/$name"
+done
+alerts_before=$(alerts)
+(HOME="$tmp/home"; PATH="$tmp/nopy"; export HOME PATH; run r; run r)
+check "missing python3 alerts once" '[ "$(alerts)" = $((alerts_before + 1)) ] && tail -1 "$tmp/alerts" | grep -q python3'
+
 if [ "$failed" -ne 0 ]; then
 	echo "--- sync log"
 	cat "$tmp/log"

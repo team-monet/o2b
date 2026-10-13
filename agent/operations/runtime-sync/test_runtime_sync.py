@@ -294,6 +294,20 @@ class RuntimeSyncTest(unittest.TestCase):
         self.assertFalse((self.brain / "agent" / "skills" / "skills").exists())
         self.assertEqual(sorted(p.name for p in (self.brain / "agent").iterdir()), ["agents", "skills"])
 
+    def test_indented_dashes_stay_inside_a_block(self):
+        (self.brain / "agent" / "agents" / "dashes.md").write_text("---\nname: dashes\ndescription: |\n  Before\n  ---\n  After\n---\nThe prompt.\n")
+        self.assertEqual(self.sync()[0], 0)
+        text = (self.home / ".config" / "opencode" / "agents" / "dashes.md").read_text()
+        self.assertIn('description: "Before\\n---\\nAfter"', text)
+        self.assertTrue(text.endswith("---\nThe prompt.\n"))
+
+    def test_new_unreadable_definition_is_reported(self):
+        (self.brain / "agent" / "agents" / "nodesc.md").write_text("---\nname: nodesc\n---\nA prompt without a description.\n")
+        code, out = self.sync()
+        self.assertEqual(code, 1)
+        self.assertEqual(out.count("nodesc.md cannot be read as an agent definition"), 1)
+        self.assertNotIn("README.md", out)
+
     def test_not_a_brain(self):
         (self.brain / "BRAIN.md").unlink()
         code, out = self.sync()

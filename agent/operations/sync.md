@@ -24,7 +24,7 @@ On macOS, run the installer from the live checkout. The optional argument is the
 agent/operations/sync/install-macos.sh
 ```
 
-It writes the per-user launchd job `local.o2b.sync`, runs it once immediately, uses the installer's `PATH`, and logs to `~/Library/Logs/o2b-sync.log`. Rerun it to change the interval. To remove it:
+It writes the per-user launchd job `local.o2b.sync`, runs it once immediately, uses the installer's `PATH`, which must reach `git` and, for runtime sync, `python3` (3.9 or later), and logs to `~/Library/Logs/o2b-sync.log`. Rerun it to change the interval. To remove it:
 
 ```sh
 launchctl bootout "gui/$(id -u)/local.o2b.sync"
