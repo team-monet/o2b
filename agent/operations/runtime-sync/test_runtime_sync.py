@@ -314,8 +314,12 @@ class RuntimeSyncTest(unittest.TestCase):
         (agents / "renamed.md").write_text("---\nname: other\ndescription: Name differs\n---\nPrompt.\n")
         code, out = self.sync()
         self.assertEqual(code, 1)
-        self.assertIn("noname.md needs `name: noname`", out)
-        self.assertIn("renamed.md needs `name: renamed`", out)
+        (agents / "-dash.md").write_text("---\nname: -dash\ndescription: Leading hyphen\n---\nPrompt.\n")
+        code, out = self.sync()
+        self.assertEqual(code, 1)
+        for name in ("noname.md", "renamed.md", "-dash.md"):
+            self.assertIn(f"{name} needs a name of lowercase letters", out)
+        self.assertFalse((self.home / ".codex" / "agents" / "-dash.toml").exists())
         self.assertFalse((self.home / ".codex" / "agents" / "noname.toml").exists())
         self.assertFalse((self.home / ".config" / "opencode" / "agents" / "renamed.md").exists())
 
@@ -327,6 +331,15 @@ class RuntimeSyncTest(unittest.TestCase):
             (self.home / name).write_text(f'Read "{os.path.realpath(spaced)}/BRAIN.md" first.\n')
         code, out = self.sync()
         self.assertEqual(code, 0, out)
+
+    def test_opencode_falls_back_to_the_claude_pointer(self):
+        (self.home / ".config" / "opencode" / "AGENTS.md").unlink()
+        code, out = self.sync()
+        self.assertEqual(code, 0, out)
+        (self.home / ".config" / "opencode" / "AGENTS.md").write_text("Something else.\n")
+        code, out = self.sync()
+        self.assertEqual(code, 1)
+        self.assertIn("opencode:", out)
 
     def test_not_a_brain(self):
         (self.brain / "BRAIN.md").unlink()
