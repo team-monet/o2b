@@ -83,6 +83,24 @@ run dev
 status=$?
 check "development checkout without upstream is refused" '[ $status -eq 2 ] && [ "$(head_of dev)" = "$dev_before" ]'
 
+# Runtime sync runs after a sync, against the home folder it is given. A separate remote keeps
+# the tool out of the clones above, whose runs use the real home folder.
+git init -q --bare -b main "$tmp/remote2.git"
+git clone -q "$tmp/remote2.git" "$tmp/r" 2>/dev/null
+mkdir -p "$tmp/r/agent/operations/sync" "$tmp/r/agent/operations/runtime-sync" "$tmp/r/agent/skills/demo" "$tmp/home/.codex"
+cp "$sync_src" "$tmp/r/agent/operations/sync/sync.sh"
+cp "$(dirname "$sync_src")/../runtime-sync/runtime_sync.py" "$tmp/r/agent/operations/runtime-sync/"
+printf '# BRAIN\n' >"$tmp/r/BRAIN.md"
+printf -- '---\nname: demo\n---\n' >"$tmp/r/agent/skills/demo/SKILL.md"
+git -C "$tmp/r" add -A && git -C "$tmp/r" commit -q -m init && git -C "$tmp/r" push -q origin main
+git -C "$tmp/r" remote add upstream "$tmp/framework.git"
+alerts_before=$(alerts)
+(HOME="$tmp/home"; export HOME; run r)
+check "runtime sync links the shared skills folder" '[ -L "$tmp/home/.agents/skills" ]'
+check "runtime problem alerts" '[ "$(alerts)" = $((alerts_before + 1)) ]'
+(HOME="$tmp/home"; export HOME; run r)
+check "same runtime problem does not alert again" '[ "$(alerts)" = $((alerts_before + 1)) ]'
+
 if [ "$failed" -ne 0 ]; then
 	echo "--- sync log"
 	cat "$tmp/log"

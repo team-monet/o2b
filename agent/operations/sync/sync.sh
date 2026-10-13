@@ -71,3 +71,10 @@ if [ -n "$(git rev-list -1 "$remote..HEAD")" ]; then
 	git push -q origin "HEAD:$branch" || { log "push failed; retrying next run"; exit 1; }
 	log "pushed $(git rev-parse --short HEAD)"
 fi
+
+# Keep this machine's agent runtimes in step with the brain's skills and agent definitions. See ../skill-discovery.md.
+runtime_sync="$root/agent/operations/runtime-sync/runtime_sync.py"
+if [ -f "$runtime_sync" ] && command -v python3 >/dev/null 2>&1; then
+	python3 "$runtime_sync" --brain "$root" --state "$git_dir/o2b-runtime-sync" ||
+		alert "Agent runtimes on $(hostname -s) need attention - see the sync log"
+fi

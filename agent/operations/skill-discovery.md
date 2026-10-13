@@ -2,36 +2,29 @@
 
 Governing parent: [Operations guide](README.md).
 
-Read before configuring or migrating an agent's personal skill discovery root. The [Skills guide](../skills/README.md) owns maintained skill storage and its format standard. This procedure changes discovery paths, not skill authority or publication.
-
-Point each participating agent's personal discovery folder to the brain's maintained skills folder. For a brain installed at `~/.o2b`, the arrangement is:
-
-```text
-~/.o2b/agent/skills/           maintained skills and the entry guide
-~/.agents/skills -> ~/.o2b/agent/skills
-~/.claude/skills -> ~/.o2b/agent/skills
-```
-
-These are aliases of one directory. Creating, editing, renaming, or deleting a skill through any alias changes the same files. A new skill requires no individual link or synchronization job. Git saving and publication remain separate actions.
-
-Inspect existing discovery folders before setup. Consolidate user-maintained skills with their supporting files, resolve name conflicts, and retain a recoverable source before replacing an existing folder. Leave runtime-managed directories with their runtime. Create a whole-root link only after verifying the maintained content. For absent destinations:
-
-```sh
-mkdir -p "$HOME/.agents" "$HOME/.claude"
-ln -s "$HOME/.o2b/agent/skills" "$HOME/.agents/skills"
-ln -s "$HOME/.o2b/agent/skills" "$HOME/.claude/skills"
-```
-
-To re-point an existing link after the brain's layout changes, replace it in place, for example `ln -sfn "$HOME/.o2b/agent/skills" "$HOME/.claude/skills"`; plain `ln -s` fails when the link already exists.
-
-Use the actual brain path and the discovery locations supported by the installed agents. An existing project discovery folder may also point to this root when the owner wants skills authored there to enter the same personal collection. Its contents then have the same visibility as the personal collection; project descriptions and guidance establish applicability.
-
-Verify that every configured root resolves to this directory, supporting files remain accessible, and each installed agent discovers the skills without duplicate legacy registrations. Verify creation and editing through the aliases as well. Agents may cache discovery; check a refreshed catalog or a fresh session before claiming a new skill is available.
+Read before setting up a machine's agent runtimes or changing how they find the brain's skills and agent definitions. The [Skills guide](../skills/README.md) owns maintained skills and their format, and the [Agents guide](../agents/README.md) owns agent definitions. This procedure changes discovery paths, not skill authority or publication.
 
 <a id="agent-definitions"></a>
 
-## Agent definitions
+## Runtime sync
 
-Link a runtime's agent folder to the brain's [agents](../agents/README.md) folder in the same way, after inspecting and preserving any definitions already there. For a brain at `~/.o2b` and Claude Code: `ln -s "$HOME/.o2b/agent/agents" "$HOME/.claude/agents"`. Verify in a fresh session that the runtime lists the definitions.
+[`runtime-sync/runtime_sync.py`](runtime-sync/runtime_sync.py) keeps every agent runtime installed on the machine in step with the brain. [Auto-sync](sync.md) runs it at the end of each sync that completes, so a sync that fails or is skipped leaves runtimes as they were until the next one. Run it by hand after setting up a machine, with `--dry-run` first to see what it would change:
 
-On another machine, retrieve the personal brain, provision its declared dependencies, and recreate the root links. Record host paths, recovery instructions, and observed discovery in personal operation records. A filesystem link check establishes shared files; it does not establish agent selection or successful skill execution.
+```sh
+python3 ~/.o2b/agent/operations/runtime-sync/runtime_sync.py --dry-run
+```
+
+| Runtime, installed when its folder exists | Skills | Agent definitions | Startup pointer it checks |
+|---|---|---|---|
+| Claude Code, `~/.claude` | one link per skill in `~/.claude/skills`, since Claude Code keeps its own synced skills in that folder | `~/.claude/agents` linked to `agent/agents` | `~/.claude/CLAUDE.md` |
+| Codex, `~/.codex` | `~/.agents/skills` linked to `agent/skills` | generated as `~/.codex/agents/<name>.toml` | `~/.codex/AGENTS.override.md` when present, else `~/.codex/AGENTS.md` |
+| opencode, `~/.config/opencode` | reads the two folders above, including subfolders | generated as `~/.config/opencode/agents/<name>.md` | `~/.config/opencode/AGENTS.md` |
+| Hermes, `~/.hermes` | its own configuration | none | `~/.hermes/SOUL.md` |
+
+A generated definition carries the description and prompt but no model, so each runtime uses its own default, and its first lines name the source to edit. The tool rewrites and removes only files it generated from this brain and links that point into the brain, and leaves a runtime folder that resolves inside the brain alone; a same-named file it did not generate is first renamed `<name>.<suffix>.bak-o2b-<date>`. It links only skills kept directly under `agent/skills/`. It reports, and leaves alone, a real folder where a whole-folder link belongs, and a runtime whose global instructions do not name this brain's `BRAIN.md`: O2B does not write those instructions for you.
+
+## A new machine
+
+Retrieve the personal brain and provision its declared dependencies. For every agent runtime installed there, set its startup pointer to the brain's `BRAIN.md`, move any skills or agent definitions it already holds into the brain, and run the tool. Then check each runtime in a fresh session: it reads `BRAIN.md`, lists the skills, and lists the agents. A change to these links or formats applies on every machine, not only the one where it was made. Record host paths, recovery instructions, and what each runtime showed in personal operation records.
+
+Agents may cache discovery, so check a fresh session before claiming a new skill or agent is available. A filesystem check establishes shared files; it does not establish agent selection or successful skill execution. A project's own discovery folder may also point to the skills folder when the owner wants skills authored there to join the personal collection; project descriptions and guidance establish applicability.

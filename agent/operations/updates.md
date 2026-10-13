@@ -78,7 +78,11 @@ Personal-life material now has its own home under the [Personal guide](../../per
 
 ## Adopt agent definitions
 
-Agent definitions now live in the brain under the [Agents guide](../agents/README.md). Move each personal definition from a runtime's agent folder into `agents/`, keeping a recoverable copy until the move is verified, and rewrite any reference to an earlier memory system or tool. State each definition's boundary. Then link the runtime folder as [skill discovery setup](skill-discovery.md#agent-definitions) describes and check in a fresh session that the runtime lists them. Publish and install through the reviewed update sequence above.
+Agent definitions now live in the brain under the [Agents guide](../agents/README.md). Move each personal definition from a runtime's agent folder into `agents/`, keeping a recoverable copy until the move is verified, and rewrite any reference to an earlier memory system or tool. State each definition's boundary. Then run [runtime sync](skill-discovery.md#runtime-sync) and check in a fresh session that the runtime lists them. Publish and install through the reviewed update sequence above.
+
+## Adopt runtime sync
+
+Auto-sync now ends each completed run with [runtime sync](skill-discovery.md#runtime-sync), which links or generates every installed runtime's skills and agent definitions from the brain, so publishing this update changes each machine's runtimes within one sync interval. Before publishing to personal main, preview it on every machine that runs auto-sync: from the review checkout, run `python3 agent/operations/runtime-sync/runtime_sync.py --brain <live brain> --dry-run` and read what it would change. Move skills or agent definitions a runtime holds that are not yet in the brain into it first; a same-named file the tool did not generate is renamed `<name>.<suffix>.bak-o2b-<date>`, not lost. After publishing, read the first run's lines in each machine's sync log and check each runtime in a fresh session. Publish and install through the reviewed update sequence above.
 
 ## Adopt the owner's root and the agent folder
 

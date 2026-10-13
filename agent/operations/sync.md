@@ -12,6 +12,7 @@
 3. Commits every change as `sync: <host>`. If an added line matches a common credential format, it unstages, commits nothing, and alerts.
 4. Fetches the current branch from `origin` and merges it. It merges rather than rebases so commit IDs recorded in notes stay valid.
 5. Pushes when the checkout is ahead.
+6. At the end of a run that completes, runs [runtime sync](skill-discovery.md#runtime-sync), which keeps this machine's agent runtimes in step with the brain's skills and agent definitions, and alerts once when the problems it reports change.
 
 On a merge conflict it aborts the merge, pushes nothing, and alerts once per remote revision. Local commits wait until a person merges by hand; the next run then pushes the result.
 
