@@ -269,6 +269,10 @@ class Sync:
                         self.unusable.add(str(path))
                         self.problem(f"{path} cannot be read as an agent definition (frontmatter with a description); it was not generated for other runtimes")
                     continue
+                if parsed[0].get("name") != path.stem:
+                    self.unusable.add(str(path))
+                    self.problem(f"{path} needs `name: {path.stem}` in its frontmatter, which Claude Code requires; it was not generated for other runtimes")
+                    continue
                 if not parsed[1].strip():
                     self.unusable.add(str(path))
                     self.problem(f"{path} has no prompt after its frontmatter; it was not generated for other runtimes")
@@ -332,8 +336,12 @@ class Sync:
             text = path.read_text(encoding="utf-8")
         except (OSError, UnicodeDecodeError):
             text = ""
-        named = [n for n in re.findall(r"[^\s`'\"()<>\[\]]*BRAIN\.md", text) if n.startswith(("/", "~/"))]
         home = str(self.home)
+        spellings = {str(entry), os.path.realpath(entry)}
+        spellings |= {"~/" + os.path.relpath(os.path.realpath(s), os.path.realpath(home)) for s in list(spellings) if inside(s, home)}
+        if any(s in text for s in spellings):
+            return
+        named = [n for n in re.findall(r"[^\s`'\"()<>\[\]]*BRAIN\.md", text) if n.startswith(("/", "~/"))]
         if not any(same_path(home + n[1:] if n.startswith("~/") else n, entry) for n in named):
             self.problem(f"{runtime}: {path} does not tell sessions to read {entry}")
 

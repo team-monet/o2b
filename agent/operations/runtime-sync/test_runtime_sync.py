@@ -308,6 +308,26 @@ class RuntimeSyncTest(unittest.TestCase):
         self.assertEqual(out.count("nodesc.md cannot be read as an agent definition"), 1)
         self.assertNotIn("README.md", out)
 
+    def test_definition_needs_a_matching_name(self):
+        agents = self.brain / "agent" / "agents"
+        (agents / "noname.md").write_text("---\ndescription: Has no name\n---\nPrompt.\n")
+        (agents / "renamed.md").write_text("---\nname: other\ndescription: Name differs\n---\nPrompt.\n")
+        code, out = self.sync()
+        self.assertEqual(code, 1)
+        self.assertIn("noname.md needs `name: noname`", out)
+        self.assertIn("renamed.md needs `name: renamed`", out)
+        self.assertFalse((self.home / ".codex" / "agents" / "noname.toml").exists())
+        self.assertFalse((self.home / ".config" / "opencode" / "agents" / "renamed.md").exists())
+
+    def test_pointer_to_a_brain_path_with_spaces(self):
+        spaced = Path(self.tmp.name) / "My Brain"
+        os.rename(self.brain, spaced)
+        self.brain = spaced
+        for name in (".claude/CLAUDE.md", ".codex/AGENTS.md", ".config/opencode/AGENTS.md"):
+            (self.home / name).write_text(f'Read "{os.path.realpath(spaced)}/BRAIN.md" first.\n')
+        code, out = self.sync()
+        self.assertEqual(code, 0, out)
+
     def test_not_a_brain(self):
         (self.brain / "BRAIN.md").unlink()
         code, out = self.sync()
