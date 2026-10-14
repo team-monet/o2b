@@ -112,6 +112,16 @@ This replaces the earlier all-central stage layout. The old migration anchor abo
 
 Publish and install through the reviewed update sequence above when authorized. A request to commit locally does not authorize publication. For a local-only adoption, commit existing authorized personal work first, merge the framework and migrate in a disposable local clone, then fast-forward the clean tracked live checkout to the validated local result. Preserve unrelated untracked files and do not discard pre-existing work.
 
+## Adopt the narrower `for_you` test
+
+`BRAIN.md`'s habit "Hand things to the owner" now sets `for_you` only while something is waiting on the owner now, and lets any agent take an item that blocks nothing out of a file's `for_you`, leaving the entry in place. The update does not re-evaluate flags set under the earlier test, which covered anything the owner needed to read, decide, or act on. Apply it in the disposable personal review checkout:
+
+1. List every file carrying `for_you`. For each item its value names, read the entry or file behind it, and keep the item only if work cannot move, or a cost keeps running, until the owner takes a step only they may take or decide.
+2. Take every other item out of its file's `for_you`, leaving the entry or file in place, and remove the property when no item is left.
+3. Resolve with the owner any personal instruction that still uses the earlier test, such as an operating convention or a skill that flags whatever needs the owner's decision.
+
+Publish and install through the reviewed update sequence above.
+
 ## First installation
 
 Create an empty independent private personal repository. Clone the framework history to the live location, rename its original remote to `upstream`, add the personal repository as `origin`, and push the shared main branch to personal origin. Configure the live main branch to track `origin/main`. Keep upstream fetching enabled but set its push URL to a deliberately invalid local path. Add personal content only after this separation is in place.
