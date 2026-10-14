@@ -341,6 +341,73 @@ class RuntimeSyncTest(unittest.TestCase):
         self.assertEqual(code, 1)
         self.assertIn("opencode:", out)
 
+    def test_what_claude_code_refuses_is_reported_with_its_line(self):
+        cases = {
+            "openquote": ('tools: "Read\n', "line 4 has a quoted value that is not closed"),
+            "afterquote": ('tools: "Read" Grep\n', "line 4 has a quoted value that is not closed"),
+            "badescape": ('tools: "bad \\q escape"\n', "line 4 has a quoted value that is not closed, has an invalid escape"),
+            "orphan": ('tools: "Read"\n  Grep\n', "line 5 is indented but belongs to no key"),
+            "nokey": ("just words\n", "line 4 is not a `key: value` line"),
+            "nospace": ("tools:Read\n", "line 4 is not a `key: value` line"),
+        }
+        not_text = {
+            "descmap": ("description:\n  Use when: always\n", "line 3 gives `description` a list or mapping"),
+            "desclist": ("description:\n  - one\n", "line 3 gives `description` a list or mapping"),
+            "descnumber": ("description: 42\n", "line 3 gives `description` a number, boolean or null"),
+            "descnull": ("description: ~\n", "line 3 gives `description` a number, boolean or null"),
+            "descflow": ("description: [one]\n", "line 3 gives `description` a list or mapping"),
+            "descobject": ("description: {use: always}\n", "line 3 gives `description` a list or mapping"),
+            "desccomment": ("description: # pending\n", "has no `description:`"),
+            "nextflow": ("description:\n  [one]\n", "line 3 gives `description` a list or mapping"),
+            "nextnumber": ("description:\n  42\n", "line 3 gives `description` a number, boolean or null"),
+            "nextbool": ("description:\n  true\n", "line 3 gives `description` a number, boolean or null"),
+        }
+        agents = self.brain / "agent" / "agents"
+        for name, (extra, _) in cases.items():
+            (agents / f"{name}.md").write_text(f"---\nname: {name}\ndescription: Case {name}\n{extra}---\nPrompt.\n")
+        for name, (desc, _) in not_text.items():
+            (agents / f"{name}.md").write_text(f"---\nname: {name}\n{desc}---\nPrompt.\n")
+        code, out = self.sync()
+        self.assertEqual(code, 1)
+        for name, (_, expected) in {**cases, **not_text}.items():
+            self.assertIn(f"{name}.md cannot be read as an agent definition: its frontmatter {expected}", out)
+            self.assertFalse((self.home / ".codex" / "agents" / f"{name}.toml").exists(), name)
+
+    def test_what_claude_code_loads_is_generated(self):
+        agents = self.brain / "agent" / "agents"
+        forms = {
+            "openlist": "tools: [Read\n",
+            "flow": "tools: [Read, Grep]\n",
+            "flowlines": "tools: [Read,\n  Grep]\n",
+            "blocklist": "tools:\n  - Read\n\n  - Grep\n",
+            "flatlist": "tools:\n- Read\n- Grep\n",
+            "colon": "tools: Read: all\n",
+            "repeat": "tools: Read\ntools: Grep\n",
+            "anchor": "tools: &t Read\n",
+            "tab": "tools:\n\t- Read\n",
+            "urls": "source: https://example.com/a.md # where it came from\n",
+            "quotedcolon": 'note: "Use when: always"\n',
+            "requoted": 'user: "We launch: soon" then more\n',
+            "hooks": "hooks:\n  PreToolUse:\n    - matcher: Bash\n\n      command: echo\n",
+        }
+        for name, extra in forms.items():
+            (agents / f"{name}.md").write_text(f"---\nname: {name}\ndescription: Form {name}\n{extra}---\nPrompt.\n")
+        (agents / "blockheader.md").write_text("---\nname: blockheader\ndescription: | # a note\n  Use when kept.\n---\nPrompt.\n")
+        (agents / "underscore.md").write_text("---\nname: underscore\ndescription: 1_000\n---\nPrompt.\n")
+        (agents / "openbracket.md").write_text("---\nname: openbracket\ndescription: [Use when unclosed\n---\nPrompt.\n")
+        code, out = self.sync()
+        self.assertEqual(code, 0, out)
+        for name in [*forms, "blockheader", "underscore", "openbracket"]:
+            self.assertTrue((self.home / ".codex" / "agents" / f"{name}.toml").exists(), name)
+        if tomllib:
+            self.assertEqual(tomllib.loads((self.home / ".codex" / "agents" / "blockheader.toml").read_text())["description"], "Use when kept.")
+
+    def test_non_utf8_definition_is_read_like_claude_code(self):
+        (self.brain / "agent" / "agents" / "latin.md").write_bytes(b"---\nname: latin\ndescription: caf\xe9\n---\nPrompt.\n")
+        code, out = self.sync()
+        self.assertEqual(code, 0, out)
+        self.assertTrue((self.home / ".codex" / "agents" / "latin.toml").exists())
+
     def test_not_a_brain(self):
         (self.brain / "BRAIN.md").unlink()
         code, out = self.sync()
