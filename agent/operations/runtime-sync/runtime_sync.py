@@ -172,9 +172,10 @@ def parse_definition(path):
                     nested[0][:1] not in ('"', "'") and re.search(r":(\s|$)", nested[0])
                 )):
                     return meta, body, f"line {number} gives `{key}` a list or mapping, not text"
-                if inline and inline[0] in "[{" and flow_closed(inline):
+                scalar = inline or " ".join(nested)
+                if scalar and scalar[0] in "[{" and flow_closed(scalar):
                     return meta, body, f"line {number} gives `{key}` a list or mapping, not text"
-                if inline and NOT_TEXT.fullmatch(re.sub(r"\s+#.*$", "", inline)):
+                if scalar and NOT_TEXT.fullmatch(re.sub(r"\s+#.*$", "", scalar)):
                     return meta, body, f"line {number} gives `{key}` a number, boolean or null, not text"
             value = unquote(value)
         meta[key] = value

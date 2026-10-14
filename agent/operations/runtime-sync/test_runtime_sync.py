@@ -358,6 +358,9 @@ class RuntimeSyncTest(unittest.TestCase):
             "descflow": ("description: [one]\n", "line 3 gives `description` a list or mapping"),
             "descobject": ("description: {use: always}\n", "line 3 gives `description` a list or mapping"),
             "desccomment": ("description: # pending\n", "has no `description:`"),
+            "nextflow": ("description:\n  [one]\n", "line 3 gives `description` a list or mapping"),
+            "nextnumber": ("description:\n  42\n", "line 3 gives `description` a number, boolean or null"),
+            "nextbool": ("description:\n  true\n", "line 3 gives `description` a number, boolean or null"),
         }
         agents = self.brain / "agent" / "agents"
         for name, (extra, _) in cases.items():
