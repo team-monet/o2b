@@ -51,6 +51,33 @@ def closed(value):
     return len(value) >= 2 and re.search(r'(?<!\\)(\\\\)*"$', value[1:]) is not None
 
 
+def flow_closed(value):
+    """Whether a value is one complete `[ ]` or `{ }` collection, ignoring quoted text."""
+    depth, quote, i = 0, None, 0
+    while i < len(value):
+        c = value[i]
+        if quote:
+            if quote == '"' and c == "\\":
+                i += 2
+                continue
+            if c == quote:
+                if quote == "'" and value[i + 1:i + 2] == "'":
+                    i += 2
+                    continue
+                quote = None
+        elif c in "\"'":
+            quote = c
+        elif c in "[{":
+            depth += 1
+        elif c in "]}":
+            depth -= 1
+            if depth == 0:
+                rest = value[i + 1:].strip()
+                return not rest or rest.startswith("#")
+        i += 1
+    return False
+
+
 def quote_problem(value):
     """Why a quoted value on its key's line cannot be read, or None (also None for unquoted values)."""
     if value[:1] == '"':
@@ -109,6 +136,8 @@ def parse_definition(path):
         if not match:
             return meta, body, f"line {number} is not a `key: value` line"
         key, value = match.group(1), (match.group(2) or "").strip()
+        if value.startswith("#"):
+            value = ""
         if BLOCK.fullmatch(value):
             block = []
             while i < end and (lines[i][:1] in (" ", "\t") or not lines[i].strip()):
@@ -142,6 +171,8 @@ def parse_definition(path):
                 if not inline and nested and (nested[0].startswith("- ") or (
                     nested[0][:1] not in ('"', "'") and re.search(r":(\s|$)", nested[0])
                 )):
+                    return meta, body, f"line {number} gives `{key}` a list or mapping, not text"
+                if inline and inline[0] in "[{" and flow_closed(inline):
                     return meta, body, f"line {number} gives `{key}` a list or mapping, not text"
                 if inline and NOT_TEXT.fullmatch(re.sub(r"\s+#.*$", "", inline)):
                     return meta, body, f"line {number} gives `{key}` a number, boolean or null, not text"

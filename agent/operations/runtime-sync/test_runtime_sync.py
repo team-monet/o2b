@@ -355,6 +355,9 @@ class RuntimeSyncTest(unittest.TestCase):
             "desclist": ("description:\n  - one\n", "line 3 gives `description` a list or mapping"),
             "descnumber": ("description: 42\n", "line 3 gives `description` a number, boolean or null"),
             "descnull": ("description: ~\n", "line 3 gives `description` a number, boolean or null"),
+            "descflow": ("description: [one]\n", "line 3 gives `description` a list or mapping"),
+            "descobject": ("description: {use: always}\n", "line 3 gives `description` a list or mapping"),
+            "desccomment": ("description: # pending\n", "has no `description:`"),
         }
         agents = self.brain / "agent" / "agents"
         for name, (extra, _) in cases.items():
@@ -388,9 +391,10 @@ class RuntimeSyncTest(unittest.TestCase):
             (agents / f"{name}.md").write_text(f"---\nname: {name}\ndescription: Form {name}\n{extra}---\nPrompt.\n")
         (agents / "blockheader.md").write_text("---\nname: blockheader\ndescription: | # a note\n  Use when kept.\n---\nPrompt.\n")
         (agents / "underscore.md").write_text("---\nname: underscore\ndescription: 1_000\n---\nPrompt.\n")
+        (agents / "openbracket.md").write_text("---\nname: openbracket\ndescription: [Use when unclosed\n---\nPrompt.\n")
         code, out = self.sync()
         self.assertEqual(code, 0, out)
-        for name in [*forms, "blockheader", "underscore"]:
+        for name in [*forms, "blockheader", "underscore", "openbracket"]:
             self.assertTrue((self.home / ".codex" / "agents" / f"{name}.toml").exists(), name)
         if tomllib:
             self.assertEqual(tomllib.loads((self.home / ".codex" / "agents" / "blockheader.toml").read_text())["description"], "Use when kept.")
