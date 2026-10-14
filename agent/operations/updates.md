@@ -90,7 +90,7 @@ The root now holds only what the owner reads or rules on: `SNAPSHOT.md`, `person
 
 1. Move `agents/`, `skills/`, `knowledge/`, `operations/`, `sources/`, and `work/`, with their personal content, under `agent/`. Move personal workstreams and inbox entries from there into `personal/workstreams/` and `personal/INBOX.md`; `agent/work/` keeps only cross-project work. Move anything under `capabilities/` into the skill that uses it, or to the project or operation that owns it, and remove the folder.
 2. Move autonomous operations kept elsewhere, such as a `missions/` folder, to `autopilot/<name>/`, as the [Autopilot guide](../../autopilot/README.md) describes, and put each operation's path in its project's row in `projects/INDEX.md`.
-3. Move `personal/snapshot.md` to `SNAPSHOT.md` and add the views from the [snapshot skeleton](../work/README.md#snapshot), keeping the owner's written sections. Point any briefing at the new page, and set `for_you` on the files that currently need the owner.
+3. Move `personal/snapshot.md` to `SNAPSHOT.md` and add the views from the [snapshot skeleton](../work/README.md#snapshot), keeping the owner's written sections. Point any briefing at the new page, and set `for_you` on the files that are waiting on the owner now, as `BRAIN.md`'s habit "Hand things to the owner" says.
 4. Remove `history/` folders and other copies kept for the record; Git keeps them. Make records that cite them cite the commit instead.
 5. Rewrite links, `projects/INDEX.md` paths, and Obsidian Bases folder filters into the moved folders, and any outside reference to an old path, such as scheduled jobs, launchers, and runtime instructions.
 6. Auto-sync adopts a published result on its next run, and its installed job names the old script path, so it fails silently once `operations/` moves. Before publishing to personal main, on every machine that runs auto-sync, pause the other writers to the live brain, such as scheduled jobs and agent sessions, let auto-sync commit and push their pending work, then stop it and remove its job (the commands in [sync.md](sync.md#install), or disable the cron or systemd entry) so a login cannot reload it. After publishing, on each machine: confirm the live checkout is clean, run `git pull --ff-only origin main`, re-point the discovery links as [skill discovery setup](skill-discovery.md) describes and the paused writers to the new paths, rerun `agent/operations/sync/install-macos.sh` (or reschedule `agent/operations/sync/sync.sh`), confirm its first run in the log, and resume the writers.
@@ -111,6 +111,16 @@ This replaces the earlier all-central stage layout. The old migration anchor abo
 6. Exercise discovery in an isolated setup: a shared-only action, a project-only action, an action matching both indexes, and a switch to another project. Observe which indexes and files a fresh actor reads before action. Link checks alone do not establish runtime delivery. Record observed results and limits personally.
 
 Publish and install through the reviewed update sequence above when authorized. A request to commit locally does not authorize publication. For a local-only adoption, commit existing authorized personal work first, merge the framework and migrate in a disposable local clone, then fast-forward the clean tracked live checkout to the validated local result. Preserve unrelated untracked files and do not discard pre-existing work.
+
+## Adopt the narrower `for_you` test
+
+`BRAIN.md`'s habit "Hand things to the owner" now sets `for_you` only while something is waiting on the owner now, and lets any agent take an item that blocks nothing out of a file's `for_you`, keeping it findable through an inbox entry. The update does not re-evaluate flags set under the earlier test, which covered anything the owner needed to read, decide, or act on. Apply it in the disposable personal review checkout:
+
+1. List every file carrying `for_you`. For each item its value names, read the entry or file behind it, and keep the item only if work cannot move, or a cost keeps running, until the owner takes a step only they may take or decide.
+2. Take every other item out of its file's `for_you`, and remove the property when no item is left. Leave each item's inbox entry in place; for a file with no entry, such as a report or a design, first add a dated entry linking it to its owner's inbox, chosen as `BRAIN.md`'s habit "Capture findings" chooses one, so a session working on its subject still finds it at startup.
+3. Resolve with the owner any personal instruction that still uses the earlier test, such as an operating convention or a skill that flags whatever needs the owner's decision.
+
+Publish and install through the reviewed update sequence above.
 
 ## First installation
 
