@@ -46,7 +46,7 @@ status: active
 
 ## Handoffs
 
-A brief gives another session, worktree, or agent what it needs to do a piece of work without the original conversation. Write it at `projects/<project>/briefs/<slug>.md` and link it from the workstream step that tracks the handoff; start the receiving session with the brief's path. A brief names its goal, the sources to read, the decisions and rules that bind the work, what is out of scope, what the receiver may and may not do, and what done means. Remove the brief when its step settles.
+A brief gives another session, worktree, or agent what it needs to do a piece of work without the original conversation. That includes a session's next piece of work when a fresh session will take it up, not only work delegated to an agent. Write it at `projects/<project>/briefs/<slug>.md` and link it from the workstream step that tracks the handoff; start the receiving session with the brief's path. A brief names its goal, the sources to read, the decisions and rules that bind the work, what is out of scope, what the receiver may and may not do, and what done means. It also carries the understanding the conversation built: what the owner said that shaped the work, in their words where the wording matters, and what was considered and dropped, and why. A receiving session that works with the owner opens by saying that understanding and the deliverable back in a few lines, and starts once the owner confirms. Remove the brief when its step settles.
 
 <a id="inbox"></a>
 
