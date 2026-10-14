@@ -114,10 +114,10 @@ Publish and install through the reviewed update sequence above when authorized. 
 
 ## Adopt the narrower `for_you` test
 
-`BRAIN.md`'s habit "Hand things to the owner" now sets `for_you` only while something is waiting on the owner now, and lets any agent take an item that blocks nothing out of a file's `for_you`, leaving the entry in place. The update does not re-evaluate flags set under the earlier test, which covered anything the owner needed to read, decide, or act on. Apply it in the disposable personal review checkout:
+`BRAIN.md`'s habit "Hand things to the owner" now sets `for_you` only while something is waiting on the owner now, and lets any agent take an item that blocks nothing out of a file's `for_you`, keeping it findable through an inbox entry. The update does not re-evaluate flags set under the earlier test, which covered anything the owner needed to read, decide, or act on. Apply it in the disposable personal review checkout:
 
 1. List every file carrying `for_you`. For each item its value names, read the entry or file behind it, and keep the item only if work cannot move, or a cost keeps running, until the owner takes a step only they may take or decide.
-2. Take every other item out of its file's `for_you`, leaving the entry or file in place, and remove the property when no item is left.
+2. Take every other item out of its file's `for_you`, and remove the property when no item is left. Leave each item's inbox entry in place; for a file with no entry, such as a report or a design, first add a dated entry linking it to the owning project's or the personal inbox, so a session working on its subject still finds it at startup.
 3. Resolve with the owner any personal instruction that still uses the earlier test, such as an operating convention or a skill that flags whatever needs the owner's decision.
 
 Publish and install through the reviewed update sequence above.
