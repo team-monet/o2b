@@ -4,9 +4,10 @@
 See ../gate-hook.md. Claude Code runs this as a PreToolUse hook on Bash. When a command matches
 a `before:` entry in the frontmatter of a stage page that applies here, the first such call in a
 session is refused and the refusal carries the page, so the agent has it before the command
-runs. Set it up once per machine, and ask what a command would get:
+runs. Set it up once per machine, check it, and ask what a command would get:
 
     python3 gate_hook.py --install
+    python3 gate_hook.py --check
     python3 gate_hook.py --explain "git commit -m x" [--cwd DIR]
 
 Python 3.9 standard library only, so macOS's /usr/bin/python3 can run it.
@@ -19,6 +20,7 @@ import json
 import os
 import re
 import shlex
+import stat
 import subprocess
 import sys
 import tempfile
@@ -27,12 +29,15 @@ from pathlib import Path
 
 SCRIPT = Path(__file__).resolve()
 LINK = re.compile(r"\]\(([^)\s]+\.md)\)")
-HEREDOC = re.compile(r"(?<!<)<<(?!<)-?[ \t]*(['\"]?)([A-Za-z_][A-Za-z0-9_]*)\1")
+HEREDOC = re.compile(r"<<-?[ \t]*(['\"]?)([A-Za-z_][A-Za-z0-9_]*)\1")
 ASSIGNMENT = re.compile(r"[A-Za-z_][A-Za-z0-9_]*=")
 PUNCTUATION = "();<>|&\n"
-WRAPPERS = {"env", "command", "exec", "nohup", "sudo", "time"}
+KEYWORDS = {"if", "then", "else", "elif", "do", "while", "until", "!", "{", "}"}
+WRAPPERS = {"env", "command", "exec", "nohup", "sudo", "time", "timeout", "nice", "xargs", "stdbuf"}
 SHELLS = {"sh", "bash", "zsh"}
 STATE_DAYS = 7
+STATE_NAME = re.compile(r"[0-9a-f]{32}\.json")
+REASON_LIMIT = 9000  # Claude Code moves hook text over 10,000 characters to a file; stay under it
 
 
 # Pages
@@ -207,19 +212,79 @@ def stage_pages(brain):
 # Commands
 
 
-def strip_heredocs(command):
-    """Drop here-document bodies, whose text is input rather than commands."""
-    lines, out, i = command.split("\n"), [], 0
-    while i < len(lines):
-        line = lines[i]
-        out.append(line)
-        i += 1
-        for match in HEREDOC.finditer(line):
-            tag = match.group(2)
-            while i < len(lines) and lines[i].strip() != tag:
-                i += 1
+def read_shell(text, i=0, nested=False):
+    """Read shell text the way bash quotes it.
+
+    Returns (kept, substitutions, end): the text without comments, here-document bodies and
+    command substitutions; the text inside each `$( )` or backquote pair that bash would run,
+    which is read in turn; and, for a nested read, where its closing `)` ends. Single quotes and
+    here-document bodies are input, so nothing in them counts.
+    """
+    kept, found, pending, quote, depth, n = [], [], [], None, 0, len(text)
+    while i < n:
+        c = text[i]
+        if c == "\\" and quote != "'":
+            kept.append(text[i:i + 2])
+            i += 2
+            continue
+        if quote == "'":
+            quote = None if c == "'" else quote
+            kept.append(c)
             i += 1
-    return "\n".join(out)
+            continue
+        if text.startswith("$(", i):
+            _, _, end = read_shell(text, i + 2, nested=True)
+            found.append(text[i + 2:end - 1])
+            kept.append(" ")
+            i = end
+            continue
+        if c == "`":
+            end = i + 1
+            while end < n and text[end] != "`":
+                end += 2 if text[end] == "\\" else 1
+            found.append(text[i + 1:end])
+            kept.append(" ")
+            i = end + 1
+            continue
+        if quote == '"':
+            quote = None if c == '"' else quote
+            kept.append(c)
+            i += 1
+            continue
+        if c in "'\"":
+            quote = c
+        elif c == "#" and (i == 0 or text[i - 1] in " \t\n;&|()"):
+            end = text.find("\n", i)
+            i = n if end == -1 else end
+            continue
+        elif c == "\n" and pending:
+            kept.append(c)
+            i += 1
+            for tag in pending:
+                while i < n:
+                    end = text.find("\n", i)
+                    end = n if end == -1 else end
+                    line, i = text[i:end], end + 1
+                    if line.strip() == tag:
+                        break
+            pending = []
+            continue
+        elif text.startswith("<<", i) and not text.startswith("<<<", i) and text[i - 1:i] != "<":
+            match = HEREDOC.match(text, i)
+            if match:
+                pending.append(match.group(2))
+                kept.append(match.group(0))
+                i = match.end()
+                continue
+        elif nested and c == "(":
+            depth += 1
+        elif nested and c == ")":
+            if depth == 0:
+                return "".join(kept), found, i + 1
+            depth -= 1
+        kept.append(c)
+        i += 1
+    return "".join(kept), found, n + 1 if nested else n
 
 
 def tokens(text):
@@ -231,12 +296,14 @@ def tokens(text):
 
 def simple_commands(command, depth=0):
     """Each simple command in a shell command line, as a token list."""
-    command = strip_heredocs(command.replace("\\\n", " "))
+    kept, substituted, _ = read_shell(command.replace("\\\n", " "))
+    # A `#` inside a word is text, not a comment, but shlex would start a comment there.
+    lexable = re.sub(r"(?<=[^\s;&|()<>])#", r"\\#", kept)
     try:
-        words = tokens(command)
+        words = tokens(lexable)
     except ValueError:
         words = []
-        for line in command.split("\n"):
+        for line in lexable.split("\n"):
             try:
                 words += tokens(line)
             except ValueError:
@@ -252,10 +319,8 @@ def simple_commands(command, depth=0):
             current.append(word)
     commands = []
     for words in found:
-        while words and (ASSIGNMENT.match(words[0]) or os.path.basename(words[0]) in WRAPPERS):
+        while words and (ASSIGNMENT.match(words[0]) or words[0] in KEYWORDS):
             words = words[1:]
-            while words and words[0].startswith("-"):
-                words = words[1:]
         if not words:
             continue
         commands.append(words)
@@ -264,7 +329,35 @@ def simple_commands(command, depth=0):
                 if re.fullmatch(r"-[a-z]*c[a-z]*", word):
                     commands += simple_commands(words[i + 1], depth + 1)
                     break
+    if depth < 3:
+        for inner in substituted:
+            commands += simple_commands(inner, depth + 1)
     return commands
+
+
+def has_option(tokens, word):
+    """Whether `word`, an option, is among the tokens: as itself, as `--option=value`, or inside `-abc`."""
+    for token in tokens:
+        if token == word or token.startswith(word + "="):
+            return True
+        if re.fullmatch(r"-[A-Za-z]", word) and re.fullmatch(r"-[A-Za-z]+", token) and word[1] in token[1:]:
+            return True
+    return False
+
+
+def unwrapped(words, program):
+    """The command a wrapper runs: what follows its options, their values, counts, and other wrappers."""
+    value_next = False
+    for i, word in enumerate(words[1:], 1):
+        if os.path.basename(word) == program:
+            return words[i:]
+        if word.startswith("-"):
+            value_next = "=" not in word and (word.startswith("--") or len(word) == 2)
+        elif value_next or ASSIGNMENT.match(word) or re.fullmatch(r"\d+(\.\d+)?[smhd]?", word) or os.path.basename(word) in WRAPPERS:
+            value_next = False
+        else:
+            return []
+    return []
 
 
 def matches(words, gate):
@@ -272,15 +365,18 @@ def matches(words, gate):
 
     Options and their values may sit between the gate's words (`git -C dir commit`); any other
     word breaks the match (`git stash push` is not `git push`). A gate word that is itself an
-    option may appear anywhere after the words before it.
+    option may appear anywhere after the words before it. A wrapper such as `sudo` or `timeout`
+    runs the gate's program wherever it follows.
     """
     gate = gate.split()
+    if words and os.path.basename(words[0]) in WRAPPERS:
+        words = unwrapped(words, gate[0])
     if not words or os.path.basename(words[0]) != gate[0]:
         return False
     rest, i = words[1:], 0
     for word in gate[1:]:
         if word.startswith("-"):
-            if not any(t == word or t.startswith(word + "=") for t in rest[i:]):
+            if not has_option(rest[i:], word):
                 return False
             continue
         value_next = False
@@ -303,11 +399,15 @@ def matches(words, gate):
 def due(brain, command, cwd):
     """[(page, gate, body)] for each shared or this project's page with a gate the command runs.
 
-    The project is looked up only when a project page matches, so most commands cost no git call.
+    A command that never names a gated program is not parsed, and the project is looked up only
+    when a project page matches, so most commands cost little.
     """
+    pages = stage_pages(brain)
+    if not any(gate.split()[0] in command for _, gates, _, _ in pages for gate in gates):
+        return []
     runs = simple_commands(command)
     hits = []
-    for page, gates, body, folder in stage_pages(brain):
+    for page, gates, body, folder in pages:
         gate = next((g for g in gates if any(matches(words, g) for words in runs)), None)
         if gate:
             hits.append((page, gate, body, folder))
@@ -320,20 +420,29 @@ def due(brain, command, cwd):
 # Delivery
 
 
+def user_id():
+    return os.getuid() if hasattr(os, "getuid") else os.environ.get("USERNAME", "user")
+
+
 def state_file(state_dir, payload):
     key = "{}|{}".format(payload.get("session_id") or "no-session", payload.get("agent_id") or "")
     return state_dir / (hashlib.sha256(key.encode()).hexdigest()[:32] + ".json")
 
 
 def default_state_dir():
-    return Path(tempfile.gettempdir()) / "o2b-gate-hook-{}".format(os.getuid())
+    return Path(tempfile.gettempdir()) / "o2b-gate-hook-{}".format(user_id())
 
 
-def prune(state_dir):
+def open_state_dir(state_dir):
+    """Create the state folder, refusing one that is a link or belongs to someone else."""
+    state_dir.mkdir(mode=0o700, parents=True, exist_ok=True)
+    info = os.lstat(state_dir)
+    if not stat.S_ISDIR(info.st_mode) or (hasattr(os, "getuid") and info.st_uid != os.getuid()):
+        raise OSError("{} is not a folder of this user".format(state_dir))
     cutoff = time.time() - STATE_DAYS * 86400
-    for path in state_dir.glob("*.json"):
+    for path in state_dir.iterdir():
         try:
-            if path.stat().st_mtime < cutoff:
+            if STATE_NAME.fullmatch(path.name) and path.stat().st_mtime < cutoff:
                 path.unlink()
         except OSError:
             pass
@@ -343,7 +452,21 @@ def fingerprint(page, body):
     return "{} {}".format(page, hashlib.sha256(body.encode()).hexdigest()[:16])
 
 
-def message(hits, held=True):
+def first_batch(hits):
+    """The pages that fit one message, the rest waiting for the next attempt; a page too long alone is cut."""
+    batch, size = [], 600
+    for page, gate, body in hits:
+        room = REASON_LIMIT - size - len(str(page)) - 40
+        if len(body) > room:
+            if batch:
+                break
+            body = body[:max(room - 120, 0)].rstrip() + "\n\n[The page continues; read the rest at {}.]".format(page)
+        size += len(str(page)) + len(body) + 40
+        batch.append((page, gate, body))
+    return batch
+
+
+def message(hits, held=True, more=False):
     many = len(hits) > 1
     page, it = ("stage pages", "them") if many else ("stage page", "it")
     if held:
@@ -351,6 +474,8 @@ def message(hits, held=True):
                 "Read {it}, apply the rules that match this task, then run the command again unless a rule says not to. "
                 "This session is not held again for {these}.").format(
                     page=page, s="" if many else "es", it=it, these="these pages" if many else "this page")
+        if more:
+            lead += " More pages for this command come on the next attempt."
     else:
         lead = ("O2B could not hold this command, so the {page} for it arrive{s} after it ran. "
                 "Read {it} and apply the rules that match this task.").format(page=page, s="" if many else "s", it=it)
@@ -378,24 +503,28 @@ def hook(brain, state_dir, stdin):
     path = state_file(state_dir, payload)
     try:
         delivered = set(json.loads(path.read_text(encoding="utf-8"))) if path.is_file() else set()
-    except (OSError, ValueError):
+    except (OSError, ValueError, TypeError):
         delivered = set()
     new = [hit for hit in hits if fingerprint(hit[0], hit[2]) not in delivered]
     if not new:
         return 0
+    batch = first_batch(new)
+    bodies = {page: body for page, _, body in new}
     try:
-        state_dir.mkdir(mode=0o700, parents=True, exist_ok=True)
-        prune(state_dir)
-        path.write_text(json.dumps(sorted(delivered | {fingerprint(p, b) for p, _, b in new})), encoding="utf-8")
+        open_state_dir(state_dir)
+        temporary = path.with_name(path.name + ".{}.tmp".format(os.getpid()))
+        temporary.write_text(json.dumps(sorted(delivered | {fingerprint(p, bodies[p]) for p, _, _ in batch})), encoding="utf-8")
+        os.replace(temporary, path)
     except OSError as error:
         # Refusing without remembering would refuse every retry, so hand the pages over beside the result instead.
         print(json.dumps({
             "systemMessage": "O2B gate hook could not record a delivery ({}); the stage pages arrive after the command instead of before it.".format(error),
-            "hookSpecificOutput": {"hookEventName": "PreToolUse", "additionalContext": message(new, held=False)},
+            "hookSpecificOutput": {"hookEventName": "PreToolUse", "additionalContext": message(batch, held=False)},
         }))
         return 0
     print(json.dumps({"hookSpecificOutput": {
-        "hookEventName": "PreToolUse", "permissionDecision": "deny", "permissionDecisionReason": message(new),
+        "hookEventName": "PreToolUse", "permissionDecision": "deny",
+        "permissionDecisionReason": message(batch, more=len(batch) < len(new)),
     }}))
     return 0
 
@@ -403,13 +532,47 @@ def hook(brain, state_dir, stdin):
 # Setup
 
 
-def entry_command():
-    return "python3 " + shlex.quote(str(SCRIPT))
+def entry_command(script=SCRIPT):
+    # A script that is gone must not exit 2: Claude Code reads that as refusing every Bash call.
+    quoted = shlex.quote(str(script))
+    return "[ -f {0} ] && python3 {0}".format(quoted)
 
 
-def runs_this(handler, script=SCRIPT):
-    command = handler.get("command") if isinstance(handler, dict) else None
-    return isinstance(command, str) and (str(script) in command or os.path.realpath(script) in command)
+def gate_scripts(command):
+    """The gate hook scripts a hook command names, with `~` and `$HOME` expanded."""
+    if not isinstance(command, str):
+        return []
+    try:
+        words = shlex.split(command)
+    except ValueError:
+        words = command.split()
+    found = [os.path.expanduser(os.path.expandvars(w)) for w in words if w.endswith("gate-hook/gate_hook.py")]
+    return list(dict.fromkeys(found))
+
+
+def runs_bash(group):
+    matcher = group.get("matcher")
+    if matcher in (None, "", "*"):
+        return True
+    if isinstance(matcher, str) and "," in matcher:
+        return "Bash" in (part.strip() for part in matcher.split(","))
+    try:
+        return isinstance(matcher, str) and re.fullmatch(matcher, "Bash") is not None
+    except re.error:
+        return matcher == "Bash"
+
+
+def handlers(settings):
+    """(group, handler) for each PreToolUse command handler in the settings."""
+    for group in settings.get("hooks", {}).get("PreToolUse", []):
+        if isinstance(group, dict) and isinstance(group.get("hooks"), list):
+            for handler in group["hooks"]:
+                if isinstance(handler, dict):
+                    yield group, handler
+
+
+def same_file(a, b):
+    return os.path.realpath(a) == os.path.realpath(b)
 
 
 def read_settings(path):
@@ -422,18 +585,41 @@ def read_settings(path):
 
 
 def write_settings(path, settings):
-    if path.exists():
-        backup = path.with_name("{}.bak-o2b-{}".format(path.name, datetime.date.today().isoformat()))
-        n = 2
+    """Write through a link to the real file, keeping its permissions, after copying it aside."""
+    target = path.resolve()
+    mode = 0o600
+    if target.exists():
+        mode = stat.S_IMODE(target.stat().st_mode)
+        today = datetime.date.today().isoformat()
+        backup, n = target.with_name("{}.bak-o2b-{}".format(target.name, today)), 2
         while backup.exists():
-            backup = path.with_name("{}.bak-o2b-{}-{}".format(path.name, datetime.date.today().isoformat(), n))
-            n += 1
-        backup.write_bytes(path.read_bytes())
+            backup, n = target.with_name("{}.bak-o2b-{}-{}".format(target.name, today, n)), n + 1
+        backup.write_bytes(target.read_bytes())
+        os.chmod(backup, mode)
         print("gate-hook: kept the previous settings as {}".format(backup))
-    path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = path.with_name(path.name + ".o2b-tmp")
+    target.parent.mkdir(parents=True, exist_ok=True)
+    temporary = target.with_name(target.name + ".o2b-tmp")
     temporary.write_text(json.dumps(settings, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    os.replace(temporary, path)
+    os.chmod(temporary, mode)
+    os.replace(temporary, target)
+
+
+def check(path):
+    """Problems with this machine's Claude Code settings for this hook; none when it is installed."""
+    try:
+        settings = read_settings(path)
+    except (OSError, ValueError) as error:
+        return ["{} cannot be read as settings ({}), so the gate hook was not checked".format(path, error)]
+    problems, installed = [], False
+    for group, handler in handlers(settings):
+        for script in gate_scripts(handler.get("command")):
+            if not os.path.exists(script):
+                problems.append("{} runs {}, which does not exist; remove it with `python3 {} --uninstall`".format(path, script, SCRIPT))
+            elif same_file(script, SCRIPT) and runs_bash(group):
+                installed = True
+    if not installed:
+        problems.append("{} does not run {} before Bash commands; add it with `python3 {} --install`".format(path, SCRIPT, SCRIPT))
+    return problems
 
 
 def install(path):
@@ -442,35 +628,39 @@ def install(path):
     except (OSError, ValueError) as error:
         print("gate-hook: {} cannot be read as settings ({}); nothing was changed".format(path, error))
         return 1
-    groups = settings.setdefault("hooks", {}).setdefault("PreToolUse", [])
-    if any(runs_this(h) for g in groups if isinstance(g, dict) for h in g.get("hooks") or []):
+    if any(runs_bash(g) and any(same_file(s, SCRIPT) for s in gate_scripts(h.get("command"))) for g, h in handlers(settings)):
         print("gate-hook: {} already runs {} before Bash commands".format(path, SCRIPT))
         return 0
-    groups.append({"matcher": "Bash", "hooks": [{"type": "command", "command": entry_command()}]})
+    settings.setdefault("hooks", {}).setdefault("PreToolUse", []).append(
+        {"matcher": "Bash", "hooks": [{"type": "command", "command": entry_command()}]})
     write_settings(path, settings)
     print("gate-hook: {} now runs {} before Bash commands; start a new session to use it".format(path, SCRIPT))
     return 0
 
 
 def uninstall(path):
+    """Remove this hook, and any gate hook whose script no longer exists."""
     try:
         settings = read_settings(path)
     except (OSError, ValueError) as error:
         print("gate-hook: {} cannot be read as settings ({}); nothing was changed".format(path, error))
         return 1
+
+    def removable(handler):
+        return any(same_file(s, SCRIPT) or not os.path.exists(s) for s in gate_scripts(handler.get("command")))
+
     hooks = settings.get("hooks", {})
     groups = hooks.get("PreToolUse", [])
     kept = []
     for group in groups:
-        handlers = group.get("hooks") if isinstance(group, dict) and isinstance(group.get("hooks"), list) else None
-        if handlers is None:
+        if not (isinstance(group, dict) and isinstance(group.get("hooks"), list)):
             kept.append(group)
             continue
-        rest = [h for h in handlers if not runs_this(h)]
+        rest = [h for h in group["hooks"] if not (isinstance(h, dict) and removable(h))]
         if rest:
             kept.append(dict(group, hooks=rest))
     if kept == groups:
-        print("gate-hook: {} does not run {}".format(path, SCRIPT))
+        print("gate-hook: {} runs no gate hook to remove".format(path))
         return 0
     if kept:
         hooks["PreToolUse"] = kept
@@ -479,7 +669,7 @@ def uninstall(path):
         if not hooks:
             del settings["hooks"]
     write_settings(path, settings)
-    print("gate-hook: removed {} from {}".format(SCRIPT, path))
+    print("gate-hook: removed the gate hook from {}".format(path))
     return 0
 
 
@@ -501,14 +691,21 @@ def main(argv=None):
     parser.add_argument("--explain", metavar="COMMAND", help="list the pages COMMAND would get, without refusing anything")
     parser.add_argument("--cwd", default=os.getcwd(), help="working directory for --explain (default: this one)")
     parser.add_argument("--install", action="store_true", help="add this hook to Claude Code's user settings")
-    parser.add_argument("--uninstall", action="store_true", help="remove this hook from Claude Code's user settings")
-    parser.add_argument("--settings", default=str(Path.home() / ".claude" / "settings.json"), help="settings file for --install and --uninstall")
+    parser.add_argument("--uninstall", action="store_true", help="remove this hook, and gate hooks whose script is gone, from those settings")
+    parser.add_argument("--check", action="store_true", help="report whether those settings run this hook; exit 1 when they do not")
+    parser.add_argument("--settings", default=str(Path.home() / ".claude" / "settings.json"), help="settings file for --install, --uninstall and --check")
     args = parser.parse_args(argv)
     brain = Path(args.brain).expanduser().resolve() if args.brain else SCRIPT.parents[3]
+    settings = Path(args.settings).expanduser()
     if args.install:
-        return install(Path(args.settings).expanduser())
+        return install(settings)
     if args.uninstall:
-        return uninstall(Path(args.settings).expanduser())
+        return uninstall(settings)
+    if args.check:
+        problems = check(settings)
+        for problem in problems:
+            print(problem)
+        return 1 if problems else 0
     if args.explain is not None:
         return explain(brain, args.explain, args.cwd)
     state_dir = Path(args.state_dir) if args.state_dir else default_state_dir()

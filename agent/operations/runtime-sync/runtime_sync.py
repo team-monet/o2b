@@ -14,6 +14,7 @@ import datetime
 import json
 import os
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -443,26 +444,27 @@ class Sync:
             self.problem(f"{runtime}: {path} does not tell sessions to read {entry}")
 
     def gate_hook(self, settings):
-        """Report a Claude Code whose user settings do not run the brain's gate hook. See ../gate-hook.md."""
+        """Report what the brain's gate hook finds wrong with Claude Code's user settings. See ../gate-hook.md."""
         script = self.brain / "agent" / "operations" / "gate-hook" / "gate_hook.py"
         if not script.is_file():
             return
         try:
-            data = json.loads(settings.read_text(encoding="utf-8")) if settings.is_file() else {}
-        except (OSError, ValueError) as error:
-            self.problem(f"Claude Code: {settings} cannot be read ({error}), so its gate hook was not checked")
+            result = subprocess.run(
+                [sys.executable, str(script), "--check", "--settings", str(settings)],
+                capture_output=True, text=True, timeout=60, env=dict(os.environ, HOME=str(self.home)),
+            )
+        except (OSError, subprocess.SubprocessError) as error:
+            self.problem(f"Claude Code: the gate hook check could not run: {error}")
             return
-        hooks = data.get("hooks") if isinstance(data, dict) else None
-        groups = hooks.get("PreToolUse") if isinstance(hooks, dict) else None
-        spellings = {str(script), os.path.realpath(script)}
-        home = os.path.realpath(self.home)
-        spellings |= {prefix + os.path.relpath(s, home) for s in list(spellings) if inside(s, home) for prefix in ("~/", "$HOME/")}
-        for group in groups if isinstance(groups, list) else []:
-            for handler in group.get("hooks") or [] if isinstance(group, dict) else []:
-                command = handler.get("command") if isinstance(handler, dict) else None
-                if isinstance(command, str) and any(s in command for s in spellings):
-                    return
-        self.problem(f"Claude Code: {settings} does not run {script} before Bash commands; add it with `python3 {script} --install`")
+        lines = [line for line in result.stdout.splitlines() if line.strip()]
+        if result.returncode == 0:
+            return
+        if result.returncode != 1 or not lines:
+            detail = (result.stderr or result.stdout).strip().splitlines()
+            self.problem(f"Claude Code: the gate hook check failed: {detail[-1] if detail else 'exit ' + str(result.returncode)}")
+            return
+        for line in lines:
+            self.problem("Claude Code: " + line)
 
     def step(self, action, *args):
         """Run one step; a filesystem or decoding error becomes a reported problem instead of ending the run."""
