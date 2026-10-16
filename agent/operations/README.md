@@ -4,7 +4,7 @@ Governing parent: [BRAIN.md](../../BRAIN.md)
 
 Read this guide before configuring or relying on installation, updates, runtime delivery, privacy, recovery, concurrent writing, or derived tools.
 
-Skills, their scripts, and their dependencies follow the [skills guide](../skills/README.md). For agent discovery setup of skills and agent definitions, read [skill-discovery.md](skill-discovery.md). Each skill's entry owns its portable setup; Operations records host-specific adapters and observed execution.
+Skills, their scripts, and their dependencies follow the [skills guide](../skills/README.md). For agent discovery setup of skills and agent definitions, read [skill-discovery.md](skill-discovery.md). Read [gate-hook.md](gate-hook.md) before installing the hook that hands an agent a stage page before a command the page names. Each skill's entry owns its portable setup; Operations records host-specific adapters and observed execution.
 
 ## Records and evidence
 

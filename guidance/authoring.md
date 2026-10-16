@@ -28,6 +28,8 @@ A situation page holds everything that applies at that moment. Its rules, under 
 - **Who:** the agents to use, from the agent definitions.
 - **Known:** knowledge notes worth reading at that moment.
 
+When a situation is running a command, such as committing or opening a pull request, the page may name that command in its frontmatter, as in `before: [git commit]`, so the [gate hook](../agent/operations/gate-hook.md) hands the page to an agent before the command runs. The index row still names the moment, and the page's rules still say what must hold.
+
 Keep rules and routes apart. A rule says what must or must not be true and why; it holds no steps, sequences, rosters, or tool versions, and links to the skill that carries them. A skill, workflow, or agent definition says how or who and holds no must or never of its own: a gate in a workflow links to the rule it satisfies. Two tests decide: strip the steps and a rule still makes sense whichever route the work takes; a workflow could be swapped for another route to the same outcome without changing any rule. When a workflow needs a new must or never, admit it as a rule.
 
 Keep each rule with its scope under the scope-and-admission rules above. The same situation may appear in both indexes because different rules apply; do not copy a shared rule into every project. Rules shared by a named subset of projects can remain at the root with that applicability stated. Project rules do not silently override shared constraints.

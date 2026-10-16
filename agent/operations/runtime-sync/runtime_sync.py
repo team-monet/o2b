@@ -14,6 +14,7 @@ import datetime
 import json
 import os
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -442,6 +443,29 @@ class Sync:
         if not any(same_path(home + n[1:] if n.startswith("~/") else n, entry) for n in named):
             self.problem(f"{runtime}: {path} does not tell sessions to read {entry}")
 
+    def gate_hook(self, settings):
+        """Report what the brain's gate hook finds wrong with Claude Code's user settings. See ../gate-hook.md."""
+        script = self.brain / "agent" / "operations" / "gate-hook" / "gate_hook.py"
+        if not script.is_file():
+            return
+        try:
+            result = subprocess.run(
+                [sys.executable, str(script), "--check", "--settings", str(settings)],
+                capture_output=True, text=True, timeout=60, env=dict(os.environ, HOME=str(self.home)),
+            )
+        except (OSError, subprocess.SubprocessError) as error:
+            self.problem(f"Claude Code: the gate hook check could not run: {error}")
+            return
+        lines = [line for line in result.stdout.splitlines() if line.strip()]
+        if result.returncode == 0:
+            return
+        if result.returncode != 1 or not lines:
+            detail = (result.stderr or result.stdout).strip().splitlines()
+            self.problem(f"Claude Code: the gate hook check failed: {detail[-1] if detail else 'exit ' + str(result.returncode)}")
+            return
+        for line in lines:
+            self.problem("Claude Code: " + line)
+
     def step(self, action, *args):
         """Run one step; a filesystem or decoding error becomes a reported problem instead of ending the run."""
         try:
@@ -459,6 +483,7 @@ class Sync:
             self.step(self.skill_links, home / ".claude" / "skills")
             self.step(self.folder_link, home / ".claude" / "agents", self.agents)
             self.step(self.pointer, "Claude Code", [home / ".claude" / "CLAUDE.md"])
+            self.step(self.gate_hook, home / ".claude" / "settings.json")
         if codex or opencode:
             self.step(self.folder_link, home / ".agents" / "skills", self.skills)
         if codex:

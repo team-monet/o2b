@@ -5,12 +5,16 @@ Usage: python3 test_runtime_sync.py   (touches nothing outside a temporary direc
 
 import contextlib
 import io
+import json
 import os
+import shutil
 import tempfile
 import unittest
 from pathlib import Path
 
 import runtime_sync
+
+GATE_HOOK = Path(__file__).resolve().parent.parent / "gate-hook" / "gate_hook.py"
 
 try:
     import tomllib
@@ -407,6 +411,75 @@ class RuntimeSyncTest(unittest.TestCase):
         code, out = self.sync()
         self.assertEqual(code, 0, out)
         self.assertTrue((self.home / ".codex" / "agents" / "latin.toml").exists())
+
+    def add_gate_hook(self):
+        """Put the real gate hook in the throwaway brain and settle the first sync's changes."""
+        self.sync()
+        script = self.brain / "agent" / "operations" / "gate-hook" / "gate_hook.py"
+        script.parent.mkdir(parents=True)
+        shutil.copy(GATE_HOOK, script)
+        return os.path.realpath(script)
+
+    def settings_running(self, command, matcher="Bash"):
+        settings = self.home / ".claude" / "settings.json"
+        settings.write_text(json.dumps({"hooks": {"PreToolUse": [
+            {"matcher": "Edit", "hooks": [{"type": "command", "command": "lint"}]},
+            {"matcher": matcher, "hooks": [{"type": "command", "command": command}]},
+        ]}}))
+
+    def test_missing_gate_hook_is_reported_until_installed(self):
+        script = self.add_gate_hook()
+        code, out = self.sync()
+        self.assertEqual(code, 1)
+        self.assertIn(f"Claude Code: {self.home / '.claude' / 'settings.json'} does not run {script} before Bash commands", out)
+        self.settings_running(f"[ -f {script} ] && python3 {script}")
+        self.assertEqual(self.sync(), (0, ""))
+        self.settings_running(f"python3 {script}", matcher="Edit")
+        code, out = self.sync()
+        self.assertIn("does not run", out)
+
+    def test_gate_hook_named_from_the_home_folder(self):
+        moved = self.home / "brain"
+        os.rename(self.brain, moved)
+        self.brain = moved
+        for pointer in (self.home / ".claude" / "CLAUDE.md", self.home / ".codex" / "AGENTS.md", self.home / ".config" / "opencode" / "AGENTS.md"):
+            pointer.write_text(f"Read {moved}/BRAIN.md first.\n")
+        self.add_gate_hook()
+        for spelling in ("~/brain", "$HOME/brain", "${HOME}/brain"):
+            with self.subTest(spelling=spelling):
+                self.settings_running(f"python3 {spelling}/agent/operations/gate-hook/gate_hook.py")
+                self.assertEqual(self.sync(), (0, ""))
+
+    def test_gate_hook_whose_script_is_gone_or_odd_settings_are_reported(self):
+        self.add_gate_hook()
+        settings = self.home / ".claude" / "settings.json"
+        gone = Path(self.tmp.name) / "removed" / "agent" / "operations" / "gate-hook" / "gate_hook.py"
+        cases = (
+            (json.dumps({"hooks": {"PreToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": f"python3 {gone}"}]}]}}),
+             f"runs {gone}, which does not exist"),
+            ('{"hooks": []}', "cannot be read"),
+            ("[1]", "cannot be read"),
+            ("{oops", "cannot be read"),
+        )
+        for text, expected in cases:
+            with self.subTest(text=text):
+                settings.write_text(text)
+                code, out = self.sync()
+                self.assertEqual(code, 1)
+                self.assertIn("runtime-sync: attention: Claude Code: ", out)
+                self.assertIn(expected, out)
+
+    def test_a_gate_hook_that_crashes_is_reported(self):
+        self.add_gate_hook()
+        (self.brain / "agent" / "operations" / "gate-hook" / "gate_hook.py").write_text("raise SystemExit('broken hook')\n")
+        code, out = self.sync()
+        self.assertEqual(code, 1)
+        self.assertIn("the gate hook check failed: broken hook", out)
+
+    def test_brain_without_gate_hook_checks_no_settings(self):
+        self.sync()
+        (self.home / ".claude" / "settings.json").write_text("{oops")
+        self.assertEqual(self.sync(), (0, ""))
 
     def test_not_a_brain(self):
         (self.brain / "BRAIN.md").unlink()
