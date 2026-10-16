@@ -29,7 +29,7 @@ from pathlib import Path
 
 SCRIPT = Path(__file__).resolve()
 LINK = re.compile(r"\]\(([^)\s]+\.md)\)")
-HEREDOC = re.compile(r"<<-?[ \t]*(['\"]?)([A-Za-z_][A-Za-z0-9_]*)\1")
+HEREDOC = re.compile(r"<<-?[ \t]*(?:'([^'\n]+)'|\"([^\"\n]+)\"|([^\s'\"<>|&;()0-9][^\s'\"<>|&;()]*))")
 ASSIGNMENT = re.compile(r"[A-Za-z_][A-Za-z0-9_]*=")
 PUNCTUATION = "();<>|&\n"
 KEYWORDS = {"if", "then", "else", "elif", "do", "while", "until", "!", "{", "}"}
@@ -302,7 +302,8 @@ def read_shell(text, i=0, nested=False):
         elif text.startswith("<<", i) and not text.startswith("<<<", i) and text[i - 1:i] != "<":
             match = HEREDOC.match(text, i)
             if match:
-                pending.append((match.group(2), not match.group(1)))
+                quoted = match.group(1) or match.group(2)
+                pending.append((quoted or match.group(3), not quoted))
                 kept.append(match.group(0))
                 i = match.end()
                 continue
