@@ -324,10 +324,13 @@ def simple_commands(command, depth=0):
         if not words:
             continue
         commands.append(words)
-        if os.path.basename(words[0]) in SHELLS and depth < 3:
-            for i, word in enumerate(words[1:-1], 1):
+        shell = words
+        if os.path.basename(words[0]) in WRAPPERS:
+            shell = next((unwrapped(words, s) for s in SHELLS if unwrapped(words, s)), [])
+        if shell and os.path.basename(shell[0]) in SHELLS and depth < 3:
+            for i, word in enumerate(shell[1:-1], 1):
                 if re.fullmatch(r"-[a-z]*c[a-z]*", word):
-                    commands += simple_commands(words[i + 1], depth + 1)
+                    commands += simple_commands(shell[i + 1], depth + 1)
                     break
     if depth < 3:
         for inner in substituted:
@@ -448,8 +451,13 @@ def open_state_dir(state_dir):
             pass
 
 
-def fingerprint(page, body):
-    return "{} {}".format(page, hashlib.sha256(body.encode()).hexdigest()[:16])
+def fingerprint(page):
+    """The page and its whole text, frontmatter included, so any change to it is delivered again."""
+    try:
+        text = page.read_bytes()
+    except OSError:
+        text = b""
+    return "{} {}".format(page, hashlib.sha256(text).hexdigest()[:16])
 
 
 def output_size(text):
@@ -519,15 +527,14 @@ def hook(brain, state_dir, stdin):
         delivered = set(json.loads(path.read_text(encoding="utf-8"))) if path.is_file() else set()
     except (OSError, ValueError, TypeError):
         delivered = set()
-    new = [hit for hit in hits if fingerprint(hit[0], hit[2]) not in delivered]
+    new = [hit for hit in hits if fingerprint(hit[0]) not in delivered]
     if not new:
         return 0
     batch = first_batch(new)
-    bodies = {page: body for page, _, body in new}
     try:
         open_state_dir(state_dir)
         temporary = path.with_name(path.name + ".{}.tmp".format(os.getpid()))
-        temporary.write_text(json.dumps(sorted(delivered | {fingerprint(p, bodies[p]) for p, _, _ in batch})), encoding="utf-8")
+        temporary.write_text(json.dumps(sorted(delivered | {fingerprint(p) for p, _, _ in batch})), encoding="utf-8")
         os.replace(temporary, path)
     except OSError as error:
         # Refusing without remembering would refuse every retry, so hand the pages over beside the result instead.

@@ -188,6 +188,12 @@ class DeliveryTest(Brain):
         self.pages(self.run_hook("git commit -m x"))
         self.assertEqual(self.pages(self.run_hook("git commit -m y; git push")), [self.shared("publishing")])
 
+    def test_a_command_added_to_a_delivered_page_delivers_it_again(self):
+        page = self.brain / "guidance" / "stages" / "committing.md"
+        self.pages(self.run_hook("git commit -m x"))
+        page.write_text(COMMITTING.replace("before: [git commit]", "before: [git commit, git tag]"))
+        self.assertEqual(self.pages(self.run_hook("git tag v1")), [self.shared("committing")])
+
     def test_pages_too_long_for_one_message_come_over_several_attempts(self):
         filler = "A rule that takes room. " * 160  # about 3,800 characters
         for name in ("committing", "publishing", "rewriting"):
@@ -224,7 +230,7 @@ class DeliveryTest(Brain):
         self.assertIn("\u65e5\u672c\u8a9e", result.stdout.decode("utf-8"), "sent as UTF-8, not escaped")
         self.assertLess(len(json.dumps(reason, ensure_ascii=False)), 10000)
         self.assertTrue("The page continues" in reason, "a page over the limit is cut")
-        self.assertGreater(len(json.dumps(reason, ensure_ascii=False)), 8500, "the cut keeps most of the room")
+        self.assertGreater(len(json.dumps(reason, ensure_ascii=False)), gate_hook.REASON_LIMIT - 1500, "the cut keeps most of the room")
 
     def test_an_unwritable_state_hands_the_pages_over_without_holding(self):
         blocker = self.root / "not-a-folder"
@@ -310,6 +316,8 @@ class MatchingTest(Brain):
             "nice -n 5 git commit -m x",
             "echo a | xargs git commit -m",
             "bash -lc 'git commit -m x'",
+            "sudo bash -c 'git commit -m x'",
+            "env FOO=1 bash -c 'git commit -m x'",
             "echo $(git commit -m x)",
             'echo "Made: $(git commit -m x)"',
             "echo `git commit -m x`",
