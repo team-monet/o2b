@@ -17,7 +17,7 @@ Front-page sections are the operation's own: commonly Mission, Boundaries, Team,
 | `team/<member>.md` | A team member adopted from an [agent definition](../agent/agents/README.md), with `source`, `version`, `adopted`, and `status` properties |
 | `objectives/<date>-<slug>.md` | One Objective, with `status` (`open`, `waiting`, `done`, `dropped`), `opened`, `closed`, `waiting_on`, and `waiting_since` properties |
 | `records/<kind>/` | What the operation keeps track of, in Markdown |
-| `reports/<date>-<slug>.md` | A report the owner needs to read, carrying `for_you` |
+| `reports/<date>-<slug>.md` | A report for the owner, carrying `for_you` while something in it waits on them |
 | `drafts/<date>-<slug>.md` | Something the owner must send, ready to send, carrying `for_you` |
 | `tools/` | The operation's code and its tests |
 
