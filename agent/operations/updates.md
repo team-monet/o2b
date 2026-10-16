@@ -84,6 +84,15 @@ Agent definitions now live in the brain under the [Agents guide](../agents/READM
 
 Auto-sync now ends each completed run with [runtime sync](skill-discovery.md#runtime-sync), which links or generates every installed runtime's skills and agent definitions from the brain, so publishing this update changes each machine's runtimes within one sync interval. Before publishing to personal main, preview it on every machine that runs auto-sync: from the review checkout, run `python3 agent/operations/runtime-sync/runtime_sync.py --brain <live brain> --dry-run` and read what it would change. Move skills or agent definitions a runtime holds that are not yet in the brain into it first; a same-named file the tool did not generate is renamed `<name>.<suffix>.bak-o2b-<date>`, not lost. After publishing, read the first run's lines in each machine's sync log and check each runtime in a fresh session. Publish and install through the reviewed update sequence above.
 
+## Adopt the gate hook
+
+The [gate hook](gate-hook.md) hands a stage page to a Claude Code agent before a command the page names in `before:`. It does nothing until pages name commands and a machine installs it, but once the update arrives, runtime sync reports each machine whose Claude Code does not run it. After publishing:
+
+1. With the owner, name the commands on the pages for situations that are commands, such as committing changes or merging a pull request, and check each with `--explain`.
+2. On every machine that runs Claude Code, install the hook with the owner's go, and check it in a fresh session as the gate-hook guide describes.
+
+Publish and install through the reviewed update sequence above.
+
 ## Adopt the owner's root and the agent folder
 
 The root now holds only what the owner reads or rules on: `SNAPSHOT.md`, `personal/`, `projects/`, `autopilot/`, `guidance/`, and `BRAIN.md`. Agents' working material lives under `agent/`, the capability guide is folded into the [Skills guide](../skills/README.md), the snapshot moves to the root and covers everything that needs the owner, and the framework README moves to `.github/README.md`. Apply it in the personal review checkout:

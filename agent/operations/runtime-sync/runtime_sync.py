@@ -442,6 +442,28 @@ class Sync:
         if not any(same_path(home + n[1:] if n.startswith("~/") else n, entry) for n in named):
             self.problem(f"{runtime}: {path} does not tell sessions to read {entry}")
 
+    def gate_hook(self, settings):
+        """Report a Claude Code whose user settings do not run the brain's gate hook. See ../gate-hook.md."""
+        script = self.brain / "agent" / "operations" / "gate-hook" / "gate_hook.py"
+        if not script.is_file():
+            return
+        try:
+            data = json.loads(settings.read_text(encoding="utf-8")) if settings.is_file() else {}
+        except (OSError, ValueError) as error:
+            self.problem(f"Claude Code: {settings} cannot be read ({error}), so its gate hook was not checked")
+            return
+        hooks = data.get("hooks") if isinstance(data, dict) else None
+        groups = hooks.get("PreToolUse") if isinstance(hooks, dict) else None
+        spellings = {str(script), os.path.realpath(script)}
+        home = os.path.realpath(self.home)
+        spellings |= {prefix + os.path.relpath(s, home) for s in list(spellings) if inside(s, home) for prefix in ("~/", "$HOME/")}
+        for group in groups if isinstance(groups, list) else []:
+            for handler in group.get("hooks") or [] if isinstance(group, dict) else []:
+                command = handler.get("command") if isinstance(handler, dict) else None
+                if isinstance(command, str) and any(s in command for s in spellings):
+                    return
+        self.problem(f"Claude Code: {settings} does not run {script} before Bash commands; add it with `python3 {script} --install`")
+
     def step(self, action, *args):
         """Run one step; a filesystem or decoding error becomes a reported problem instead of ending the run."""
         try:
@@ -459,6 +481,7 @@ class Sync:
             self.step(self.skill_links, home / ".claude" / "skills")
             self.step(self.folder_link, home / ".claude" / "agents", self.agents)
             self.step(self.pointer, "Claude Code", [home / ".claude" / "CLAUDE.md"])
+            self.step(self.gate_hook, home / ".claude" / "settings.json")
         if codex or opencode:
             self.step(self.folder_link, home / ".agents" / "skills", self.skills)
         if codex:

@@ -5,6 +5,7 @@ Usage: python3 test_runtime_sync.py   (touches nothing outside a temporary direc
 
 import contextlib
 import io
+import json
 import os
 import tempfile
 import unittest
@@ -407,6 +408,53 @@ class RuntimeSyncTest(unittest.TestCase):
         code, out = self.sync()
         self.assertEqual(code, 0, out)
         self.assertTrue((self.home / ".codex" / "agents" / "latin.toml").exists())
+
+    def test_missing_gate_hook_is_reported_until_installed(self):
+        self.sync()
+        script = self.brain / "agent" / "operations" / "gate-hook" / "gate_hook.py"
+        script.parent.mkdir(parents=True)
+        script.write_text("")
+        settings = self.home / ".claude" / "settings.json"
+        code, out = self.sync()
+        self.assertEqual(code, 1)
+        self.assertIn(f"does not run {os.path.realpath(script)} before Bash commands", out)
+        hooks = {"hooks": {"PreToolUse": [
+            {"matcher": "Edit", "hooks": [{"type": "command", "command": "lint"}]},
+            {"matcher": "Bash", "hooks": [{"type": "command", "command": f"python3 {os.path.realpath(script)}"}]},
+        ]}}
+        settings.write_text(json.dumps(hooks))
+        code, out = self.sync()
+        self.assertEqual((code, out), (0, ""))
+        moved = Path(self.tmp.name) / "home" / "brain"
+        os.rename(self.brain, moved)
+        self.brain = moved
+        script = moved / "agent" / "operations" / "gate-hook" / "gate_hook.py"
+        for spelling in ("~/brain", "$HOME/brain"):
+            with self.subTest(spelling=spelling):
+                hooks["hooks"]["PreToolUse"][1]["hooks"][0]["command"] = f"python3 {spelling}/agent/operations/gate-hook/gate_hook.py"
+                settings.write_text(json.dumps(hooks))
+                code, out = self.sync()
+                self.assertNotIn("does not run", out)
+
+    def test_gate_hook_in_another_brain_or_odd_settings_is_reported(self):
+        self.sync()
+        script = self.brain / "agent" / "operations" / "gate-hook" / "gate_hook.py"
+        script.parent.mkdir(parents=True)
+        script.write_text("")
+        settings = self.home / ".claude" / "settings.json"
+        other = '{"hooks": {"PreToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": "python3 /elsewhere/agent/operations/gate-hook/gate_hook.py"}]}]}}'
+        for text, expected in ((other, "does not run"), ('{"hooks": []}', "does not run"), ("[1]", "does not run"), ("{oops", "cannot be read")):
+            with self.subTest(text=text):
+                settings.write_text(text)
+                code, out = self.sync()
+                self.assertEqual(code, 1)
+                self.assertIn(expected, out)
+
+    def test_brain_without_gate_hook_checks_no_settings(self):
+        self.sync()
+        (self.home / ".claude" / "settings.json").write_text("{oops")
+        code, out = self.sync()
+        self.assertEqual((code, out), (0, ""))
 
     def test_not_a_brain(self):
         (self.brain / "BRAIN.md").unlink()
