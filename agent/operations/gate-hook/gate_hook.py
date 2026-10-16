@@ -188,7 +188,7 @@ def project_folders(brain, cwd):
                 consider(len(path) + 1, folder)  # a path wins a tie with the repository holding it
     if any(remotes for _, _, remotes in rows):
         top = git(here, "rev-parse", "--show-toplevel").strip()
-        urls = {normal_remote(u.split()[1]) for u in git(here, "remote", "-v").splitlines() if len(u.split()) > 1}
+        urls = {normal_remote(u.split()[1]) for u in git(here, "remote", "-v").splitlines() if u.endswith("(fetch)")}
         if top and urls:
             for folder, _, remotes in rows:
                 if urls & set(remotes):
@@ -452,18 +452,32 @@ def fingerprint(page, body):
     return "{} {}".format(page, hashlib.sha256(body.encode()).hexdigest()[:16])
 
 
+def output_size(text):
+    """Characters `text` takes in the hook's JSON output, escapes included."""
+    return len(json.dumps(text, ensure_ascii=False))
+
+
 def first_batch(hits):
     """The pages that fit one message, the rest waiting for the next attempt; a page too long alone is cut."""
     batch, size = [], 600
     for page, gate, body in hits:
-        room = REASON_LIMIT - size - len(str(page)) - 40
-        if len(body) > room:
+        room = REASON_LIMIT - size - output_size(str(page)) - 40
+        if output_size(body) > room:
             if batch:
                 break
-            body = body[:max(room - 120, 0)].rstrip() + "\n\n[The page continues; read the rest at {}.]".format(page)
-        size += len(str(page)) + len(body) + 40
+            limit = max(room - 120, 0)
+            body = body[:limit]
+            while body and output_size(body) > limit:
+                body = body[:len(body) - (output_size(body) - limit)]
+            body = body.rstrip() + "\n\n[The page continues; read the rest at {}.]".format(page)
+        size += output_size(str(page)) + output_size(body) + 40
         batch.append((page, gate, body))
     return batch
+
+
+def emit(output):
+    """Print hook output as UTF-8 JSON, so text outside ASCII keeps its length."""
+    print(json.dumps(output, ensure_ascii=False))
 
 
 def message(hits, held=True, more=False):
@@ -490,12 +504,12 @@ def hook(brain, state_dir, stdin):
         payload = json.loads(stdin)
         command = (payload.get("tool_input") or {}).get("command")
     except (ValueError, AttributeError) as error:
-        print(json.dumps({"systemMessage": "O2B gate hook could not read its input ({}); the command was not checked.".format(error)}))
+        emit({"systemMessage": "O2B gate hook could not read its input ({}); the command was not checked.".format(error)})
         return 0
     if not isinstance(command, str) or not command.strip():
         return 0
     if not (brain / "BRAIN.md").is_file():
-        print(json.dumps({"systemMessage": "O2B gate hook: {} is not a brain; stage pages were not checked.".format(brain)}))
+        emit({"systemMessage": "O2B gate hook: {} is not a brain; stage pages were not checked.".format(brain)})
         return 0
     hits = due(brain, command, payload.get("cwd") or os.getcwd())
     if not hits:
@@ -517,15 +531,15 @@ def hook(brain, state_dir, stdin):
         os.replace(temporary, path)
     except OSError as error:
         # Refusing without remembering would refuse every retry, so hand the pages over beside the result instead.
-        print(json.dumps({
+        emit({
             "systemMessage": "O2B gate hook could not record a delivery ({}); the stage pages arrive after the command instead of before it.".format(error),
             "hookSpecificOutput": {"hookEventName": "PreToolUse", "additionalContext": message(batch, held=False)},
-        }))
+        })
         return 0
-    print(json.dumps({"hookSpecificOutput": {
+    emit({"hookSpecificOutput": {
         "hookEventName": "PreToolUse", "permissionDecision": "deny",
         "permissionDecisionReason": message(batch, more=len(batch) < len(new)),
-    }}))
+    }})
     return 0
 
 
@@ -709,6 +723,9 @@ def main(argv=None):
     if args.explain is not None:
         return explain(brain, args.explain, args.cwd)
     state_dir = Path(args.state_dir) if args.state_dir else default_state_dir()
+    for stream in (sys.stdin, sys.stdout):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8")
     return hook(brain, state_dir, sys.stdin.read())
 
 

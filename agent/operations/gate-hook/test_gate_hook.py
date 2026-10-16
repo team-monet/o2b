@@ -213,6 +213,19 @@ class DeliveryTest(Brain):
         self.assertIn(f"The page continues; read the rest at {self.shared('committing')}.", reason)
         self.assertIsNone(self.run_hook("git commit -m x"))
 
+    def test_text_outside_ascii_is_budgeted_as_it_is_sent(self):
+        page = self.brain / "guidance" / "stages" / "committing.md"
+        page.write_text(COMMITTING + "\u65e5\u672c\u8a9e\u306e\u898f\u5247\u3002\n" * 1300)  # about 10,400 characters
+        payload = json.dumps({"session_id": "utf", "tool_input": {"command": "git commit -m x"}, "cwd": str(self.elsewhere)})
+        command = gate_hook.entry_command() + f" --brain '{self.brain}' --state-dir '{self.state}'"
+        result = subprocess.run(["sh", "-c", command], input=payload.encode(), capture_output=True, env=dict(os.environ, LC_ALL="en_US.ISO8859-1", LANG="en_US.ISO8859-1"))
+        self.assertEqual(result.returncode, 0, result.stderr)
+        reason = json.loads(result.stdout.decode("utf-8"))["hookSpecificOutput"]["permissionDecisionReason"]
+        self.assertIn("\u65e5\u672c\u8a9e", result.stdout.decode("utf-8"), "sent as UTF-8, not escaped")
+        self.assertLess(len(json.dumps(reason, ensure_ascii=False)), 10000)
+        self.assertTrue("The page continues" in reason, "a page over the limit is cut")
+        self.assertGreater(len(json.dumps(reason, ensure_ascii=False)), 8500, "the cut keeps most of the room")
+
     def test_an_unwritable_state_hands_the_pages_over_without_holding(self):
         blocker = self.root / "not-a-folder"
         blocker.write_text("")
@@ -399,6 +412,13 @@ class PagesTest(Brain):
 
     def test_a_project_matched_by_its_repository_remote(self):
         self.assertEqual(self.pages(self.run_hook("gh pr merge 12 --squash", cwd=self.beta_repo)), [self.project("beta", "merging")])
+
+    def test_a_push_url_is_not_the_projects_remote(self):
+        git("-C", str(self.beta_repo), "remote", "set-url", "--push", "origin", "git@github.com:acme/gamma.git")
+        self.add_project("gamma", "merging", BETA_MERGING.replace("Beta", "Gamma"))
+        self.rows.append("| Gamma | gamma | github.com/acme/gamma | | [Open](gamma/README.md) |")
+        self.write_rows()
+        self.assertEqual(self.pages(self.run_hook("gh pr merge 1", cwd=self.beta_repo)), [self.project("beta", "merging")])
 
     def test_another_projects_pages_stay_out(self):
         self.assertIsNone(self.run_hook("gh pr merge 12 --squash", cwd=self.alpha_dir))
