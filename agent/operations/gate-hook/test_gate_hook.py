@@ -334,6 +334,8 @@ class MatchingTest(Brain):
             "echo it's\ngit commit -m x",
             "grep x <<< hello\ngit commit -m x",
             "# it's done\necho \"$(git commit -m x)\"",
+            "cat > x.sh <<EOF\necho $(git commit -m x)\nEOF",
+            "cat <<EOF\nUse `git commit -m x` (it's run) here\nEOF\ngit status",
         ]
         for i, command in enumerate(forms):
             with self.subTest(command=command):
@@ -363,7 +365,8 @@ class MatchingTest(Brain):
             "echo $((1+2)) && git status",
             "timeout 5 echo git commit",
             "xargs -n1 echo git commit < list",
-            "cat > x.sh <<EOF\necho $(git commit -m x)\nEOF",
+            "cat > x.sh <<'EOF'\necho $(git commit -m x)\nEOF",
+            "cat <<\"EOF\"\nUse `git commit` here\nEOF",
             "# see $(git commit) in the docs\ngit status",
         ]
         for i, command in enumerate(forms):
@@ -522,6 +525,15 @@ class SettingsTest(unittest.TestCase):
                 self.settings.write_text(json.dumps({"hooks": {"PreToolUse": [
                     {"matcher": matcher, "hooks": [{"type": "command", "command": gate_hook.entry_command()}]}]}}))
                 self.assertEqual(self.call("--check"), (0, ""))
+
+    def test_check_reports_hooks_turned_off(self):
+        self.call("--install")
+        settings = json.loads(self.settings.read_text())
+        settings["disableAllHooks"] = True
+        self.settings.write_text(json.dumps(settings))
+        code, out = self.call("--check")
+        self.assertEqual(code, 1)
+        self.assertIn("sets `disableAllHooks`", out)
 
     def test_check_names_a_gate_hook_whose_script_is_gone(self):
         gone = self.root / "removed-worktree" / "agent" / "operations" / "gate-hook" / "gate_hook.py"

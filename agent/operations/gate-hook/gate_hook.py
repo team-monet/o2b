@@ -212,13 +212,41 @@ def stage_pages(brain):
 # Commands
 
 
+def backquote_end(text, i):
+    """Where the backquote opened at i closes."""
+    end = i + 1
+    while end < len(text) and text[end] != "`":
+        end += 2 if text[end] == "\\" else 1
+    return end
+
+
+def expansions(body):
+    """The `$( )` and backquote texts that bash runs in a here-document body whose delimiter is unquoted."""
+    found, i, n = [], 0, len(body)
+    while i < n:
+        if body[i] == "\\":
+            i += 2
+        elif body.startswith("$(", i):
+            _, _, end = read_shell(body, i + 2, nested=True)
+            found.append(body[i + 2:end - 1])
+            i = end
+        elif body[i] == "`":
+            end = backquote_end(body, i)
+            found.append(body[i + 1:end])
+            i = end + 1
+        else:
+            i += 1
+    return found
+
+
 def read_shell(text, i=0, nested=False):
     """Read shell text the way bash quotes it.
 
     Returns (kept, substitutions, end): the text without comments, here-document bodies and
     command substitutions; the text inside each `$( )` or backquote pair that bash would run,
     which is read in turn; and, for a nested read, where its closing `)` ends. Single quotes and
-    here-document bodies are input, so nothing in them counts.
+    here-document bodies are input, so nothing in them counts, except the substitutions bash
+    runs in a body whose delimiter is unquoted.
     """
     kept, found, pending, quote, depth, n = [], [], [], None, 0, len(text)
     while i < n:
@@ -239,9 +267,7 @@ def read_shell(text, i=0, nested=False):
             i = end
             continue
         if c == "`":
-            end = i + 1
-            while end < n and text[end] != "`":
-                end += 2 if text[end] == "\\" else 1
+            end = backquote_end(text, i)
             found.append(text[i + 1:end])
             kept.append(" ")
             i = end + 1
@@ -260,19 +286,23 @@ def read_shell(text, i=0, nested=False):
         elif c == "\n" and pending:
             kept.append(c)
             i += 1
-            for tag in pending:
+            for tag, expands in pending:
+                body = []
                 while i < n:
                     end = text.find("\n", i)
                     end = n if end == -1 else end
                     line, i = text[i:end], end + 1
                     if line.strip() == tag:
                         break
+                    body.append(line)
+                if expands:
+                    found += expansions("\n".join(body))
             pending = []
             continue
         elif text.startswith("<<", i) and not text.startswith("<<<", i) and text[i - 1:i] != "<":
             match = HEREDOC.match(text, i)
             if match:
-                pending.append(match.group(2))
+                pending.append((match.group(2), not match.group(1)))
                 kept.append(match.group(0))
                 i = match.end()
                 continue
@@ -632,6 +662,8 @@ def check(path):
     except (OSError, ValueError) as error:
         return ["{} cannot be read as settings ({}), so the gate hook was not checked".format(path, error)]
     problems, installed = [], False
+    if settings.get("disableAllHooks") is True:
+        problems.append("{} sets `disableAllHooks`, so Claude Code runs no hooks, this one included".format(path))
     for group, handler in handlers(settings):
         for script in gate_scripts(handler.get("command")):
             if not os.path.exists(script):
