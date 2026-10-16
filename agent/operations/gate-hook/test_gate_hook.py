@@ -337,6 +337,9 @@ class MatchingTest(Brain):
             "cat > x.sh <<EOF\necho $(git commit -m x)\nEOF",
             "cat <<EOF\nUse `git commit -m x` (it's run) here\nEOF\ngit status",
             "(( x = 1<<2 ))\ngit commit -m x",
+            "cat <<\\EOF\nhello\nEOF\ngit commit -m x",
+            "cat <<E\"OF\"\nhello\nEOF\ngit commit -m x",
+            "cat <<-EOF\n\thello\n\tEOF\ngit commit -m x",
         ]
         for i, command in enumerate(forms):
             with self.subTest(command=command):
@@ -370,6 +373,9 @@ class MatchingTest(Brain):
             "cat <<\"EOF\"\nUse `git commit` here\nEOF",
             "cat > x.sh <<'SCRIPT-END'\ngit commit -m x\nSCRIPT-END",
             "cat > x.sh <<END.TXT\ngit commit -m x\nEND.TXT",
+            "cat <<\\EOF\n$(git commit -m x)\nEOF",
+            "cat <<E\"OF\"\n$(git commit -m x)\nEOF",
+            "cat <<EOF\n  EOF\ngit commit -m x\nEOF",
             "# see $(git commit) in the docs\ngit status",
         ]
         for i, command in enumerate(forms):

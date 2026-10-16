@@ -29,7 +29,8 @@ from pathlib import Path
 
 SCRIPT = Path(__file__).resolve()
 LINK = re.compile(r"\]\(([^)\s]+\.md)\)")
-HEREDOC = re.compile(r"<<-?[ \t]*(?:'([^'\n]+)'|\"([^\"\n]+)\"|([^\s'\"<>|&;()0-9][^\s'\"<>|&;()]*))")
+HEREDOC = re.compile(r"<<(-?)[ \t]*((?:[^\s'\"\\<>|&;()]|\\.|'[^'\n]*'|\"[^\"\n]*\")+)")
+QUOTING = re.compile(r"\\(.)|'([^']*)'|\"([^\"]*)\"")
 ASSIGNMENT = re.compile(r"[A-Za-z_][A-Za-z0-9_]*=")
 PUNCTUATION = "();<>|&\n"
 KEYWORDS = {"if", "then", "else", "elif", "do", "while", "until", "!", "{", "}"}
@@ -286,13 +287,13 @@ def read_shell(text, i=0, nested=False):
         elif c == "\n" and pending:
             kept.append(c)
             i += 1
-            for tag, expands in pending:
+            for tag, expands, tabs in pending:
                 body = []
                 while i < n:
                     end = text.find("\n", i)
                     end = n if end == -1 else end
                     line, i = text[i:end], end + 1
-                    if line.strip() == tag:
+                    if (line.lstrip("\t") if tabs else line) == tag:
                         break
                     body.append(line)
                 if expands:
@@ -301,9 +302,11 @@ def read_shell(text, i=0, nested=False):
             continue
         elif text.startswith("<<", i) and not text.startswith("<<<", i) and text[i - 1:i] != "<":
             match = HEREDOC.match(text, i)
-            if match:
-                quoted = match.group(1) or match.group(2)
-                pending.append((quoted or match.group(3), not quoted))
+            word = match.group(2) if match else ""
+            if word and not (word[0].isdigit() and word.isalnum()):
+                # The delimiter is the word after quote removal; any quoting keeps the body unexpanded.
+                tag = QUOTING.sub(lambda m: next(g for g in m.groups() if g is not None), word)
+                pending.append((tag, tag == word, bool(match.group(1))))
                 kept.append(match.group(0))
                 i = match.end()
                 continue
