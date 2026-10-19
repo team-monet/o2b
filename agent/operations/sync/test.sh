@@ -30,7 +30,13 @@ git clone -q "$tmp/remote.git" "$tmp/b"
 git clone -q "$tmp/remote.git" "$tmp/dev"
 git -C "$tmp/a" remote add upstream "$tmp/framework.git"
 git -C "$tmp/b" remote add upstream "$tmp/framework.git"
-run() { sh "$tmp/$1/agent/operations/sync/sync.sh" >>"$tmp/log" 2>&1; }
+# Each clone stands for its own machine, so each run sees the clone's name as its host name.
+run() {
+	mkdir -p "$tmp/host-$1"
+	printf '#!/bin/sh\necho %s\n' "$1" >"$tmp/host-$1/hostname"
+	chmod +x "$tmp/host-$1/hostname"
+	PATH="$tmp/host-$1:$PATH" sh "$tmp/$1/agent/operations/sync/sync.sh" >>"$tmp/log" 2>&1
+}
 head_of() { git -C "$tmp/$1" rev-parse "${2:-HEAD}"; }
 remote_head() { git -C "$tmp/remote.git" rev-parse main; }
 
@@ -54,14 +60,77 @@ printf 'a version\n' >"$tmp/a/note.md"
 printf 'b version\n' >"$tmp/b/note.md"
 run a
 pushed=$(remote_head)
+touch "$tmp/b/.git/o2b-sync-notice-index.lock"  # left by an interrupted run; must not block the notice
 run b
 status=$?
+notice=agent/work/sync-conflict-b.md
 check "conflict exits nonzero" '[ $status -ne 0 ]'
 check "conflict leaves no merge in progress" '[ ! -e "$tmp/b/.git/MERGE_HEAD" ] && [ "$(cat "$tmp/b/note.md")" = "b version" ]'
-check "conflict pushes nothing" '[ "$(remote_head)" = "$pushed" ]'
+check "conflict pushes only its notice, on top of origin" '[ "$(git -C "$tmp/remote.git" rev-parse main^)" = "$pushed" ] && [ "$(git -C "$tmp/remote.git" diff --name-only "$pushed" main)" = "$notice" ]'
+check "conflicting commits stay local" '[ "$(git -C "$tmp/remote.git" rev-list --no-walk --parents main | wc -w | tr -d " ")" = 2 ] && [ "$(git -C "$tmp/remote.git" show main:note.md)" = "a version" ]'
+check "notice asks the owner to merge, naming host, place and files" 'git -C "$tmp/remote.git" show "main:$notice" >"$tmp/notice" && grep -q "^for_you: .*sync on b .*merge origin/main by hand in $(git -C "$tmp/b" rev-parse --show-toplevel) there" "$tmp/notice" && grep -q "^- \`note.md\`$" "$tmp/notice"'
+check "conflicting clone holds the same notice, committed" '[ "$(git -C "$tmp/b" rev-parse "HEAD:$notice")" = "$(git -C "$tmp/remote.git" rev-parse "main:$notice")" ] && [ -z "$(git -C "$tmp/b" status --porcelain)" ]'
 check "conflict alerts once" '[ "$(alerts)" = 1 ]'
+published=$(remote_head)
 run b
-check "repeated conflict does not alert again" '[ "$(alerts)" = 1 ]'
+check "repeated conflict neither alerts nor publishes again" '[ "$(alerts)" = 1 ] && [ "$(remote_head)" = "$published" ]'
+run a
+check "other clone receives the notice" '[ -f "$tmp/a/$notice" ] && [ "$(head_of a)" = "$(remote_head)" ]'
+printf 'more from a\n' >"$tmp/a/more.md"
+run a
+moved=$(remote_head)
+run b
+check "origin moving on alerts again but publishes no second notice" '[ "$(alerts)" = 2 ] && [ "$(remote_head)" = "$moved" ]'
+original=$(git -C "$tmp/remote.git" rev-parse "main:$notice")
+printf 'edited elsewhere\n' >>"$tmp/a/$notice"
+run a
+run b
+run b
+check "notice edited elsewhere is restored while the conflict stands" '[ "$(git -C "$tmp/remote.git" rev-parse "main:$notice")" = "$original" ]'
+
+# The owner merges by hand; only their own edits conflict, not the notice both sides carry.
+git -C "$tmp/b" merge -q --no-edit origin/main >/dev/null 2>&1
+check "hand merge conflicts only in the edited file, keeping the notice" '[ "$(git -C "$tmp/b" diff --name-only --diff-filter=U)" = "note.md" ] && [ -f "$tmp/b/$notice" ]'
+printf 'merged\n' >"$tmp/b/note.md"
+git -C "$tmp/b" add note.md && git -C "$tmp/b" commit -q --no-edit
+run b
+check "clean sync after the merge removes the notice and pushes" '[ ! -e "$tmp/b/$notice" ] && ! git -C "$tmp/remote.git" cat-file -e "main:$notice" 2>/dev/null && [ "$(head_of b)" = "$(remote_head)" ]'
+run a
+check "other clone loses the notice" '[ ! -e "$tmp/a/$notice" ] && [ "$(head_of a)" = "$(remote_head)" ]'
+
+# The notice push is never forced: a commit that reaches origin between the fetch and that push
+# survives, and the next run publishes the same notice on top of it. The conflict is in a file whose
+# name is not ASCII, which the notice lists as written.
+printf 'a again\n' >"$tmp/a/노트.md"
+printf 'b again\n' >"$tmp/b/노트.md"
+run a
+printf 'racing\n' >"$tmp/a/race.md"
+git -C "$tmp/a" add race.md && git -C "$tmp/a" commit -q -m race
+raced=$(head_of a)
+real_git=$(command -v git)
+mkdir "$tmp/race"
+cat >"$tmp/race/git" <<EOF
+#!/bin/sh
+# Clone a pushes its commit just before the first push of the run.
+if [ "\$1" = push ] && [ -e "$tmp/race/armed" ]; then
+	rm "$tmp/race/armed"
+	"$real_git" -C "$tmp/a" push -q origin main
+fi
+exec "$real_git" "\$@"
+EOF
+chmod +x "$tmp/race/git"
+touch "$tmp/race/armed"
+(PATH="$tmp/race:$PATH"; run b)
+check "a commit that reaches origin first is not overwritten" '[ ! -e "$tmp/race/armed" ] && [ "$(remote_head)" = "$raced" ] && git -C "$tmp/b" cat-file -e "HEAD:$notice"'
+waiting=$(git -C "$tmp/b" rev-parse "HEAD:$notice")
+run b
+check "next run publishes the same notice on top of it" '[ "$(git -C "$tmp/remote.git" rev-parse main^)" = "$raced" ] && [ "$(git -C "$tmp/remote.git" rev-parse "main:$notice")" = "$waiting" ]'
+check "notice lists a non-ASCII path as written" 'git -C "$tmp/remote.git" show "main:$notice" | grep -q "^- \`노트.md\`$"'
+git -C "$tmp/b" merge -q --no-edit origin/main >/dev/null 2>&1
+printf 'merged again\n' >"$tmp/b/노트.md"
+git -C "$tmp/b" add 노트.md && git -C "$tmp/b" commit -q --no-edit
+run b && run a
+check "second conflict clears the same way" '[ ! -e "$tmp/a/$notice" ] && [ ! -e "$tmp/b/$notice" ] && [ "$(head_of a)" = "$(head_of b)" ] && [ "$(head_of a)" = "$(remote_head)" ]'
 
 before=$(head_of a)
 token="ghp_$(printf '%036d' 0 | tr 0 a)"
