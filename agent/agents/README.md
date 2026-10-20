@@ -2,7 +2,7 @@
 
 Governing parent: [BRAIN.md](../../BRAIN.md)
 
-Read this guide when choosing an agent to delegate to, or when creating or changing an agent definition. The shared framework supplies this guide; actual definitions belong to the personal brain. Repository-owned agents keep their repository as their home.
+Read this guide when choosing an agent to delegate to, or when creating or changing an agent definition. Definitions here are workers, agents that work for a lead or an operation; the leads the owner works with directly are guidance: see [Work as a lead](../../guidance/README.md#work-as-a-lead). The shared framework supplies this guide; actual definitions belong to the personal brain. Repository-owned agents keep their repository as their home.
 
 ## Definitions
 

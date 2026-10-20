@@ -25,14 +25,14 @@ git -C "$live_path" remote add origin "$personal_remote"
 git -C "$live_path" push -u origin main
 ```
 
-The framework supplies `BRAIN.md`, the master plan, and operating guides. The personal repository supplies the snapshot, populated principles, shared and project stage indexes and rules, agent definitions, skills, project indexes and content, autopilot operations, knowledge notes, source records, workstreams, and inbox entries. Shared rules live under root `guidance/`; project-specific rules live under `projects/<project>/guidance/`. The framework must not publish populated personal files.
+The framework supplies `BRAIN.md`, the master plan, and operating guides. The personal repository supplies the snapshot, populated principles, leads, shared and project stage indexes and rules, agent definitions, skills, project indexes and content, autopilot operations, knowledge notes, source records, workstreams, and inbox entries. Shared rules live under root `guidance/`; project-specific rules live under `projects/<project>/guidance/`. The framework must not publish populated personal files.
 
 ## Build your brain
 
 The root holds what you read or rule on; agents' working material lives under `agent/`. Begin with [BRAIN.md](../BRAIN.md), then add only what you actually need:
 
 - Create `SNAPSHOT.md` at the root from the skeleton in the [Work guide](../agent/work/README.md#snapshot): the one page you read to see what needs you.
-- Put your admitted principles and situation pages under [Guidance](../guidance/README.md).
+- Put your admitted principles, leads, and situation pages under [Guidance](../guidance/README.md).
 - Keep material about your own life outside projects under [Personal](../personal/README.md).
 - Give an actual project a README and add it to your personal `projects/INDEX.md`, following [Projects](../projects/README.md).
 - Run operations that work on their own toward a Mission you give under [Autopilot](../autopilot/README.md).

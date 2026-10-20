@@ -17,7 +17,7 @@ The area uses the same parts as a project home, so BRAIN's habits apply unchange
 | `guidance/STAGES.md`, `guidance/stages/` | Situations and rules that apply to the owner's personal life alone | [Guidance](../guidance/README.md) |
 | Personal documents | Plans and records with no other home, linked from the owner's snapshot | This guide |
 
-Principles for personal life stay in root `guidance/PRINCIPLES.md` under a Personal scope heading.
+Principles for personal life stay in root `guidance/PRINCIPLES.md` under a Personal scope heading, or, when they apply only while working as particular leads, under one where [Maintain guidance](../guidance/authoring.md#leads) places such principles.
 
 When a note could go to `knowledge/` or `household/`, ask whether an assistant would act on it: if so, it is household; if it is reflection or how the owner lives, it is knowledge. Open loops from either stay in `workstreams/`, with a `due:` date when they have one. On entering the area, list `household/` and `people/` alongside `knowledge/`. A `people/` page is named after the person and holds what the owner's own life needs about them, such as the relationship, important dates, and preferences that matter to the owner; facts about the owner's dealings with that person stay in the notes and workstreams they belong to, linked from the page.
 

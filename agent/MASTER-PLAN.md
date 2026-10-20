@@ -6,11 +6,11 @@ Read this plan before adding a framework capability, changing shared structure, 
 
 ## Boundaries
 
-The shared repository owns structure and operating guides. A personal repository built from its history owns the snapshot, populated principles, situation pages and their rules, agent definitions, skills, personal-life content, projects, autopilot operations, knowledge, work, and source records. Shared updates must not embed or overwrite personal content.
+The shared repository owns structure and operating guides. A personal repository built from its history owns the snapshot, populated principles, leads, situation pages and their rules, agent definitions, skills, personal-life content, projects, autopilot operations, knowledge, work, and source records. Shared updates must not embed or overwrite personal content.
 
 The framework must be usable by someone starting their own brain without the maintainer's private files, accounts, installed skills, or previous conversations. Feature guides supply enough instructions and generic examples to establish a personal instance. Actual workstreams, inbox entries, migration inventories, and runtime evidence belong to that instance.
 
-Guidance is anchored to situations. Principles remain under root `guidance/PRINCIPLES.md` with explicit applicability. Shared situation pages live under root `guidance/`; project-only ones live under `projects/<project>/guidance/`. Each scope owns its index, and BRAIN reads a project's index on entering it. Shared loading and authoring conventions live once in the root guidance guides.
+Guidance is anchored to situations. Principles remain under root `guidance/PRINCIPLES.md` with explicit applicability, except those that apply only while working as particular leads, which live in their pages under `guidance/leads/` or in principle sets under `guidance/principles/`. Shared situation pages live under root `guidance/`; project-only ones live under `projects/<project>/guidance/`. Each scope owns its index, and BRAIN reads a project's index on entering it. Shared loading and authoring conventions live once in the root guidance guides.
 
 Existing project trackers and external sources retain authority until their owners explicitly transfer it. Links preserve that boundary; copying changing state does not.
 
@@ -22,7 +22,7 @@ Existing project trackers and external sources retain authority until their owne
 - Keep the route from `BRAIN.md` to the applicable guide shallow and explicit.
 - Minimize the total context needed to find the right information and act correctly. Unnecessary reading consumes limited context; a shorter entry is useful only if it preserves efficient discovery.
 - Author READMEs according to the [README principles](#readme-principles).
-- Anchor the agent to its situation: principles and BRAIN's work habits are always on, the situation index is read at startup, and a situation's page is read before acting, linking how, who, and what is known. Every session notes its project's open work and knowledge listings without resuming anything unasked. Keep maintenance instructions off the routine startup path.
+- Anchor the agent to its situation: principles, the chosen lead's page, and BRAIN's work habits are always on, the situation index is read at startup, and a situation's page is read before acting, linking how, who, and what is known. Every session notes its project's open work and knowledge listings without resuming anything unasked. Keep maintenance instructions off the routine startup path.
 - Scope guidance by where it applies, not where it was learned: shared by default, and project-scoped only when it names something that exists in that project alone. Read shared and project pages together when both match.
 - Use readable files and existing tools before adding schemas, indexes, adapters, or services.
 - Make the habits that keep the brain useful, such as capturing findings, settling work, and writing knowledge, one-step actions tied to a named moment. Add machinery only when such a habit is observed not to happen in real use.
@@ -48,7 +48,7 @@ Setup, installation, migration, and other detailed procedures belong in linked d
 | [Personal](../personal/README.md) | The owner's own life outside projects: the same parts as a project home plus household notes and inner-circle people pages; populated content stays personal |
 | [Projects](../projects/README.md) | Project-specific domain knowledge, procedures, decisions, evidence, and continuation context |
 | [Autopilot](../autopilot/README.md) | Operations that run on their own toward a Mission the owner gave, and their progress; populated operations stay personal |
-| [Guidance](../guidance/README.md) | Principles, situation pages, and the conventions for scoping and admitting them |
+| [Guidance](../guidance/README.md) | Principles, leads, situation pages, and the conventions for scoping and admitting them |
 | `agent/` | Agents' working material, below |
 | [Agents](agents/README.md) | Agent definition conventions and discovery; populated definitions stay personal |
 | [Skills](skills/README.md) | Agent skills with their scripts and dependencies, authoring, and whole-root discovery links; populated skills stay private |

@@ -5,9 +5,9 @@
 
 ## Ownership
 
-The framework repository owns `BRAIN.md`, the [master plan](../MASTER-PLAN.md), `.github/README.md`, feature guides, generic examples and validation scenarios, operational tools such as [auto-sync](sync.md), and this procedure. The personal repository owns populated principles, shared and project stage indexes and rules, project indexes and content, autopilot operations, the snapshot, notes, workstreams, inboxes, agent definitions, skills, personal-life content under `personal/` apart from its guide, source agreements, and runtime records. Framework contributions must not introduce files at personal-content paths. A structural change that moves personal content needs an explicit migration instruction; Git merges text, not meaning.
+The framework repository owns `BRAIN.md`, the [master plan](../MASTER-PLAN.md), `.github/README.md`, feature guides, generic examples and validation scenarios, operational tools such as [auto-sync](sync.md), and this procedure. The personal repository owns populated principles, leads, shared and project stage indexes and rules, project indexes and content, autopilot operations, the snapshot, notes, workstreams, inboxes, agent definitions, skills, personal-life content under `personal/` apart from its guide, source agreements, and runtime records. Framework contributions must not introduce files at personal-content paths. A structural change that moves personal content needs an explicit migration instruction; Git merges text, not meaning.
 
-Principles remain under root `guidance/PRINCIPLES.md` with explicit applicability. Shared stage rules and their index live under root `guidance/`; project-specific rules and their index live under `projects/<project>/guidance/`. Project READMEs link to their indexes, and the common loading and authoring guides remain at the root. Populated skills belong to the personal brain or their owning project repository; the framework owns only the skills guide.
+Principles remain under root `guidance/PRINCIPLES.md` with explicit applicability, except those that apply only while working as particular leads, which live in their pages under `guidance/leads/` or in principle sets under `guidance/principles/`. Shared stage rules and their index live under root `guidance/`; project-specific rules and their index live under `projects/<project>/guidance/`. Project READMEs link to their indexes, and the common loading and authoring guides remain at the root. Populated skills belong to the personal brain or their owning project repository; the framework owns only the skills guide.
 
 The development checkout's `origin` is the framework repository. The live checkout's `origin` is the independent private personal repository, and its `upstream` is the framework repository. Both repositories share their initial framework history. A GitHub fork relationship is unnecessary.
 
@@ -128,6 +128,19 @@ Publish and install through the reviewed update sequence above when authorized. 
 1. List every file carrying `for_you`. For each item its value names, read the entry or file behind it, and keep the item only if work cannot move, or a cost keeps running, until the owner takes a step only they may take or decide.
 2. Take every other item out of its file's `for_you`, and remove the property when no item is left. Leave each item's inbox entry in place; for a file with no entry, such as a report or a design, first add a dated entry linking it to its owner's inbox, chosen as `BRAIN.md`'s habit "Capture findings" chooses one, so a session working on its subject still finds it at startup.
 3. Resolve with the owner any personal instruction that still uses the earlier test, such as an operating convention or a skill that flags whatever needs the owner's decision.
+
+Publish and install through the reviewed update sequence above.
+
+## Adopt leads
+
+Leads are optional: a brain without `guidance/LEADS.md` works as before. To adopt them, work with the owner in the disposable personal review checkout, as [Maintain guidance](../../guidance/authoring.md#leads) describes:
+
+1. Write the index and a page for each lead the owner wants.
+2. Move each principle that applies only while working as particular leads from `PRINCIPLES.md` to the home Maintain guidance gives it, keeping its wording, authority, origin, and reason. Leave in `PRINCIPLES.md` every principle that workers, autopilot runs, or sessions without a lead also need, such as one scoped to a project or an operation.
+3. Name the leads in the applicability of any rule that would be wrong for the others.
+4. Move a lead kept in a runtime's own configuration, such as a Claude Code output style, into its page, and leave that configuration pointing at the page.
+5. Resolve with the owner any personal instruction that conflicts with working as several leads, such as a single lead defined in an operating convention, or a rule that keeps a change of mode in the same session.
+6. Check in fresh sessions that the agent chooses a lead, names it in its first reply, and follows its page; that it hands a change of mode to a new session through a brief; and that a session started from that brief works as the lead it names.
 
 Publish and install through the reviewed update sequence above.
 
