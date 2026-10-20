@@ -10,7 +10,7 @@ The shared repository owns structure and operating guides. A personal repository
 
 The framework must be usable by someone starting their own brain without the maintainer's private files, accounts, installed skills, or previous conversations. Feature guides supply enough instructions and generic examples to establish a personal instance. Actual workstreams, inbox entries, migration inventories, and runtime evidence belong to that instance.
 
-Guidance is anchored to situations. Principles that hold whichever lead is working remain under root `guidance/PRINCIPLES.md` with explicit applicability; principles only some leads follow live in their pages under `guidance/leads/` or in principle sets under `guidance/principles/`. Shared situation pages live under root `guidance/`; project-only ones live under `projects/<project>/guidance/`. Each scope owns its index, and BRAIN reads a project's index on entering it. Shared loading and authoring conventions live once in the root guidance guides.
+Guidance is anchored to situations. Principles remain under root `guidance/PRINCIPLES.md` with explicit applicability, except those that apply only while working as particular leads, which live in their pages under `guidance/leads/` or in principle sets under `guidance/principles/`. Shared situation pages live under root `guidance/`; project-only ones live under `projects/<project>/guidance/`. Each scope owns its index, and BRAIN reads a project's index on entering it. Shared loading and authoring conventions live once in the root guidance guides.
 
 Existing project trackers and external sources retain authority until their owners explicitly transfer it. Links preserve that boundary; copying changing state does not.
 
