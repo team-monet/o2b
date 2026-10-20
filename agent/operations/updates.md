@@ -135,7 +135,7 @@ Publish and install through the reviewed update sequence above.
 
 Leads are optional: a brain without `guidance/LEADS.md` works as before. To adopt them, work with the owner in the disposable personal review checkout, as [Maintain guidance](../../guidance/authoring.md#leads) describes:
 
-1. Write the index and a page for each lead the owner wants.
+1. Find with the owner which leads they need, then write the index and a page for each, fitting each to them as [Fit a lead to its owner](../../guidance/authoring.md#fit-a-lead-to-its-owner) describes.
 2. Move each principle that applies only while working as particular leads from `PRINCIPLES.md` to the home Maintain guidance gives it, keeping its wording, authority, origin, and reason. Leave in `PRINCIPLES.md` every principle that workers, autopilot runs, or sessions without a lead also need, such as one scoped to a project or an operation.
 3. Name the leads in the applicability of any rule that would be wrong for the others.
 4. Move a lead kept in a runtime's own configuration, such as a Claude Code output style, into its page, and leave that configuration pointing at the page.

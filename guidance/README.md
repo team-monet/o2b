@@ -30,6 +30,8 @@ A **Blocking** rule is a boundary; do not cross it outside its authorization con
 
 When the brain has `LEADS.md`, a session working with the owner chooses which lead it works as at session start: the one the owner names in the conversation; else the one the brief you start from names; else the one the owner's instructions for that place name; else the one whose index row fits what the work is now, not what it may become. When none fits, work without one. Say in one line of your first reply which lead you are working as, or that none fits, so the owner can redirect you. A worker, an agent working for a lead, works as none, and an autopilot run works as one only when its front page names it. A brain without `LEADS.md` defines no leads, and its sessions do not mention them.
 
+When the owner corrects how you work as a lead, or your sessions show something your page lacks, propose the change as [Fit a lead to its owner](authoring.md#fit-a-lead-to-its-owner) describes.
+
 When the work turns into what another lead is for, say so and hand it to a new session working as that lead, recording the handoff as the [Work guide](../agent/work/README.md#handoffs) describes, so the new session starts without this lead's principles and context. When the owner asks to continue here instead, when the Work guide gives the work no brief home, as for cross-project work, or when the owner names another lead at any point, read that lead's page and every file it names for reading at session start, and work as it from then on.
 
 ## Maintain guidance
