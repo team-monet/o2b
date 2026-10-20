@@ -37,6 +37,6 @@ When project work matches no row, create its home, add its row, and tell the use
 
 ## Use and contribute
 
-Read the applicable project's `README.md` before relying on or changing its content, then follow the [entry point's task route](../BRAIN.md#start-a-session) and task-relevant links instead of loading every project document. BRAIN reads the project's `guidance/STAGES.md` directly on entering the project; principles keep their root home with explicit applicability.
+Read the applicable project's `README.md` before relying on or changing its content, then follow the [entry point's task route](../BRAIN.md#start-a-session) and task-relevant links instead of loading every project document. BRAIN reads the project's `guidance/STAGES.md` directly on entering the project; principles keep their homes under root `guidance/` with explicit applicability.
 
 Facts about code stay in its repository. An existing external tracker remains authoritative for the work it owns unless its owner explicitly transfers that responsibility; link to it rather than copying its changing state. Changes to the shared project structure follow the [master plan](../agent/MASTER-PLAN.md).

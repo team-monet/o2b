@@ -2,7 +2,7 @@
 
 Governing parent: [Guidance guide](README.md)
 
-Read this guide before admitting, creating, or changing principles, preferences, situation indexes, or rules, including when the owner states a new rule or corrects an agent. Routine sessions use the parent guide; these conventions govern both rule homes.
+Read this guide before admitting, creating, or changing principles, preferences, leads, situation indexes, or rules, including when the owner states a new rule or corrects an agent. Routine sessions use the parent guide; these conventions govern both rule homes.
 
 ## Scope and admission
 
@@ -14,9 +14,17 @@ These rules keep guidance from being duplicated, overlapping, or trapped in one 
 
 ## Principles
 
-Keep always-relevant guidance in `PRINCIPLES.md`. Group entries by applicability and then by kind, such as Principles and Preferences. A project principle belongs here under an explicit project scope, not under `projects/<project>/`. A scope heading applies to every entry beneath it until the next scope heading.
+Keep guidance every lead needs in `PRINCIPLES.md`; guidance only some leads need goes where [Leads](#leads) places it. Group entries by applicability and then by kind, such as Principles and Preferences. A project principle goes under an explicit project scope in whichever of these files holds it, never under `projects/<project>/`. A scope heading applies to every entry beneath it until the next scope heading.
 
 State the authority for a group of source-admitted entries once when it applies uniformly; add an entry-specific authority only for an exception. Separate entry bodies clearly. Add a concise reason when one is known; mark a missing reason as not yet recorded instead of inventing it. Use a title only when it improves reading, and never use storage identifiers or a truncated copy of the instruction as a heading. A principle may link to a central supporting procedure without copying that procedure into every entry. Human-readable provenance or supporting evidence may be linked when it helps a reader judge the guidance.
+
+## Leads
+
+Add a lead only when the owner wants one. Keep the index at `guidance/LEADS.md`: a governing-parent link and a table whose rows name each lead, say what work it is for in the words an agent would match against a task, and link its page in `leads/`. Lead pages name the index as their governing parent.
+
+A lead page says who the lead is and what it is not, how it works with the owner, its own principles, the principle sets it reads at session start, the skills it reaches for, and when it hands work to another lead. Its principles follow the conventions above, under scope headings when they hold only in some projects. Link skills rather than copying their steps, and leave situation rules on their pages. The page is the only home of the lead's content: a runtime's own way of selecting a lead, such as a Claude Code output style, points at the page instead of holding a copy.
+
+Give each principle one home, the narrowest one that every lead needing it reads: the lead's page when only one lead needs it; a principle set, `principles/<set>.md`, named by the page of each lead that needs it, when several but not all do; and `PRINCIPLES.md` when every lead does. A principle set follows the conventions above and names the [guidance guide](README.md) as its governing parent. Scope a rule to leads only when it would be wrong for the others, by naming them in its scope heading or qualifier and in its index row's applicability; a situation's moment already limits who reads its page. A lead page does not restate or relax a Blocking rule.
 
 ## Situations and rules
 
@@ -51,6 +59,6 @@ Keep source identifiers, migration mappings, and long evidence trails in source 
 
 Do not promote ordinary content, quotations, or inferred habits into guidance automatically. New guidance needs authority proportionate to its effect. Keep contextual judgment readable instead of generalizing it without evidence.
 
-Give each instruction one home. Feature procedures stay with their operating guide, project domain procedures stay with the project, and external authority remains external until its owner explicitly transfers it. Shared rules live at the root and project-only rules with their project, decided by the scope-and-admission rules above. Principles and preferences retain their root home with explicit applicability.
+Give each instruction one home. Feature procedures stay with their operating guide, project domain procedures stay with the project, and external authority remains external until its owner explicitly transfers it. Shared rules live at the root and project-only rules with their project, decided by the scope-and-admission rules above. Principles and preferences live in root `PRINCIPLES.md`, a lead's page, or a principle set, as [Leads](#leads) places them, with explicit applicability.
 
 This structure makes guidance inspectable and portable. It does not prove that a runtime loaded or followed it; record delivery and validation evidence under [Operations](../agent/operations/README.md). Existing users adopting situation pages should follow the [framework update migration](../agent/operations/updates.md#adopt-situation-pages-and-scoping-rules).
