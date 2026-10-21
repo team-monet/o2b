@@ -525,11 +525,13 @@ class Hermes(Base):
             ("owner-chat-2", "No, that is not it", at, None),  # copied, same time
             ("owner-chat-2", "[Sam Park] No, that is not it", at + 5, "d1"),  # copied, same platform message
             ("owner-chat-2", "No, that is not it", at + 3600, "d2"),  # said again an hour later
+            ("owner-chat-2", "ok", at + 7200, "d3"),
+            ("owner-chat", "ok", at + 7200, "d4"),  # the same words in another session that second
         ])
         self.connection.commit()
         _, records, err = self.read("--user", "111", "--label", "Sam Park")
-        self.assertEqual(texts(records), ["No, that is not it", "No, that is not it"])
-        self.assertIn("2 turns", err)
+        self.assertEqual(sorted(texts(records)), ["No, that is not it", "No, that is not it", "ok", "ok"])
+        self.assertIn("4 turns", err)
 
     def test_the_owner_must_be_named(self):
         code, _, err = self.read()

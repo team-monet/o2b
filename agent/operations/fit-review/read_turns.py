@@ -466,10 +466,12 @@ def read_hermes(db, users, local, labels, since, until, limit, context):
                     if kind == "internal_notification":
                         continue
                     text = hermes_text(content, speakers)
-                    # A compressed session's continuation copies earlier rows, keeping their time.
-                    keys = {("text", text, int(moment))} | ({("platform", platform_id)} if platform_id else set())
-                    if text and not keys & seen:
-                        seen |= keys
+                    # A compressed session's continuation copies earlier rows, keeping their time and,
+                    # where it has one, their platform message id, which then alone decides.
+                    said = ("text", text, int(moment))
+                    platform = ("platform", platform_id) if platform_id else None
+                    if text and (platform or said) not in seen:
+                        seen.update(key for key in (said, platform) if key)
                         session.turn(from_epoch(moment), text, limit, context)
                 if session.turns:
                     sessions.append(session)
