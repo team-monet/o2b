@@ -38,6 +38,7 @@ LEAD_LINK = re.compile(r"\[([^\]]+)\]\((?:\./)?leads/([^)\s/]+)\.md\)")
 SETTLE_MINUTES = 10  # a turn still being written is left to the next window
 LEAD_LINES = 3
 BOX_LIMIT = 400
+COPY_ATTEMPTS = 3
 
 
 class Unreadable(Exception):
@@ -199,12 +200,19 @@ def read_claude(root, since, until, limit, context):
     """Owner turns from Claude Code transcripts: `origin.kind` "human", deduplicated by `uuid`."""
     if not root.is_dir():
         raise Unreadable("no Claude Code projects folder at %s" % root)
-    sessions, seen = {}, set()
+    sessions, seen, paths = {}, set(), []
     # Top-level transcripts only: subagents write theirs below the session's own folder.
-    for path in sorted(root.glob("*/*.jsonl")):
+    for path in root.glob("*/*.jsonl"):
         try:
-            if from_epoch(path.stat().st_mtime) <= since:
-                continue  # nothing in it was written after the window opened
+            stat = path.stat()
+        except OSError as error:
+            raise Unreadable("cannot read %s: %s" % (path, error))
+        if from_epoch(stat.st_mtime) > since:  # otherwise nothing in it was written after the window opened
+            paths.append((getattr(stat, "st_birthtime", 0), str(path), path))
+    # A forked or resumed session copies earlier turns under its own id, so read the oldest
+    # transcript first and each turn stays with the session it was typed in.
+    for _, _, path in sorted(paths):
+        try:
             lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
         except OSError as error:
             raise Unreadable("cannot read %s: %s" % (path, error))
@@ -262,6 +270,18 @@ def read_claude(root, since, until, limit, context):
 # SQLite stores
 
 
+def marks(path):
+    """Size and modification time of a store and its journal, to tell whether a copy is consistent."""
+    found = []
+    for suffix in ("", "-wal"):
+        try:
+            stat = os.stat(str(path) + suffix)
+            found.append((stat.st_size, stat.st_mtime_ns))
+        except FileNotFoundError:
+            found.append(None)
+    return found
+
+
 def connect(path, scratch):
     """A read-only connection; a store whose journal cannot be opened in place is read from a copy."""
     if not path.is_file():
@@ -274,15 +294,24 @@ def connect(path, scratch):
         pass
     copy = Path(scratch) / path.name
     try:
-        for suffix in ("", "-wal"):
-            source = Path(str(path) + suffix)
-            if source.is_file():
-                shutil.copyfile(source, str(copy) + suffix)
-        connection = sqlite3.connect(str(copy))
-        connection.execute("select count(*) from sqlite_master").fetchone()
-        return connection
+        # The store and its journal are copied one after the other; a write or checkpoint between
+        # them leaves a pair that silently lacks rows, so keep a copy only if neither changed.
+        for _ in range(COPY_ATTEMPTS):
+            before = marks(path)
+            for suffix in ("", "-wal"):
+                target = Path(str(copy) + suffix)
+                if target.exists():
+                    target.unlink()
+                source = Path(str(path) + suffix)
+                if source.is_file():
+                    shutil.copyfile(str(source), str(target))
+            if marks(path) == before:
+                connection = sqlite3.connect(str(copy))
+                connection.execute("select count(*) from sqlite_master").fetchone()
+                return connection
     except (OSError, sqlite3.Error) as error:
         raise Unreadable("cannot read %s: %s" % (path, error))
+    raise Unreadable("%s kept changing while it was copied" % path)
 
 
 def columns(connection, table):

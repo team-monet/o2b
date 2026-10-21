@@ -261,6 +261,19 @@ class ClaudeCode(Base):
         self.assertEqual([record["session"] for record in records], ["early", "late"])
         self.assertEqual(records[0]["cwd"], "/work")
 
+    @unittest.skipUnless(hasattr(os.stat_result, "st_birthtime"), "needs file creation times")
+    def test_a_copied_turn_stays_with_the_session_it_was_typed_in(self):
+        original = [human("h1", "2026-10-18T02:00:00Z", "No, the other file", session="orig"),
+                    agent("a1", "2026-10-18T02:01:00Z", "Fixed.", session="orig")]
+        self.transcript("-work", "z-orig.jsonl", original)
+        time.sleep(0.05)
+        copied = [dict(record, sessionId="fork") for record in original]
+        self.transcript("-work", "a-fork.jsonl", copied + [
+            human("h2", "2026-10-18T03:00:00Z", "No, the other file", session="fork")])
+        _, records, _ = self.read()
+        self.assertEqual([(record["session"], texts([record])) for record in records],
+                         [("orig", ["No, the other file"]), ("fork", ["No, the other file"])])
+
     def test_a_missing_projects_folder_is_unreadable_not_empty(self):
         code, records, err = run("claude", "--since", SINCE, "--until", UNTIL, "--root", str(self.dir / "none"))
         self.assertEqual(code, 2)
@@ -347,6 +360,47 @@ class Codex(Base):
             code, records, _ = self.read()
         self.assertEqual(code, 0)
         self.assertEqual(texts(records), ["still in the journal"])
+
+    def refuse_in_place(self):
+        connect = sqlite3.connect
+
+        def refuse(target, *args, **kwargs):
+            if kwargs.get("uri"):
+                raise sqlite3.OperationalError("unable to open database file")
+            return connect(target, *args, **kwargs)
+
+        return unittest.mock.patch.object(read_turns.sqlite3, "connect", refuse)
+
+    def test_a_store_written_while_it_is_copied_is_copied_again(self):
+        self.item("t-user", "userMessage", "2026-10-18T01:00:00Z", "copied whole")
+        copyfile, writes = read_turns.shutil.copyfile, []
+
+        def copy_while_written(source, target):
+            copyfile(source, target)
+            if source.endswith("thread_history_1.sqlite") and not writes:
+                writes.append(source)
+                stamp = os.stat(source).st_mtime_ns + 10 ** 9
+                os.utime(source, ns=(stamp, stamp))  # a checkpoint lands mid-copy
+
+        with self.refuse_in_place(), unittest.mock.patch.object(read_turns.shutil, "copyfile", copy_while_written):
+            code, records, _ = self.read()
+        self.assertEqual(code, 0)
+        self.assertEqual(writes, [str(self.home / "thread_history_1.sqlite")])
+        self.assertEqual(texts(records), ["copied whole"])
+
+    def test_a_store_that_keeps_changing_while_copied_is_unreadable(self):
+        self.item("t-user", "userMessage", "2026-10-18T01:00:00Z", "never settles")
+        copyfile = read_turns.shutil.copyfile
+
+        def copy_while_written(source, target):
+            copyfile(source, target)
+            stamp = os.stat(source).st_mtime_ns + 10 ** 9
+            os.utime(source, ns=(stamp, stamp))
+
+        with self.refuse_in_place(), unittest.mock.patch.object(read_turns.shutil, "copyfile", copy_while_written):
+            code, records, err = self.read()
+        self.assertEqual((code, records), (2, []))
+        self.assertIn("kept changing", err)
 
     def test_a_missing_store_is_unreadable(self):
         os.remove(str(self.home / "state_5.sqlite"))
