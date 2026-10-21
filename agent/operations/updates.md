@@ -144,6 +144,16 @@ Leads are optional: a brain without `guidance/LEADS.md` works as before. To adop
 
 Publish and install through the reviewed update sequence above.
 
+## Adopt the fit review
+
+The [fit review](fit-review.md) is optional: a brain without one works as before, and leads are not required for it. To adopt it, with the owner:
+
+1. Agree which runtimes' sessions it may read and on which machines, who runs it and on what schedule, where its proposals reach them, and the numbers [Review fit across sessions](../../guidance/authoring.md#review-fit-across-sessions) leaves to them.
+2. Create the operation as the fit-review guide describes, with the owner's settings on the situation page its Boundaries link and each runtime's first last-read time where the owner says.
+3. Run the reader on each runtime and read its summary, then check one run end to end on a past window where a correction is known to recur, writing no records, so that the check counts toward nothing.
+
+Publish and install through the reviewed update sequence above.
+
 ## First installation
 
 Create an empty independent private personal repository. Clone the framework history to the live location, rename its original remote to `upstream`, add the personal repository as `origin`, and push the shared main branch to personal origin. Configure the live main branch to track `origin/main`. Keep upstream fetching enabled but set its push URL to a deliberately invalid local path. Add personal content only after this separation is in place.
