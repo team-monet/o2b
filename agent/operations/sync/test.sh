@@ -146,6 +146,49 @@ run a
 check "busy git skips the run" '[ "$(head_of a)" = "$before" ]'
 rm "$tmp/a/.git/index.lock" "$tmp/a/busy.md"
 
+# An sk- key counts only where it starts a word, so a URL slug passes while keys in the usual places
+# are still caught. Each case syncs one line in a file of its own. Key-shaped text is assembled here,
+# so that this file does not trip the check it tests.
+case_n=0
+sync_line() {
+	case_n=$((case_n + 1))
+	printf '%s\n' "$1" >"$tmp/a/case-$case_n.md"
+	case_before=$(head_of a)
+	run a
+}
+committed() { sync_line "$1"; [ "$(head_of a)" != "$case_before" ]; }
+blocked() {
+	sync_line "$1"
+	[ "$(head_of a)" = "$case_before" ] && tail -1 "$tmp/alerts" | grep -qF "case-$case_n.md"
+	held=$?
+	rm -f "$tmp/a/case-$case_n.md"
+	return $held
+}
+sk=sk
+alnum=aB3dE5gH7k
+key48="${sk}-$alnum$alnum$alnum$alnum${alnum%??}"
+mixed="${alnum}_${alnum}-${alnum}_${alnum}-$alnum"
+url="https://www.cnbc.com/2026/10/15/${sk}-hynix-third-quarter-profit-ai-memory.html"
+check "URL whose path starts with sk- is committed" 'committed "$url"'
+check "that URL in a Markdown link is committed" 'committed "[SK Hynix posts record third-quarter profit]($url)"'
+check "that URL in a sentence is committed" 'committed "SK Hynix beat estimates on AI memory demand, CNBC reported at $url on Thursday."'
+check "word ending in sk before a hyphenated slug is committed" 'committed "Compare the ri${sk}-adjusted-return-on-capital-model with last year."'
+check "sk- key at line start is blocked" 'blocked "$key48"'
+check "sk- key after a space is blocked" 'blocked "token $key48"'
+check "sk- key after = is blocked" 'blocked "OPENAI_API_KEY=$key48"'
+check "sk- key in double quotes is blocked" 'blocked "{\"api_key\": \"$key48\"}"'
+check "sk- key as a URL query value is blocked" 'blocked "https://api.example.com/v1/models?api_key=$key48"'
+check "Anthropic API key is blocked" 'blocked "ANTHROPIC_API_KEY=${sk}-ant-api03-$mixed"'
+check "Anthropic Admin API key is blocked" 'blocked "${sk}-ant-admin01-$mixed"'
+check "OpenAI project key is blocked" 'blocked "export OPENAI_API_KEY=${sk}-proj-$mixed"'
+check "OpenAI service account key is blocked" 'blocked "key: ${sk}-svcacct-$mixed"'
+check "OpenAI admin key is blocked" 'blocked "\"${sk}-admin-$mixed\""'
+gh=github aws=AKIA slack=xoxb dashes=-----
+check "GitHub fine-grained token is blocked" 'blocked "${gh}_pat_${alnum}_${alnum}_$alnum"'
+check "AWS access key ID is blocked" 'blocked "aws_access_key_id = ${aws}Z3X5C7V9B2N4M6L8"'
+check "Slack token is blocked" 'blocked "${slack}-123456789012-$alnum$alnum"'
+check "private key header is blocked" 'blocked "${dashes}BEGIN OPENSSH PRIVATE KEY$dashes"'
+
 printf 'dev\n' >"$tmp/dev/dev.md"
 dev_before=$(head_of dev)
 run dev
