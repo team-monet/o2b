@@ -154,6 +154,23 @@ The [fit review](fit-review.md) is optional: a brain without one works as before
 
 Publish and install through the reviewed update sequence above.
 
+## Adopt provable work
+
+The [provable-work operation](provable-work.md) is optional: a brain without one works as before, and its brain check runs on any brain. To adopt it, with the owner:
+
+1. Agree the Mission, the projects in scope, and the Boundaries the guide lists, on the situation pages the front page will link.
+2. Create the operation as the guide describes, with an inventory for each project whose frontmatter names its `source`, and run the inventory with `--check` until it reports no drift.
+3. Run the brain check and fix or record what it reports.
+
+A brain that already keeps its own copies of these tools also, in the review checkout:
+
+- adds `source`, and any `exclude`, to each inventory's frontmatter, since an inventory without `source` reads as unavailable. The brain listing covers every folder under `agent/operations/` and every `autopilot/*/tools/`, so an operation out of scope needs an `exclude`, and scripts newly found need rows;
+- calls the inventory with the inventory file's path, as `inventory.py <inventory.md> --check`, wherever it was called with a project name: in procedures, CI and skills. A call left with a project name reads as unavailable on every run;
+- points every other reference to its own copies, in procedures, CI, skills and notes, at the framework's, removes its copies, and moves each moved tool's inventory row to its new path with its eval kept, rather than recording a gone item and a new one with no eval;
+- reviews any Boundary that let an operation change its own copies directly: once in the framework, the tools change only through the framework's pull requests.
+
+Publish and install through the reviewed update sequence above.
+
 ## First installation
 
 Create an empty independent private personal repository. Clone the framework history to the live location, rename its original remote to `upstream`, add the personal repository as `origin`, and push the shared main branch to personal origin. Configure the live main branch to track `origin/main`. Keep upstream fetching enabled but set its push URL to a deliberately invalid local path. Add personal content only after this separation is in place.
