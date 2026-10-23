@@ -23,7 +23,7 @@ LINK = re.compile(r"\[[^\]]*\]\((?:<([^>]+)>|((?:[^()\s]|\([^()\s]*\))+))(?:\s+(
 SETEXT = re.compile(r"^(=+|-+)\s*$")
 HTML_COMMENT = re.compile(r"<!--.*?-->")
 HTML_TAG = re.compile(r"<[^>]+>")
-FENCE = re.compile(r"^\s*(```|~~~)")
+FENCE = re.compile(r"^\s*(`{3,}|~{3,})(.*)$")
 INLINE_CODE = re.compile(r"`[^`]*`")
 HEADING = re.compile(r"^(#{1,6})\s+(.+?)\s*#*\s*$")
 EXPLICIT_ANCHOR = re.compile(r"<a\s+(?:id|name)=\"([^\"]+)\"")
@@ -44,13 +44,18 @@ def markdown_files(root):
 
 def prose_lines(text, keep_code=False):
     """Yield (line number, line) outside fenced code and HTML comments; inline code is
-    removed unless kept."""
-    fenced = in_comment = False
+    removed unless kept. A fence closes only on a bare run of its own character at least
+    as long as the one that opened it, so an example fence inside a longer one stays code."""
+    fence, in_comment = None, False
     for number, line in enumerate(text.splitlines(), 1):
-        if not in_comment and FENCE.match(line):
-            fenced = not fenced
+        match = None if in_comment else FENCE.match(line)
+        if match and fence is None:
+            fence = match.group(1)
             continue
-        if fenced:
+        if fence:
+            marker = match.group(1) if match else ""
+            if marker[:1] == fence[0] and len(marker) >= len(fence) and not match.group(2).strip():
+                fence = None
             continue
         if in_comment:
             if "-->" not in line:
@@ -186,7 +191,9 @@ def check_stage_indexes(root, problems):
         if not index.exists():
             continue
         rel = index.relative_to(root)
-        listed = {(index.parent / (a or t).partition("#")[0]).resolve() for a, t in LINK.findall(index.read_text())}
+        text = index.read_text(encoding="utf-8", errors="replace")
+        links = [link for _, line in prose_lines(text) for link in LINK.findall(line)]  # not commented out or fenced
+        listed = {(index.parent / (a or t).partition("#")[0]).resolve() for a, t in links}
         pages = index.parent / "stages"
         for page in sorted(pages.glob("*.md")) if pages.is_dir() else []:
             if page.resolve() not in listed:

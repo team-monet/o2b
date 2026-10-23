@@ -40,8 +40,10 @@ class Unavailable(Exception):
 
 
 def is_test(rel):
-    """Tests are not items of their own."""
-    return bool(re.match(r"^test[_.]", rel.rsplit("/", 1)[-1])) or "/tests/" in f"/{rel}"
+    """Tests are not items of their own: `test_x.py`, `test.sh`, `x_test.py`, `x.test.ts`,
+    `x.spec.js`, or anything under a `tests/` folder."""
+    name = rel.rsplit("/", 1)[-1]
+    return bool(re.match(r"^test[_.]", name) or re.search(r"(_test|\.test|\.spec)\.[^.]+$", name)) or "/tests/" in f"/{rel}"
 
 
 def is_script(path, rel):
@@ -163,13 +165,18 @@ def brain_root(path):
 
 
 def table_lines(text):
-    """Lines outside fenced code, where an example table is no inventory row."""
-    fenced = False
+    """Lines outside fenced code, where an example table is no inventory row. A fence closes
+    only on a bare run of its own character at least as long as the one that opened it."""
+    fence = None
     for line in text.splitlines():
-        if re.match(r"^\s*(```|~~~)", line):
-            fenced = not fenced
-        elif not fenced:
-            yield line
+        match = re.match(r"^\s*(`{3,}|~{3,})(.*)$", line)
+        if fence is None:
+            if match:
+                fence = match.group(1)
+            else:
+                yield line
+        elif match and match.group(1)[0] == fence[0] and len(match.group(1)) >= len(fence) and not match.group(2).strip():
+            fence = None
 
 
 def excluded(item, prefixes):

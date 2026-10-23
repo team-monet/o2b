@@ -132,6 +132,14 @@ class InventoryTest(unittest.TestCase):
         self.assertEqual(result.returncode, 1, result.stdout)
         self.assertIn("not in inventory: agent/operations/new-review/reader.py", result.stdout)
 
+    def test_tests_named_by_suffix_are_not_items(self):
+        for name in ("worker_test.py", "worker.test.ts", "worker.spec.js", "smoke_test.sh"):
+            write(self.root, f"agent/skills/demo/scripts/{name}")
+        write(self.root, "agent/skills/demo/scripts/latest.py")
+        write(self.root, "agent/skills/demo/scripts/attest.sh")
+        expected = self.expected + ["agent/skills/demo/scripts/latest.py", "agent/skills/demo/scripts/attest.sh"]
+        self.assertEqual(sorted(inventory.brain_items(self.root)), sorted(expected))
+
     def test_installed_and_generated_code_is_not_an_item(self):
         write(self.root, "agent/skills/demo/node_modules/pkg/index.js")
         write(self.root, "autopilot/proof/tools/.venv/lib/site.py")
@@ -164,6 +172,18 @@ class InventoryTest(unittest.TestCase):
         result = self.run_tool(path, "--check")
         self.assertEqual(result.returncode, 1, result.stdout)
         self.assertIn("not in inventory: agent/skills/demo", result.stdout)
+
+    def test_a_fence_inside_a_longer_fence_stays_code(self):
+        # Toggling on every fence line would end the example at "```text" and read its row.
+        path = self.inventory(self.expected[1:])
+        example = "````markdown\n```text\n" + rows(["agent/skills/demo"]) + "```\n````\n"
+        path.write_text(path.read_text() + "\n" + example)
+        result = self.run_tool(path, "--check")
+        self.assertEqual(result.returncode, 1, result.stdout)
+        self.assertIn("not in inventory: agent/skills/demo", result.stdout)
+        path.write_text(path.read_text() + rows(["agent/skills/demo"]))
+        result = self.run_tool(path, "--check")
+        self.assertEqual(result.returncode, 0, result.stdout)
 
     def test_rows_with_a_scheme_are_kept_by_hand(self):
         kept = self.expected + ["cron:a1", "launchd:local.brain.sync", "file:~/x.py", "agent-runtime:abc123"]

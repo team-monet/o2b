@@ -111,6 +111,46 @@ class CheckBrainTest(unittest.TestCase):
         write(self.root, "guidance/stages/orphan.md", "# Orphan\n")
         self.assert_fails_with("stage page not in index -> guidance/stages/orphan.md")
 
+    def test_stage_page_listed_only_in_a_comment_or_fence_is_missing(self):
+        write(self.root, "guidance/stages/hidden.md", "# Hidden\n")
+        write(self.root, "guidance/stages/fenced.md", "# Fenced\n")
+        write(self.root, "guidance/STAGES.md", """
+            | [a moment](stages/a-moment.md) | All |
+            <!-- | [hidden](stages/hidden.md) | All | -->
+            ```
+            | [fenced](stages/fenced.md) | All |
+            ```
+            """)
+        code, out = self.run_check()
+        self.assertEqual(code, 1, out)
+        self.assertIn("stage page not in index -> guidance/stages/hidden.md", out)
+        self.assertIn("stage page not in index -> guidance/stages/fenced.md", out)
+        self.assertNotIn("guidance/stages/a-moment.md", out)
+
+    def test_a_fence_inside_a_longer_fence_stays_code(self):
+        write(self.root, "notes.md", """
+            ````markdown
+            ```sh
+            [inner](gone-inner.md)
+            ```
+            ## Heading in an example
+            ````
+            [after](gone-after.md) [anchor](#heading-in-an-example)
+            """)
+        code, out = self.run_check()
+        self.assertEqual(code, 1, out)
+        self.assertNotIn("gone-inner.md", out)
+        self.assertIn("notes.md:7: broken link -> gone-after.md", out)
+        self.assertIn("notes.md:7: missing anchor -> #heading-in-an-example", out)
+
+    def test_a_fence_closes_only_on_its_own_character_and_length(self):
+        write(self.root, "notes.md", "```\n~~~\n[a](gone-a.md)\n```sh\n[b](gone-b.md)\n````\n[c](gone-c.md)\n")
+        code, out = self.run_check()
+        self.assertEqual(code, 1, out)
+        self.assertNotIn("gone-a.md", out)
+        self.assertNotIn("gone-b.md", out)
+        self.assertIn("notes.md:7: broken link -> gone-c.md", out)
+
     def test_secret_format_in_tracked_file(self):
         write(self.root, "notes.md", f"token {SECRET_SHAPED}\n")
         subprocess.run(["git", "-C", str(self.root), "add", "notes.md"], check=True)
