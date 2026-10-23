@@ -185,16 +185,25 @@ class CheckBrainTest(unittest.TestCase):
         code, out = self.run_check()
         self.assertEqual(code, 0, out)
 
-    def test_url_slug_is_no_secret_but_trips_auto_sync(self):
-        slug = "s" + "k-hynix-reports-record-profit-on-ai-memory"  # assembled: auto-sync's tripwire would flag it
-        write(self.root, "notes.md", f"See example.com/2026/10/15/{slug}.html\n")  # untracked: still scanned
+    def test_hyphenated_slug_trips_neither_check(self):
+        slug = "s" + "k-hynix-reports-record-profit-on-ai-memory"  # assembled: an older tripwire flagged it
+        write(self.root, "notes.md", f"See example.com/2026/10/15/{slug}.html\n\n{slug} in prose\n")  # untracked: still scanned
+        code, out = self.run_check()
+        self.assertEqual(code, 0, out)
+
+    def test_long_run_in_a_url_path_trips_auto_sync_but_is_no_secret(self):
+        token = "s" + "k-" + "a" * 24  # assembled so this file holds no match itself
+        write(self.root, "notes.md", f"See example.com/files/{token}.html\n")
         code, out = self.run_check()
         self.assertEqual(code, 1, out)
         self.assertNotIn("secret-format", out)
         self.assertIn("notes.md:1: matches auto-sync's credential tripwire", out)
-        self.assertNotIn(slug, out)
-        write(self.root, "notes.md", "key " + "s" + "k-" + "Ab1" * 10 + "\n")
-        self.assert_fails_with("notes.md:1: secret-format match")
+        self.assertNotIn(token, out)
+
+    def test_keys_with_and_without_hyphens_are_secrets(self):
+        for key in ("s" + "k-" + "Ab1" * 10, "s" + "k-proj-" + "Ab1" * 10):
+            write(self.root, "notes.md", f"key {key}\n")
+            self.assert_fails_with("notes.md:1: secret-format match")
 
     def test_missing_sync_pattern_is_reported(self):
         (self.root / "agent/operations/sync/sync.sh").write_text("# no pattern\n")

@@ -28,9 +28,10 @@ INLINE_CODE = re.compile(r"`[^`]*`")
 HEADING = re.compile(r"^(#{1,6})\s+(.+?)\s*#*\s*$")
 EXPLICIT_ANCHOR = re.compile(r"<a\s+(?:id|name)=\"([^\"]+)\"")
 # Auto-sync's tripwire formats (agent/operations/sync/sync.sh), except that `sk-` must not
-# continue a word, path or slug: the tripwire's bare `sk-` also matches inside a URL slug.
+# continue a word or path: the tripwire also matches a long run after `sk-` inside a URL path,
+# which check_secrets reports separately as a tripwire match.
 SECRET = re.compile(
-    r"((?<![A-Za-z0-9/_-])sk-[A-Za-z0-9_-]{20,}|ghp_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{20,}"
+    r"((?<![A-Za-z0-9/_-])sk-[A-Za-z0-9_-]*[A-Za-z0-9_]{20,}|ghp_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{20,}"
     r"|AKIA[0-9A-Z]{16}|xox[abpr]-[A-Za-z0-9-]{10,}|-----BEGIN [A-Z ]*PRIVATE KEY-----)"
 )
 
