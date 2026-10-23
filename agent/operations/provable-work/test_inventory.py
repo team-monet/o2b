@@ -215,6 +215,20 @@ class InventoryTest(unittest.TestCase):
         self.assertEqual(result.returncode, 1, result.stdout)
         self.assertIn("not in inventory: autopilot/other/tools/scan.py", result.stdout)
 
+    def test_excluding_a_workflow_file_excludes_its_jobs(self):
+        write(self.root, ".github/workflows/other.yml", "jobs:\n  build:\n    runs-on: x\n")
+        frontmatter = "---\nsource: brain\nexclude:\n  - .github/workflows/other.yml\n---\n"
+        result = self.run_tool(self.inventory(self.expected, frontmatter), "--check")
+        self.assertEqual(result.returncode, 0, result.stdout)
+        result = self.run_tool(self.inventory(self.expected), "--check")
+        self.assertEqual(result.returncode, 1, result.stdout)
+        self.assertIn("not in inventory: .github/workflows/other.yml#build", result.stdout)
+        one_job = "---\nsource: brain\nexclude:\n  - .github/workflows/ci.yml#lint\n---\n"
+        result = self.run_tool(self.inventory([], one_job))
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertNotIn(".github/workflows/ci.yml#lint", result.stdout.split())
+        self.assertIn(".github/workflows/ci.yml#test", result.stdout.split())
+
     def test_listing_respects_exclude(self):
         result = self.run_tool(self.inventory([], "---\nsource: brain\nexclude:\n  - agent/skills/\n---\n"))
         self.assertEqual(result.returncode, 0, result.stdout)

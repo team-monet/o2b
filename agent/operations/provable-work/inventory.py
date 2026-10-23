@@ -180,7 +180,10 @@ def table_lines(text):
 
 
 def excluded(item, prefixes):
-    return any(item == p.rstrip("/") or item.startswith(p.rstrip("/") + "/") for p in prefixes)
+    """An item at or under an excluded path, or excluded by name; a CI job also counts as its
+    workflow file's path."""
+    path = item.partition("#")[0]
+    return any(item == p.rstrip("/") or path == p.rstrip("/") or path.startswith(p.rstrip("/") + "/") for p in prefixes)
 
 
 def main():

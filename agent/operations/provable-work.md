@@ -66,7 +66,7 @@ The operation keeps, under its `records/`:
   | `agent/skills/release-notes` | skill | none | — | 2026-10-23 | no instruction test |
   ```
 
-  `source` is `brain`, the brain the file is in, or `github:<owner>/<repo>`; `exclude` lists path prefixes out of scope. **Eval of eval** names the questions passed (`fails`, `consumer`, `fixture`, `judge`, `no escapes`), or `failed: <question>`. A row whose item opens with a scheme, such as `cron:nightly-brief` or `file:~/bin/backup.sh`, is kept by hand: an unattended job or a file outside the brain.
+  `source` is `brain`, the brain the file is in, or `github:<owner>/<repo>`; `exclude` lists path prefixes out of scope; a workflow file's path excludes its jobs. **Eval of eval** names the questions passed (`fails`, `consumer`, `fixture`, `judge`, `no escapes`), or `failed: <question>`. A row whose item opens with a scheme, such as `cron:nightly-brief` or `file:~/bin/backup.sh`, is kept by hand: an unattended job or a file outside the brain.
 - **`projects/<project>.md`**, the project's level and the check command and verification skill any session working there runs before calling work done.
 - **`misses/<date>-<slug>.md`**, one per miss: agent work that passed its evals but was wrong, found by the owner, a reviewer, CI or production. Its frontmatter gives `project`, `found_by`, and `eval`, the item or eval that should have caught it or `none existed`; the body says what happened, how it was found, and links the change and evidence. The operation records the misses it finds; for other sessions to record theirs, the owner's guidance must route them here, such as through a skill they load. A worker reports a miss to its lead.
 
