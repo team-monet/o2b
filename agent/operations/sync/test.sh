@@ -146,9 +146,9 @@ run a
 check "busy git skips the run" '[ "$(head_of a)" = "$before" ]'
 rm "$tmp/a/.git/index.lock" "$tmp/a/busy.md"
 
-# An sk- key counts only where it starts a word, so a URL slug passes while keys in the usual places
-# are still caught. Each case syncs one line in a file of its own. Key-shaped text is assembled here,
-# so that this file does not trip the check it tests.
+# A slug after sk- is short words joined by hyphens, so it passes wherever it sits, while keys in the
+# usual places are still caught. Each case syncs one line in a file of its own. Key-shaped text is
+# assembled here, so that this file does not trip the check it tests.
 case_n=0
 sync_line() {
 	case_n=$((case_n + 1))
@@ -173,11 +173,18 @@ check "URL whose path starts with sk- is committed" 'committed "$url"'
 check "that URL in a Markdown link is committed" 'committed "[SK Hynix posts record third-quarter profit]($url)"'
 check "that URL in a sentence is committed" 'committed "SK Hynix beat estimates on AI memory demand, CNBC reported at $url on Thursday."'
 check "word ending in sk before a hyphenated slug is committed" 'committed "Compare the ri${sk}-adjusted-return-on-capital-model with last year."'
+note="${sk}-hynix-memory-pricing-outlook.md"
+check "relative link to a note whose name starts with sk- is committed" 'committed "[notes]($note)"'
+check "that file name in prose is committed" 'committed "See $note for the numbers."'
+check "heading anchor starting with sk- is committed" 'committed "[Q3](#${sk}-hynix-third-quarter-results)"'
+check "search query value starting with sk- is committed" 'committed "https://www.google.com/search?q=${sk}-hynix-third-quarter-results"'
 check "sk- key at line start is blocked" 'blocked "$key48"'
 check "sk- key after a space is blocked" 'blocked "token $key48"'
 check "sk- key after = is blocked" 'blocked "OPENAI_API_KEY=$key48"'
 check "sk- key in double quotes is blocked" 'blocked "{\"api_key\": \"$key48\"}"'
 check "sk- key as a URL query value is blocked" 'blocked "https://api.example.com/v1/models?api_key=$key48"'
+check "sk- key after an encoded space is blocked" 'blocked "https://example.com/?auth=Bearer%20$key48"'
+check "sk- key after an escaped newline in a JSON string is blocked" 'blocked "{\"text\": \"line one\\n$key48\"}"'
 check "Anthropic API key is blocked" 'blocked "ANTHROPIC_API_KEY=${sk}-ant-api03-$mixed"'
 check "Anthropic Admin API key is blocked" 'blocked "${sk}-ant-admin01-$mixed"'
 check "OpenAI project key is blocked" 'blocked "export OPENAI_API_KEY=${sk}-proj-$mixed"'

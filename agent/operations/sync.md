@@ -38,7 +38,7 @@ Before relying on it, run [test.sh](sync/test.sh) on the host; it exercises sync
 ## Limits
 
 - It commits whatever is on disk, including an actor's unfinished edits; other machines see them within one interval. Actors may still make deliberate commits.
-- The credential check matches common token formats only. An `sk-` key counts only at the start of a word, so one directly after a letter, a digit, `/`, `.`, `_` or `-`, as in a URL path, is missed. Keep secrets outside the brain.
+- The credential check matches common token formats only. An `sk-` key is missed when hyphens break its body into runs shorter than 20 characters, which happens to a random 100-character body about once in 16,000; a word ending in "sk" followed by a hyphen and 20 or more letters, digits or underscores in a row, such as an id, still blocks the commit. Keep secrets outside the brain.
 - It resolves no conflicts. A clean text merge can still combine contradictory edits in different places, so semantic conflicts need the same review as before.
 - Alerts use macOS notifications when available, otherwise the log; only a merge conflict also reaches other machines, through its notice. Offline and authentication failures are logged and retried silently, as is a notice whose push fails.
 - Run one syncer per checkout. Do not also run an editor's Git plugin on a timer.

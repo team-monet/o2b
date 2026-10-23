@@ -31,9 +31,10 @@ for f in index.lock MERGE_HEAD CHERRY_PICK_HEAD REVERT_HEAD rebase-merge rebase-
 	fi
 done
 
-# Common credential formats only; this is a tripwire, not a secret scanner. An sk- key counts only
-# where it starts a word, so a URL path segment or a word ending in "sk" before a hyphen passes.
-secrets='((^|[^/.A-Za-z0-9_-])sk-[A-Za-z0-9_-]{20,}|ghp_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{20,}|AKIA[0-9A-Z]{16}|xox[abpr]-[A-Za-z0-9-]{10,}|-----BEGIN [A-Z ]*PRIVATE KEY-----)'
+# Common credential formats only; this is a tripwire, not a secret scanner. An sk- key body is a long
+# random run, while a slug is short words joined by hyphens, so sk- needs 20 characters in a row
+# without a hyphen, wherever it appears.
+secrets='(sk-[A-Za-z0-9_-]*[A-Za-z0-9_]{20,}|ghp_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{20,}|AKIA[0-9A-Z]{16}|xox[abpr]-[A-Za-z0-9-]{10,}|-----BEGIN [A-Z ]*PRIVATE KEY-----)'
 
 if [ -n "$(git status --porcelain)" ]; then
 	git add -A || exit 1
