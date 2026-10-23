@@ -1,0 +1,88 @@
+# Runs the framework's own test suites, so a change that breaks another change's tests is caught:
+# on every pull request, and daily on main, where two pull requests that were each green meet.
+# Personal brains receive this file with framework updates. The repository guard on every job
+# skips it there, and no push trigger exists, so their frequent automatic pushes never start it.
+name: Framework check
+
+on:
+  pull_request:
+  schedule:
+    # Off the hour, when GitHub delays or drops fewer scheduled runs. Both jobs' conditions below
+    # repeat the weekly expression; change all three together.
+    - cron: "17 14 * * *" # daily, Linux
+    - cron: "47 14 * * 0" # weekly, macOS
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  PYTHONDONTWRITEBYTECODE: "1"
+
+jobs:
+  linux:
+    if: github.repository == 'team-monet/o2b' && github.event.schedule != '47 14 * * 0'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        # The oldest Python the tools support (sync.md) and a recent one; runtime sync's TOML
+        # checks need tomllib, so on 3.9 they are inert and only the recent one runs them.
+        python: ["3.9", "3.14"]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Auto-sync
+        working-directory: agent/operations/sync
+        run: ./test.sh
+      # These three import their script by name, which -I would prevent.
+      - name: Runtime sync
+        working-directory: agent/operations/runtime-sync
+        run: python3 test_runtime_sync.py
+      - name: Gate hook
+        working-directory: agent/operations/gate-hook
+        run: python3 test_gate_hook.py
+      - name: Fit review reader
+        working-directory: agent/operations/fit-review
+        run: python3 test_read_turns.py
+      - name: Brain check tests
+        run: python3 -I agent/operations/provable-work/test_check_brain.py
+      - name: Inventory tests
+        run: python3 -I agent/operations/provable-work/test_inventory.py
+      - name: Brain check of this repository
+        run: python3 -I agent/operations/provable-work/check_brain.py
+
+  macos:
+    # macOS is where auto-sync, runtime sync and the gate hook are installed: BSD grep, sed and awk,
+    # /bin/sh as bash, file creation times, and Apple's /usr/bin/python3, which the suites run
+    # under here (auto-sync's own runtime-sync call takes python3 from PATH). A macOS minute costs
+    # about ten Linux minutes against a private repository's free Actions quota, so this job runs
+    # weekly and on request, not per pull request.
+    if: github.repository == 'team-monet/o2b' && (github.event_name == 'workflow_dispatch' || github.event.schedule == '47 14 * * 0')
+    runs-on: macos-15
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: System Python
+        run: /usr/bin/python3 -V
+      - name: Auto-sync
+        working-directory: agent/operations/sync
+        run: ./test.sh
+      - name: Runtime sync
+        working-directory: agent/operations/runtime-sync
+        run: /usr/bin/python3 test_runtime_sync.py
+      - name: Gate hook
+        working-directory: agent/operations/gate-hook
+        run: /usr/bin/python3 test_gate_hook.py
+      - name: Fit review reader
+        working-directory: agent/operations/fit-review
+        run: /usr/bin/python3 test_read_turns.py
+      - name: Brain check tests
+        run: /usr/bin/python3 -I agent/operations/provable-work/test_check_brain.py
+      - name: Inventory tests
+        run: /usr/bin/python3 -I agent/operations/provable-work/test_inventory.py
+      - name: Brain check of this repository
+        run: /usr/bin/python3 -I agent/operations/provable-work/check_brain.py
