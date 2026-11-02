@@ -25,6 +25,10 @@ git -C "$live_path" remote add origin "$personal_remote"
 git -C "$live_path" push -u origin main
 ```
 
+Without an SSH key, clone over HTTPS instead: replace the `git clone` line with `git clone https://github.com/team-monet/o2b.git "$live_path"`.
+
+Scheduled [auto-sync](../agent/operations/sync.md) and [runtime sync](../agent/operations/skill-discovery.md#runtime-sync) are macOS (launchd) only: the installer is a launchd job, and the scripts are tested on macOS and Linux runners but not installed elsewhere. Everything else here is plain Markdown and Git.
+
 The framework supplies `BRAIN.md`, the master plan, and operating guides. The personal repository supplies the snapshot, populated principles, leads, shared and project stage indexes and rules, agent definitions, skills, project indexes and content, autopilot operations, knowledge notes, source records, workstreams, and inbox entries. Shared rules live under root `guidance/`; project-specific rules live under `projects/<project>/guidance/`. The framework must not publish populated personal files.
 
 ## Build your brain
@@ -46,7 +50,7 @@ A rule that names a skill or script also requires access to that capability and 
 
 ## Review a shared update
 
-Adopt updates explicitly; there is no automatic sync or update script. Fetch `upstream` in a disposable checkout of the personal repository, inspect and merge a selected upstream revision there, then validate the combined personal result. Publish the reviewed personal `main` only after conflicts and content migrations are settled. Fast-forward the live checkout from personal `origin/main` only when it is clean and has no unpushed work.
+Adopt updates explicitly; no script merges a framework update for you. [Auto-sync](../agent/operations/sync.md) only commits and pushes your own live checkout, and [runtime sync](../agent/operations/skill-discovery.md#runtime-sync) only links skills and agent definitions into each agent runtime. Both are optional and installed on a schedule on macOS only; elsewhere, run `runtime_sync.py` by hand and push your own changes. Fetch `upstream` in a disposable checkout of the personal repository, inspect and merge a selected upstream revision there, then validate the combined personal result. Publish the reviewed personal `main` only after conflicts and content migrations are settled. Fast-forward the live checkout from personal `origin/main` only when it is clean and has no unpushed work.
 
 The update sequence, safeguards, recovery boundary, and migration from project-local guidance are owned by [agent/operations/updates.md](../agent/operations/updates.md). A framework release that changes personal file locations must include an explicit migration; Git cannot infer meaning.
 

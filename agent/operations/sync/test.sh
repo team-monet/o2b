@@ -168,16 +168,16 @@ sk=sk
 alnum=aB3dE5gH7k
 key48="${sk}-$alnum$alnum$alnum$alnum${alnum%??}"
 mixed="${alnum}_${alnum}-${alnum}_${alnum}-$alnum"
-url="https://www.cnbc.com/2026/10/15/${sk}-hynix-third-quarter-profit-ai-memory.html"
+url="https://news.example.com/2026/10/15/${sk}-acme-third-quarter-profit-cloud-demand.html"
 check "URL whose path starts with sk- is committed" 'committed "$url"'
-check "that URL in a Markdown link is committed" 'committed "[SK Hynix posts record third-quarter profit]($url)"'
-check "that URL in a sentence is committed" 'committed "SK Hynix beat estimates on AI memory demand, CNBC reported at $url on Thursday."'
+check "that URL in a Markdown link is committed" 'committed "[Acme posts record third-quarter profit]($url)"'
+check "that URL in a sentence is committed" 'committed "Acme beat estimates on cloud demand, Example News reported at $url on Thursday."'
 check "word ending in sk before a hyphenated slug is committed" 'committed "Compare the ri${sk}-adjusted-return-on-capital-model with last year."'
-note="${sk}-hynix-memory-pricing-outlook.md"
+note="${sk}-acme-pricing-outlook.md"
 check "relative link to a note whose name starts with sk- is committed" 'committed "[notes]($note)"'
 check "that file name in prose is committed" 'committed "See $note for the numbers."'
-check "heading anchor starting with sk- is committed" 'committed "[Q3](#${sk}-hynix-third-quarter-results)"'
-check "search query value starting with sk- is committed" 'committed "https://www.google.com/search?q=${sk}-hynix-third-quarter-results"'
+check "heading anchor starting with sk- is committed" 'committed "[Q3](#${sk}-acme-third-quarter-results)"'
+check "search query value starting with sk- is committed" 'committed "https://www.google.com/search?q=${sk}-acme-third-quarter-results"'
 check "sk- key at line start is blocked" 'blocked "$key48"'
 check "sk- key after a space is blocked" 'blocked "token $key48"'
 check "sk- key after = is blocked" 'blocked "OPENAI_API_KEY=$key48"'
