@@ -23,7 +23,7 @@ except ImportError:  # Python before 3.11
 
 VERIFIER = '''---
 name: verifier
-disallowedTools: mcp__monet
+disallowedTools: mcp__example
 description: "Use when proof matters: it returns a verdict \\"with evidence\\"."
 model: opus
 source: https://example.com/verifier.md

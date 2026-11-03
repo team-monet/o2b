@@ -186,7 +186,7 @@ class CheckBrainTest(unittest.TestCase):
         self.assertEqual(code, 0, out)
 
     def test_hyphenated_slug_trips_neither_check(self):
-        slug = "s" + "k-hynix-reports-record-profit-on-ai-memory"  # assembled: an older tripwire flagged it
+        slug = "s" + "k-acme-reports-record-profit-on-cloud-demand"  # assembled: an older tripwire flagged it
         write(self.root, "notes.md", f"See example.com/2026/10/15/{slug}.html\n\n{slug} in prose\n")  # untracked: still scanned
         code, out = self.run_check()
         self.assertEqual(code, 0, out)
