@@ -2,7 +2,7 @@
 
 Governing parent: [BRAIN.md](../BRAIN.md)
 
-Read this guide when a task concerns the owner's own life rather than a project: life direction, family, health, routines, home, travel, and personal finance and administration. Career work, investing, and other bodies of work with their own goals belong in [project homes](../projects/README.md). The shared framework supplies this guide; the area's content belongs to the personal brain.
+Read this guide when a task concerns the owner's own life rather than a project: life direction, family, health, routines, home, travel, and personal finance and administration. Career work, investing, and other bodies of work with their own goals belong in [project homes](../projects/README.md), and running a company in [Companies](../companies/README.md). The shared framework supplies this guide; the area's content belongs to the personal brain.
 
 ## Parts
 
@@ -27,4 +27,4 @@ The owner's page is the root `SNAPSHOT.md`, described in the [Work guide](../age
 
 ## Boundaries
 
-Personal content is kept out of other tasks' context because only a personal task enters this area, but any actor with file access can read it. Keep secrets, credentials, and government or financial identifiers out of it; record where they are kept instead, in a household note that names the stores, and refer to one as `Kept in: <store>, "<entry>"`. Do not store other people's personal data beyond what the owner's own life requires.
+Personal content is kept out of other tasks' context because only a personal task enters this area, but any actor with file access can read it. Keep secrets, credentials, and government or financial identifiers out of it; record where they are kept instead, in a household note that names the stores, and refer to one as `Kept in: <store>, "<entry>"`. Do not store other people's personal data beyond what the owner's own life requires. [Sensitive information and binding actions](../agent/operations/sensitive-information.md) sets what an agent may read, keep, send, and do.

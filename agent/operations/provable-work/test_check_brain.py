@@ -111,6 +111,11 @@ class CheckBrainTest(unittest.TestCase):
         write(self.root, "guidance/stages/orphan.md", "# Orphan\n")
         self.assert_fails_with("stage page not in index -> guidance/stages/orphan.md")
 
+    def test_company_stage_page_missing_from_index(self):
+        write(self.root, "companies/demo/guidance/stages/orphan.md", "# Orphan\n")
+        write(self.root, "companies/demo/guidance/STAGES.md", "# Stages\n")
+        self.assert_fails_with("stage page not in index -> companies/demo/guidance/stages/orphan.md")
+
     def test_stage_page_listed_only_in_a_comment_or_fence_is_missing(self):
         write(self.root, "guidance/stages/hidden.md", "# Hidden\n")
         write(self.root, "guidance/stages/fenced.md", "# Fenced\n")

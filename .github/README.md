@@ -38,6 +38,7 @@ The root holds what you read or rule on; agents' working material lives under `a
 - Create `SNAPSHOT.md` at the root from the skeleton in the [Work guide](../agent/work/README.md#snapshot): the one page you read to see what needs you.
 - Put your admitted principles, leads, and situation pages under [Guidance](../guidance/README.md).
 - Keep material about your own life outside projects under [Personal](../personal/README.md).
+- Keep the running of a company under [Companies](../companies/README.md), apart from its products.
 - Give an actual project a README and add it to your personal `projects/INDEX.md`, following [Projects](../projects/README.md).
 - Run operations that work on their own toward a Mission you give under [Autopilot](../autopilot/README.md).
 - Retain useful knowledge and source relationships through [Knowledge](../agent/knowledge/README.md) and [Sources](../agent/sources/README.md).

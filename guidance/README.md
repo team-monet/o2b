@@ -12,7 +12,7 @@ The personal brain may contain:
 - `principles/<set>.md`: principles that belong to several leads, read by the leads whose pages name the set.
 - `STAGES.md`: the index of shared situations, linking each to its page.
 - `stages/<situation>.md`: the page for one situation.
-- `projects/<project>/guidance/STAGES.md` and `stages/<situation>.md`: that project's situations, or its additions to shared ones.
+- `projects/<project>/guidance/STAGES.md` and `stages/<situation>.md`: that project's situations, or its additions to shared ones. A company's live at the same paths under `companies/<company>/`.
 
 The framework supplies conventions, not populated personal guidance. If an optional file is absent, do not infer its contents.
 
