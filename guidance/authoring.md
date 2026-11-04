@@ -52,7 +52,7 @@ The schedule, the runtimes read, the number of sessions that makes a proposal, a
 
 ## Situations and rules
 
-Use root `guidance/STAGES.md` for shared situations and `projects/<project>/guidance/STAGES.md` for project situations. Each index contains a governing-parent link and a table: each row names a situation the way an agent would recognize it, such as "about to open a pull request", gives a short applicability hint, and links to one unique page in its own `stages/` directory. Both follow this guide without duplicating it. BRAIN and the [guidance reader](README.md) own loading behaviour.
+Use root `guidance/STAGES.md` for shared situations and `projects/<project>/guidance/STAGES.md` for project situations, or `companies/<company>/guidance/STAGES.md` for a company's. Each index contains a governing-parent link and a table: each row names a situation the way an agent would recognize it, such as "about to open a pull request", gives a short applicability hint, and links to one unique page in its own `stages/` directory. Both follow this guide without duplicating it. BRAIN and the [guidance reader](README.md) own loading behaviour.
 
 A situation page holds everything that applies at that moment. Its rules, under scope headings, say what must hold. Optional sections follow when there is something to link:
 

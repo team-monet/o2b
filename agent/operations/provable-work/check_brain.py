@@ -188,7 +188,7 @@ def check_skills(root, problems):
 
 
 def check_stage_indexes(root, problems):
-    for index in sorted([root / "guidance" / "STAGES.md", *root.glob("projects/*/guidance/STAGES.md")]):
+    for index in sorted([root / "guidance" / "STAGES.md", *root.glob("projects/*/guidance/STAGES.md"), *root.glob("companies/*/guidance/STAGES.md")]):
         if not index.exists():
             continue
         rel = index.relative_to(root)

@@ -6,7 +6,7 @@ Read this plan before adding a framework capability, changing shared structure, 
 
 ## Boundaries
 
-The shared repository owns structure and operating guides. A personal repository built from its history owns the snapshot, populated principles, leads, situation pages and their rules, agent definitions, skills, personal-life content, projects, autopilot operations, knowledge, work, and source records. Shared updates must not embed or overwrite personal content.
+The shared repository owns structure and operating guides. A personal repository built from its history owns the snapshot, populated principles, leads, situation pages and their rules, agent definitions, skills, personal-life content, companies, projects, autopilot operations, knowledge, work, and source records. Shared updates must not embed or overwrite personal content.
 
 The framework must be usable by someone starting their own brain without the maintainer's private files, accounts, installed skills, or previous conversations. Feature guides supply enough instructions and generic examples to establish a personal instance. Actual workstreams, inbox entries, migration inventories, and runtime evidence belong to that instance.
 
@@ -46,6 +46,7 @@ Setup, installation, migration, and other detailed procedures belong in linked d
 |---|---|
 | `SNAPSHOT.md` | The owner's page: what needs them now, from any area, built from the skeleton in the [Work guide](work/README.md#snapshot); populated content stays personal |
 | [Personal](../personal/README.md) | The owner's own life outside projects: the same parts as a project home plus household notes and inner-circle people pages; populated content stays personal |
+| [Companies](../companies/README.md) | Running a company apart from its products: open work, deadlines, decisions, and pointers to the registers and stores that hold its records; populated content stays personal |
 | [Projects](../projects/README.md) | Project-specific domain knowledge, procedures, decisions, evidence, and continuation context |
 | [Autopilot](../autopilot/README.md) | Operations that run on their own toward a Mission the owner gave, and their progress; populated operations stay personal |
 | [Guidance](../guidance/README.md) | Principles, leads, situation pages, and the conventions for scoping and admitting them |

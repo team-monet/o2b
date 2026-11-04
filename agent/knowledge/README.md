@@ -6,7 +6,7 @@ Read this guide when writing, reorganising, or migrating knowledge notes. BRAIN 
 
 ## Where notes live
 
-Project knowledge lives in `projects/<project>/knowledge/`; knowledge that clearly applies beyond one project lives in `agent/knowledge/`. Facts about code stay in its repository. Each folder is created with its first note, and its listing is the index: there is no separate index file.
+Project knowledge lives in `projects/<project>/knowledge/`, and a company's in `companies/<company>/knowledge/`; knowledge that clearly applies beyond one project lives in `agent/knowledge/`. Facts about code stay in its repository. Each folder is created with its first note, and its listing is the index: there is no separate index file.
 
 ## Note shape
 

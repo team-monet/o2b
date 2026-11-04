@@ -132,6 +132,15 @@ git -C "$tmp/b" add 노트.md && git -C "$tmp/b" commit -q --no-edit
 run b && run a
 check "second conflict clears the same way" '[ ! -e "$tmp/a/$notice" ] && [ ! -e "$tmp/b/$notice" ] && [ "$(head_of a)" = "$(head_of b)" ] && [ "$(head_of a)" = "$(remote_head)" ]'
 
+# companies/.gitignore keeps a company's files out of Git, through sync's own add as well.
+mkdir -p "$tmp/a/companies/acme/knowledge"
+cp "$(dirname "$sync_src")/../../../companies/.gitignore" "$tmp/a/companies/.gitignore"
+printf 'note\n' >"$tmp/a/companies/acme/knowledge/note.md"
+printf 'scan\n' >"$tmp/a/companies/acme/knowledge/scan.pdf"
+run a
+check "company Markdown reaches the remote" 'git -C "$tmp/remote.git" cat-file -e main:companies/acme/knowledge/note.md'
+check "a company's other files stay out of Git" '! git -C "$tmp/remote.git" cat-file -e main:companies/acme/knowledge/scan.pdf 2>/dev/null && [ -f "$tmp/a/companies/acme/knowledge/scan.pdf" ]'
+
 before=$(head_of a)
 token="ghp_$(printf '%036d' 0 | tr 0 a)"
 printf 'key: %s\n' "$token" >"$tmp/a/leak.md"

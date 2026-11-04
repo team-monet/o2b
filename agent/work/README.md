@@ -10,6 +10,7 @@ Read this guide when creating a workstream, inbox, brief, or the snapshot, or ch
 |---|---|---|---|
 | A project | `projects/<project>/workstreams/<name>.md` | `projects/<project>/INBOX.md` | `projects/<project>/briefs/<slug>.md` |
 | The owner's personal life | `personal/workstreams/<name>.md` | `personal/INBOX.md` | `personal/briefs/<slug>.md` |
+| A company | `companies/<company>/workstreams/<name>.md` | `companies/<company>/INBOX.md` | `companies/<company>/briefs/<slug>.md` |
 | Cross-project work | `agent/work/workstreams/<name>.md` | `agent/work/INBOX.md` | — |
 
 Project work never goes in `agent/work/`; when a project has no home yet, create one as the [projects guide](../../projects/README.md) describes. Create each file or folder when its first item arrives. The folders are the index: agents find open work by listing them, so no README needs to link it. Keep existing plans and external trackers authoritative; do not copy their changing work into another record. The framework supplies conventions and examples; actual records belong to each personal brain.
@@ -24,7 +25,7 @@ On a continuation request, start with the relevant workstream or owning tracker.
 
 Give items labels unique among the file's current items and address them by file and label; do not renumber. Settle an item by putting its result where it is used — the repository, a tracker, a knowledge note, a project document, or guidance — and then removing the item. Keep a dropped item's reason only as a knowledge note, when it would stop the item being proposed again. Filing transfers work: verify the destination before removing the item. Remove a workstream once nothing in it is open. Git keeps the past.
 
-Status is a frontmatter property so views such as Obsidian Bases can list open work: `active`, or `paused` when explicitly held. Copy this shape, replacing placeholders and removing unused sample items. `../README.md` reaches the project, personal, or Work guide from each workstream home above:
+Status is a frontmatter property so views such as Obsidian Bases can list open work: `active`, or `paused` when explicitly held. Copy this shape, replacing placeholders and removing unused sample items. `../README.md` reaches the project, company, personal, or Work guide from each workstream home above:
 
 ```markdown
 ---
@@ -56,7 +57,7 @@ One inbox per scope serves humans and agents. Capture a finding as one dated lin
 
 Disposition belongs to the owner: keep, act when authorized, drop, or file to its appropriate home. An agent resolves an entry its own authorized task finished, and turns a `learned:` line into a knowledge note when settling; the next session that settles in the project may file a line its writer left behind. Resolve an entry by removing it once its result is where it is used; verify a filing destination first.
 
-Copy this shape; `README.md` reaches the project, personal, or Work guide from each inbox home:
+Copy this shape; `README.md` reaches the project, company, personal, or Work guide from each inbox home:
 
 ```markdown
 # Inbox
@@ -72,7 +73,7 @@ Copy this shape; `README.md` reaches the project, personal, or Work guide from e
 
 `SNAPSHOT.md` at the brain root is the one page the owner reads each morning to see what needs them. Keep it short: an owner flooded with items stops reading. It holds live views and, if the owner wants them, a few written sections such as current focus; it links instead of copying.
 
-A file appears under For you while its frontmatter carries `for_you: <what it needs from the owner>`, such as `for_you: decide whether the pilot moves to production`. It belongs only on something waiting on the owner now, never on routine output, as `BRAIN.md`'s habit "Hand things to the owner" says. Leave the file with its owner, and remove the file when nothing else needs it. Running lists autopilot operations by their front page; Open loops lists personal workstreams with their status and due date.
+A file appears under For you while its frontmatter carries `for_you: <what it needs from the owner>`, such as `for_you: decide whether the pilot moves to production`. It belongs only on something waiting on the owner now, never on routine output, as `BRAIN.md`'s habit "Hand things to the owner" says. Leave the file with its owner, and remove the file when nothing else needs it. Running lists autopilot operations by their front page; Open loops lists personal and company workstreams with their status and due date.
 
 The views are Obsidian Bases. An agent that cannot render them reads the same frontmatter and folders instead. Any agent may update a written section in place, with its date, when its task changes what the section shows; sections are added or removed only when the owner asks. A briefing sent to the owner is built from this page and, where connected, their calendar and email; it is a message, not a page, and is not kept in the brain.
 
@@ -117,8 +118,11 @@ views:
 
 ```base
 filters:
-  and:
+  or:
     - file.inFolder("personal/workstreams")
+    - and:
+        - file.inFolder("companies")
+        - file.hasProperty("status")
 views:
   - type: table
     name: Open loops

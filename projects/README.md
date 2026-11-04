@@ -26,7 +26,7 @@ Use only identifiers an agent can observe from the task, the repository, or the 
 
 ## Create a project home
 
-When project work matches no row, create its home, add its row, and tell the user you did. Create a named folder only for an actual project. Its `README.md` states the project's purpose, its authoritative sources (the repository, trackers, and other systems that own its state), and links to its documents. Add other parts only when their first item arrives:
+When project work matches no row, create its home, add its row, and tell the user you did. Create a named folder only for an actual project. Running a company belongs in [Companies](../companies/README.md); a product it publishes stays a project, and links the company from its README. A project's `README.md` states the project's purpose, its authoritative sources (the repository, trackers, and other systems that own its state), and links to its documents. Add other parts only when their first item arrives:
 
 | Part | Holds | Governed by |
 |---|---|---|
