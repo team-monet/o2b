@@ -54,7 +54,7 @@ Setup, installation, migration, and other detailed procedures belong in linked d
 | [Agents](agents/README.md) | Agent definition conventions and discovery; populated definitions stay personal |
 | [Skills](skills/README.md) | Agent skills with their scripts and dependencies, authoring, and whole-root discovery links; populated skills stay private |
 | [Knowledge](knowledge/README.md) | Knowledge note conventions for project and cross-project knowledge |
-| [Work](work/README.md) | Workstream, agent-inbox, and handoff conventions, work ownership, and the snapshot skeleton; populated records stay personal |
+| [Work](work/README.md) | Workstream, agent-inbox, and handoff conventions, work ownership, the snapshot skeleton, and the review and focus workflow; populated records stay personal |
 | [Sources](sources/README.md) | Relationships with external knowledge systems and source ownership changes |
 | [Operations](operations/README.md) | Installation, updates, runtime delivery, access, recovery, concurrency, and derived tools |
 

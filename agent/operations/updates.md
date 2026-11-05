@@ -135,6 +135,10 @@ Publish and install through the reviewed update sequence above when authorized. 
 
 Publish and install through the reviewed update sequence above.
 
+## Adopt review and focus
+
+[Review and focus](../work/review-and-focus.md) is optional, and an update changes no personal content for it. It never writes or reformats the owner's `SNAPSHOT.md`, and steps with no who-moves-it tag stay valid, reading as not known. A brain with its own written `Current focus` section already has the home the guide uses, but the guide's rule that only the owner changes the outcome now covers that text. After the update, resolve with the owner any personal instruction that lets an agent rewrite that section, and any briefing that leaves it out. The owner adopts the rest when they ask for a first review. Tags arrive as sessions settle steps and as a review reaches each workstream, not in one pass.
+
 ## Adopt leads
 
 Leads are optional: a brain without `guidance/LEADS.md` works as before. To adopt them, work with the owner in the disposable personal review checkout, as [Maintain guidance](../../guidance/authoring.md#leads) describes:
