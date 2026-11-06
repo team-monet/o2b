@@ -23,8 +23,8 @@ When a note could go to `knowledge/` or `household/`, ask whether an assistant w
 
 ## Snapshot
 
-The owner's page is the root `SNAPSHOT.md`, described in the [Work guide](../agent/work/README.md#snapshot); its open-loops view lists `personal/workstreams/`. When a personal task changes a written section of it, update that section in place with its date.
+The owner's page is the root `SNAPSHOT.md`, described in the [Work guide](../agent/work/README.md#snapshot); its open-loops view lists `personal/workstreams/`. When a personal task changes a written section of it, update that section in place with its date; the outcome in Current focus changes only by the owner's choice, as [Review and focus](../agent/work/review-and-focus.md#focus) describes.
 
 ## Boundaries
 
-Personal content is kept out of other tasks' context because only a personal task enters this area, but any actor with file access can read it. Keep secrets, credentials, and government or financial identifiers out of it; record where they are kept instead, in a household note that names the stores, and refer to one as `Kept in: <store>, "<entry>"`. Do not store other people's personal data beyond what the owner's own life requires. [Sensitive information and binding actions](../agent/operations/sensitive-information.md) sets what an agent may read, keep, send, and do.
+Personal content is kept out of other tasks' context because only a personal task enters this area, apart from what the snapshot shows an owner who is planning their time, but any actor with file access can read it. Keep secrets, credentials, and government or financial identifiers out of it; record where they are kept instead, in a household note that names the stores, and refer to one as `Kept in: <store>, "<entry>"`. Do not store other people's personal data beyond what the owner's own life requires. [Sensitive information and binding actions](../agent/operations/sensitive-information.md) sets what an agent may read, keep, send, and do.

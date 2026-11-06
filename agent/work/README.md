@@ -2,7 +2,7 @@
 
 Governing parent: [BRAIN.md](../../BRAIN.md)
 
-Read this guide when creating a workstream, inbox, brief, or the snapshot, or changing how one is kept. BRAIN.md carries the everyday habits: noticing open work at the start, capturing findings, recording handoffs, handing things to the owner, and settling before reporting done.
+Read this guide when creating a workstream, inbox, brief, or the snapshot, or changing how one is kept. BRAIN.md carries the everyday habits: noticing open work at the start, capturing findings, recording handoffs, handing things to the owner, keeping their focus, and settling before reporting done. To sort captures, review open work, or choose a focus, follow [Review and focus](review-and-focus.md).
 
 ## Where work lives
 
@@ -25,6 +25,14 @@ On a continuation request, start with the relevant workstream or owning tracker.
 
 Give items labels unique among the file's current items and address them by file and label; do not renumber. Settle an item by putting its result where it is used — the repository, a tracker, a knowledge note, a project document, or guidance — and then removing the item. Keep a dropped item's reason only as a knowledge note, when it would stop the item being proposed again. Filing transfers work: verify the destination before removing the item. Remove a workstream once nothing in it is open. Git keeps the past.
 
+A step holds what is next, not what already happened, and says after its label who moves it:
+
+- `(you)`: only the owner can. The word addresses the owner, as `for_you` does, never the agent reading it.
+- `(agent)`: an agent can, without the owner. This does not authorise starting it unasked: a session takes it when asked to continue the work or help with the focus, and an operation when its Mission covers it.
+- `(waiting: <who>, since <date>)`: someone else must act first.
+
+A step with no tag means this is not known, not that anyone in particular moves it. Work it out before relying on it, and add the tag once the step's own words or its tracker settle it. A tag describes a step and commits no one. It is also separate from `for_you`: a `(you)` step reaches the snapshot's For you view only while it meets the test in `BRAIN.md`'s habit "Hand things to the owner".
+
 Status is a frontmatter property so views such as Obsidian Bases can list open work: `active`, or `paused` when explicitly held. Copy this shape, replacing placeholders and removing unused sample items. `../README.md` reaches the project, company, personal, or Work guide from each workstream home above:
 
 ```markdown
@@ -40,7 +48,7 @@ status: active
 - question-01: <Question.>
 
 ## Open steps
-- step-01: <Next action.>
+- step-01 (you): <Next action.>
 ```
 
 <a id="handoffs"></a>
@@ -53,7 +61,7 @@ A brief gives another session what it needs to do a piece of work without the or
 
 ## Agent inbox
 
-One inbox per scope serves humans and agents. Capture a finding as one dated line, `- <date>: <finding> (<source>)`, and continue the current task; mark a knowledge placeholder with `learned:` after the date. Entries carry no labels: refer to them by date and wording. Avoid duplicates and preserve existing entries. Capture creates no commitment or new workstream.
+One inbox per scope serves humans and agents. Capture a finding as one dated line, `- <date>: <finding> (<source>)`, and continue the current task; mark a knowledge placeholder with `learned:` after the date. A new capture goes in unsorted, however tentative or urgent it sounds: `someday:` after the date marks only an idea the owner has decided, when sorting their captures, to keep for later with no commitment, because a review passes over those lines. Entries carry no labels: refer to them by date and wording. Avoid duplicates and preserve existing entries. Capture creates no commitment or new workstream.
 
 Disposition belongs to the owner: keep, act when authorized, drop, or file to its appropriate home. An agent resolves an entry its own authorized task finished, and turns a `learned:` line into a knowledge note when settling; the next session that settles in the project may file a line its writer left behind. Resolve an entry by removing it once its result is where it is used; verify a filing destination first.
 
@@ -73,16 +81,22 @@ Copy this shape; `README.md` reaches the project, company, personal, or Work gui
 
 `SNAPSHOT.md` at the brain root is the one page the owner reads each morning to see what needs them. Keep it short: an owner flooded with items stops reading. It holds live views and, if the owner wants them, a few written sections such as current focus; it links instead of copying.
 
-A file appears under For you while its frontmatter carries `for_you: <what it needs from the owner>`, such as `for_you: decide whether the pilot moves to production`. It belongs only on something waiting on the owner now, never on routine output, as `BRAIN.md`'s habit "Hand things to the owner" says. Leave the file with its owner, and remove the file when nothing else needs it. Running lists autopilot operations by their front page; Open loops lists personal and company workstreams with their status and due date.
+A file appears under For you while its frontmatter carries `for_you: <what it needs from the owner>`, such as `for_you: decide whether the pilot moves to production`. It belongs only on something waiting on the owner now, never on routine output, as `BRAIN.md`'s habit "Hand things to the owner" says. Leave the file with its owner, and remove the file when nothing else needs it. Running lists autopilot operations by their front page; Open loops lists personal and company workstreams with their status and due date. Current focus names the one outcome the owner has chosen, with a link to its record and its next action, as [Review and focus](review-and-focus.md#focus) describes; everything else stays open in its own record.
 
-The views are Obsidian Bases. An agent that cannot render them reads the same frontmatter and folders instead. Any agent may update a written section in place, with its date, when its task changes what the section shows; sections are added or removed only when the owner asks. A briefing sent to the owner is built from this page and, where connected, their calendar and email; it is a message, not a page, and is not kept in the brain.
+The views are Obsidian Bases. An agent that cannot render them reads the same frontmatter and folders instead. Any agent may update a written section in place, with its date, when its task changes what the section shows, with one exception: only the owner's explicit choice changes the outcome in Current focus, and its next-action line moves as that guide describes. Sections are added or removed only when the owner asks. A briefing sent to the owner is built from this page and, where connected, their calendar and email, and opens with Current focus when there is one; it is a message, not a page, and is not kept in the brain.
 
-Create the page from this skeleton:
+Create the page from this skeleton, leaving out Current focus until the owner chooses one:
 
 ````markdown
 # Snapshot
 
 **Governing parent:** [Work guide](agent/work/README.md#snapshot).
+
+## Current focus
+
+_Chosen <date>, for <horizon>._ [<The one outcome>](<link to its record>).
+
+**Next for you:** <next action> (<step label or tracker>).
 
 ## For you
 
