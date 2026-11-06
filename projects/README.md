@@ -2,7 +2,7 @@
 
 Governing parent: [BRAIN.md](../BRAIN.md)
 
-Read this guide when a task uses project-specific material or creates a project home. Projects hold domain knowledge, requirements, decisions, evidence, procedures, source relationships, work state, and continuation context.
+Read this guide when creating a project home or changing how the index or a home is kept. Projects hold domain knowledge, requirements, decisions, evidence, procedures, source relationships, work state, and continuation context.
 
 ## Project index
 
