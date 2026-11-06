@@ -2,7 +2,7 @@
 
 Governing parent: [Guidance guide](README.md)
 
-Read this guide before admitting, creating, or changing principles, preferences, leads, situation indexes, or rules, including when the owner states a new rule or corrects an agent. Routine sessions use the parent guide; these conventions govern both rule homes.
+Read this guide before admitting, creating, or changing principles, preferences, leads, situation indexes, or rules, including when the owner states a new rule or corrects an agent. Routine sessions do not need this guide; these conventions govern both rule homes.
 
 ## Scope and admission
 

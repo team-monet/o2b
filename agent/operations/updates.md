@@ -139,6 +139,10 @@ Publish and install through the reviewed update sequence above.
 
 [Review and focus](../work/review-and-focus.md) is optional, and an update changes no personal content for it. It never writes or reformats the owner's `SNAPSHOT.md`, and steps with no who-moves-it tag stay valid, reading as not known. A brain with its own written `Current focus` section already has the home the guide uses, but the guide's rule that only the owner changes the outcome now covers that text. After the update, resolve with the owner any personal instruction that lets an agent rewrite that section, and any briefing that leaves it out. The owner adopts the rest when they ask for a first review. Tags arrive as sessions settle steps and as a review reaches each workstream, not in one pass.
 
+## Adopt conditional start-up reads
+
+Sessions no longer read the guidance guide or the projects guide at startup, search `projects/INDEX.md` rather than reading it, and skip the note of open work on a question that changes nothing and does not ask about work in progress. An update changes no personal content for this. Resolve with the owner any personal instruction that still says to read those guides at session start.
+
 ## Adopt leads
 
 Leads are optional: a brain without `guidance/LEADS.md` works as before. To adopt them, work with the owner in the disposable personal review checkout, as [Maintain guidance](../../guidance/authoring.md#leads) describes:
